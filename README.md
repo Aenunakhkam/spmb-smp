@@ -1,58 +1,118 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Penerimaan Peserta Didik Baru (SPMB) SMP
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+SPMB (Sistem Penerimaan Mahasiswa/Murid Baru) adalah sebuah aplikasi berbasis web yang dirancang khusus untuk mempermudah proses pendaftaran, verifikasi, seleksi, hingga pelaporan calon siswa baru di tingkat Sekolah Menengah Pertama (SMP). Aplikasi ini dibangun dengan teknologi modern, cepat, dan antarmuka yang sangat ramah pengguna (user-friendly).
 
-## About Laravel
+## 🚀 Teknologi yang Digunakan
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Aplikasi ini dikembangkan menggunakan *stack* teknologi yang modern dan kuat:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Backend:** [Laravel 11](https://laravel.com/) (PHP Framework)
+- **Frontend:** [Vue.js 3](https://vuejs.org/) (Composition API) via [Inertia.js](https://inertiajs.com/)
+- **UI Framework:** [Vuetify 3](https://vuetifyjs.com/) & [Tailwind CSS](https://tailwindcss.com/)
+- **Database:** MySQL
+- **Eksport Laporan:** DomPDF (Untuk Cetak PDF) & Maatwebsite Excel (Untuk Cetak Excel)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🛠️ Panduan Instalasi Lokal
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Ikuti langkah-langkah di bawah ini untuk menginstal dan menjalankan proyek SPMB secara lokal di komputer Anda (seperti menggunakan Laragon, XAMPP, atau Laravel Valet).
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. Persyaratan Sistem
+Pastikan komputer Anda sudah terpasang perangkat lunak berikut:
+- **PHP** versi 8.2 atau yang lebih baru.
+- **Composer** (untuk manajemen dependensi PHP).
+- **Node.js** (versi 18+) dan **NPM** (untuk *build* aset *frontend* Vue.js).
+- **MySQL** (atau MariaDB).
+- **Git** (untuk kloning repositori).
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### 2. Kloning Repositori
+Buka terminal/CMD Anda, arahkan ke folder web server (seperti `C:\laragon\www` atau `C:\xampp\htdocs`), lalu jalankan:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone git@github.com:Aenunakhkam/spmb-smp.git
+cd spmb-smp
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 3. Instalasi Dependensi
+Instal seluruh paket (library) pendukung untuk *backend* PHP dan *frontend* JavaScript:
 
-## Contributing
+```bash
+# Instal dependensi backend (Laravel)
+composer install
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Instal dependensi frontend (Vue/Inertia)
+npm install
+```
 
-## Code of Conduct
+### 4. Konfigurasi Lingkungan (.env)
+Buat file konfigurasi `.env` dengan menyalin template yang sudah disediakan:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+cp .env.example .env
+```
+*(Bagi pengguna Windows, jika menggunakan CMD ketik: `copy .env.example .env`)*
 
-## Security Vulnerabilities
+Selanjutnya, buka file `.env` di teks editor Anda, lalu sesuaikan bagian konfigurasi database. Pastikan Anda sudah membuat database kosong (misal bernama `spmb`) di aplikasi seperti HeidiSQL, phpMyAdmin, dsb:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=spmb       # Nama database Anda
+DB_USERNAME=root       # Username database Anda
+DB_PASSWORD=           # Password database Anda (kosongkan jika tidak ada)
+```
 
-## License
+### 5. Konfigurasi Kunci Aplikasi & Database
+Jalankan perintah berikut secara berurutan untuk men-*generate* kunci aplikasi, menautkan penyimpanan file (foto/dokumen), dan membangun tabel-tabel di database sekaligus mengisi data *dummy* awal (seperti Akun Admin *default*).
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+# Men-generate APP_KEY
+php artisan key:generate
+
+# Menautkan folder penyimpanan (storage) agar gambar dapat diakses
+php artisan storage:link
+
+# Melakukan migrasi database dan mengisi data awal (Seeder)
+php artisan migrate --seed
+```
+
+### 6. Menjalankan Aplikasi
+Aplikasi membutuhkan dua server yang berjalan berbarengan saat fase pengembangan (*development*). Buka **2 Terminal yang berbeda**, dan jalankan perintah berikut:
+
+**Terminal 1 (Menjalankan Frontend Vue.js):**
+```bash
+npm run dev
+```
+
+**Terminal 2 (Menjalankan Backend Laravel):**
+```bash
+php artisan serve
+```
+
+Aplikasi sekarang sudah berjalan! Silakan buka browser Anda dan akses:
+👉 **[http://localhost:8000](http://localhost:8000)**
+
+---
+
+## 🔒 Akses Default Akun Admin
+Jika Anda telah menjalankan perintah `--seed` pada tahap instalasi di atas, Anda dapat mengakses dashboard admin menggunakan kredensial berikut:
+
+- **URL Login Admin:** `http://localhost:8000/login`
+- **Email:** `admin@spmb.com`
+- **Password:** `password`
+
+> **Catatan:** Setelah berhasil masuk (login), kami sangat menyarankan untuk segera menuju menu "Kelola Akun Admin" dan mengubah *password* *default* tersebut demi keamanan sistem Anda.
+
+---
+
+## 🏗️ Mengemas ke Production (Build)
+Apabila Anda hendak meng-unggah (hosting) sistem ini ke server nyata (production), pastikan Anda melakukan *build assets* terlebih dahulu agar ukuran file menjadi optimal dan tidak bergantung pada *node server*:
+
+```bash
+npm run build
+```
+
+---
+*Dikembangkan secara eksklusif untuk kemajuan pendidikan SMP Indonesia.*
