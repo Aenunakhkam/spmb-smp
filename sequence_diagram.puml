@@ -1,0 +1,42 @@
+@startuml Sequence_Diagram
+autonumber
+actor "Calon Siswa" as Siswa
+participant "Sistem Web SPMB" as Web
+database "Database" as DB
+actor "Administrator" as Admin
+
+Siswa -> Web: Mengisi Biodata Awal (Pendaftaran)
+activate Web
+Web -> Web: Generate No Pendaftaran & Kode Akses
+Web -> DB: Simpan Data Awal
+activate DB
+DB --> Web: Konfirmasi Simpan
+deactivate DB
+Web --> Siswa: Tampilkan No Pendaftaran & Kode Akses
+deactivate Web
+
+Siswa -> Web: Login via No Pendaftaran & Kode
+activate Web
+Siswa -> Web: Mengisi Biodata Lengkap, Nilai & Upload Dokumen
+Web -> DB: Update Data Pendaftar (Status: Belum Lengkap/Menunggu)
+activate DB
+DB --> Web: Konfirmasi Update
+deactivate DB
+Web --> Siswa: Notifikasi Data Tersimpan
+deactivate Web
+
+Admin -> Web: Login sebagai Administrator
+activate Web
+Admin -> Web: Membuka Halaman Verifikasi
+Web -> DB: Request Data Pendaftar
+activate DB
+DB --> Web: Return Data Pendaftar
+deactivate DB
+Admin -> Web: Melakukan Verifikasi Dokumen & Nilai
+Web -> DB: Update Status Pendaftar (Diverifikasi / Perbaikan)
+activate DB
+DB --> Web: Konfirmasi Update Status
+deactivate DB
+Web --> Siswa: Status Berubah di Dashboard Siswa
+deactivate Web
+@enduml

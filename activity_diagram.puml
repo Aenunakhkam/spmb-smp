@@ -1,0 +1,31 @@
+@startuml Activity_Diagram
+skinparam linetype ortho
+
+start
+:Buka Halaman Pendaftaran;
+:Isi Biodata Awal;
+:Sistem Generate No Daftar & Kode Akses;
+repeat :Siswa Melengkapi Biodata, Nilai & Dokumen;
+  if (Data Lengkap?) then (Tidak)
+    :Simpan Draft / Belum Lengkap;
+  else (Ya)
+    :Status: Menunggu Verifikasi;
+    :Admin Memverifikasi Data & Dokumen;
+    if (Valid?) then (Tidak)
+      :Status: Perlu Perbaikan;
+    else (Ya)
+      :Status: Diverifikasi;
+      :Admin Jalankan Seleksi Otomatis;
+      if (Masuk Kuota & Ranking?) then (Ya)
+        :Status: Lulus;
+        :Siswa Cetak Bukti Kelulusan;
+      else (Tidak)
+        :Status: Tidak Lulus;
+        :Siswa Melihat Pengumuman;
+      endif
+      break
+    endif
+  endif
+repeat while (Perlu Revisi atau Belum Lengkap?)
+stop
+@enduml
