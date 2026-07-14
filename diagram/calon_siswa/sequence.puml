@@ -1,0 +1,31 @@
+@startuml
+skinparam linetype ortho
+mainframe sd Sistem Penerimaan Siswa Baru
+actor "Calon Siswa" as Siswa
+boundary "Halaman Form Pendaftaran" as UI
+control "PendaftaranController" as Controller
+entity "Pendaftar" as Model
+database "Database" as DB
+
+Siswa -> UI : Isi Biodata Lengkap
+Siswa -> UI : Klik Simpan
+UI -> Controller : POST /pendaftaran/simpan
+Controller -> Controller : Validasi Data
+Controller -> Model : create(data)
+Model -> DB : INSERT INTO pendaftars
+DB --> Model : Success
+Model --> Controller : Data Saved
+Controller --> UI : Redirect with Success
+UI --> Siswa : Tampilkan Biodata Berhasil Disimpan
+
+Siswa -> UI : Pilih Upload Berkas
+UI -> Controller : POST /pendaftaran/upload
+Controller -> Controller : Pindahkan File ke Storage
+Controller -> Model : updateDocumentPath(id, path)
+Model -> DB : UPDATE pendaftars SET dokumen=path
+DB --> Model : Success
+Model --> Controller : Success
+Controller --> UI : Redirect with Success
+UI --> Siswa : Tampilkan Upload Sukses
+@enduml
+

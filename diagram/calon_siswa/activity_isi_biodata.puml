@@ -1,0 +1,27 @@
+@startuml
+skinparam linetype ortho
+mainframe act Isi Biodata
+|Calon Siswa|
+start
+:Login ke halaman Dashboard;
+:Pilih Menu Lengkapi Biodata;
+|Sistem|
+:Tampilkan Form Input Biodata (Nama, TTL, Alamat, Asal Sekolah, Data Orang Tua);
+|Calon Siswa|
+:Mengisi seluruh field wajib pada formulir;
+:Klik "Simpan Biodata";
+|Sistem|
+:Validasi inputan (Required, Format Tanggal, dll);
+if (Data Valid?) then (Ya)
+  :Simpan Biodata ke Database;
+  :Tampilkan Pesan Sukses;
+  :Arahkan ke Tahap Selanjutnya (Upload Berkas);
+else (Tidak)
+  :Tampilkan Pesan Error pada field yang salah;
+  |Calon Siswa|
+  :Memperbaiki data yang salah;
+  :Klik "Simpan Biodata";
+endif
+stop
+@enduml
+

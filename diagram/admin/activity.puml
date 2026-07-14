@@ -1,0 +1,28 @@
+@startuml
+skinparam linetype ortho
+mainframe act Alur Sistem
+|Admin|
+start
+:Buka Halaman Login;
+:Masukkan Username & Password;
+|Sistem|
+if (Valid?) then (Ya)
+  :Tampilkan Dashboard;
+  |Admin|
+  fork
+    :Pilih Menu Data Pendaftar;
+    :Verifikasi Data & Berkas;
+  fork again
+    :Pilih Menu Laporan;
+    :Cetak Laporan PMB;
+  end fork
+  :Logout;
+else (Tidak)
+  |Sistem|
+  :Tampilkan Pesan Error;
+  |Admin|
+  :Kembali ke Login;
+endif
+stop
+@enduml
+

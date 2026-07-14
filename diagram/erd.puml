@@ -1,0 +1,104 @@
+@startuml
+skinparam linetype ortho
+mainframe class Entity Relationship Diagram (ERD)
+
+' Atur tampilan agar lebih rapi seperti ERD sesungguhnya
+hide circle
+skinparam nodesep 50
+skinparam ranksep 50
+
+' Definisi Tabel (Entitas)
+entity "users" as users {
+  *id : bigint <<PK>>
+  --
+  name : varchar
+  email : varchar
+  password : varchar
+  role : enum('admin', 'siswa')
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "registrations" as registrations {
+  *id : bigint <<PK>>
+  --
+  *user_id : bigint <<FK>>
+  registration_number : varchar
+  status : enum('pending', 'verified', 'rejected')
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "student_details" as student_details {
+  *id : bigint <<PK>>
+  --
+  *registration_id : bigint <<FK>>
+  nisn : varchar
+  full_name : varchar
+  place_of_birth : varchar
+  date_of_birth : date
+  gender : enum('L','P')
+  religion : varchar
+  address : text
+  previous_school : varchar
+}
+
+entity "parent_details" as parent_details {
+  *id : bigint <<PK>>
+  --
+  *registration_id : bigint <<FK>>
+  father_name : varchar
+  father_occupation : varchar
+  mother_name : varchar
+  mother_occupation : varchar
+  parent_phone : varchar
+  parent_address : text
+}
+
+entity "grades" as grades {
+  *id : bigint <<PK>>
+  --
+  *registration_id : bigint <<FK>>
+  math_score : decimal
+  science_score : decimal
+  indonesian_score : decimal
+  english_score : decimal
+  total_score : decimal
+}
+
+entity "documents" as documents {
+  *id : bigint <<PK>>
+  --
+  *registration_id : bigint <<FK>>
+  family_card : varchar
+  certificate_skhu : varchar
+  photo : varchar
+  status : varchar
+  admin_notes : text
+}
+
+entity "settings" as settings {
+  *id : bigint <<PK>>
+  --
+  key_name : varchar
+  key_value : text
+}
+
+entity "audit_logs" as audit_logs {
+  *id : bigint <<PK>>
+  --
+  *user_id : bigint <<FK>>
+  action : varchar
+  ip_address : varchar
+  created_at : timestamp
+}
+
+' Relasi Antar Tabel (Crows Foot Notation)
+users ||--o{ registrations : "memiliki"
+users ||--o{ audit_logs : "tercatat di"
+registrations ||--|| student_details : "mempunyai"
+registrations ||--|| parent_details : "mempunyai"
+registrations ||--|| grades : "mempunyai"
+registrations ||--|| documents : "mempunyai"
+
+@enduml

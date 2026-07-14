@@ -1,0 +1,27 @@
+@startuml
+skinparam linetype ortho
+mainframe act Kelola Data Master
+|Admin|
+start
+:Buka Menu Data Master;
+|Sistem|
+:Tampilkan Data (Agama, Pekerjaan, Pendidikan, Penghasilan, dll);
+|Admin|
+fork
+  :Tambah Data Master Baru;
+  :Masukkan Nama Data;
+  :Klik Simpan;
+fork again
+  :Edit Data Master;
+  :Ubah Nama Data;
+  :Klik Update;
+fork again
+  :Hapus Data Master;
+  :Konfirmasi Hapus;
+end fork
+|Sistem|
+:Proses Query (Insert/Update/Delete) ke Database;
+:Tampilkan Notifikasi Sukses;
+stop
+@enduml
+

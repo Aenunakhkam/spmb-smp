@@ -1,0 +1,19 @@
+@startuml
+skinparam linetype ortho
+mainframe act Export Data
+|Admin|
+start
+:Buka Menu Laporan / Data Pendaftar;
+:Filter berdasarkan Status (Diterima, Belum Verifikasi, dll)\natau berdasarkan Tahun Ajaran;
+:Klik Tombol "Export Data";
+|Sistem|
+:Query seluruh data pendaftar sesuai filter yang dipilih;
+:Ambil kolom (Nama, NISN, Alamat, Status, dll);
+:Generate file Spreadsheet (.xlsx / .csv);
+:Kirimkan file ke browser;
+|Admin|
+:Proses Download File Berhasil;
+:Buka file Excel di perangkat lokal;
+stop
+@enduml
+

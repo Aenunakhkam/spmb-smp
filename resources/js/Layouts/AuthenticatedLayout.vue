@@ -30,8 +30,6 @@ const menuItems = [
     { title: 'Laporan Pendaftaran', icon: 'mdi-file-document-multiple', route: 'admin.reports.index' },
     { title: 'Pengaturan PPDB', icon: 'mdi-clipboard-list-outline', route: 'admin.admission-settings.index' },
     { title: 'Identitas Aplikasi', icon: 'mdi-application-cog', route: 'admin.settings.index' },
-    { title: 'Log Aktivitas', icon: 'mdi-history', route: 'admin.logs.index' },
-    { title: 'Kelola Akun', icon: 'mdi-shield-account', route: 'admin.users.index' },
 ];
 </script>
 

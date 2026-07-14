@@ -1,0 +1,105 @@
+@startuml
+skinparam linetype ortho
+mainframe class Sistem Penerimaan Siswa Baru
+
+class UserAdmin {
+  +id: int
+  +nama: string
+  +email: string
+  +password: string
+  +role: string
+  +created_at: timestamp
+  +login()
+  +kelolaData()
+}
+
+class PengaturanPendaftaran {
+  +id: int
+  +nama_gelombang: string
+  +tanggal_mulai: date
+  +tanggal_selesai: date
+  +status_aktif: boolean
+  +bukaPendaftaran()
+  +tutupPendaftaran()
+}
+
+class PengaturanSistem {
+  +id: int
+  +nama_sekolah: string
+  +logo: string
+  +alamat: text
+  +kontak: string
+  +updatePengaturan()
+}
+
+class DataMaster {
+  +id: int
+  +kategori: string (contoh: Agama, Pekerjaan)
+  +nama_data: string
+  +tambahData()
+  +editData()
+  +hapusData()
+}
+
+class JalurPendaftaran {
+  +id: int
+  +nama_jalur: string
+  +keterangan: text
+  +kuota: int
+}
+
+class Pendaftar {
+  +id: int
+  +no_pendaftaran: string
+  +nisn: string
+  +jalur_id: int
+  +status_pendaftaran: string
+  +tanggal_daftar: date
+  +verifikasiData()
+}
+
+class Biodata {
+  +id: int
+  +pendaftar_id: int
+  +nama_lengkap: string
+  +tempat_lahir: string
+  +tanggal_lahir: date
+  +jenis_kelamin: string
+  +agama_id: int
+  +alamat: text
+  +asal_sekolah: string
+  +no_hp: string
+}
+
+class Dokumen {
+  +id: int
+  +pendaftar_id: int
+  +kartu_keluarga: string
+  +ijazah_skhu: string
+  +pas_foto: string
+  +status_verifikasi: string
+  +catatan_admin: text
+}
+
+class LogAktivitas {
+  +id: int
+  +user_id: int
+  +aktivitas: string
+  +ip_address: string
+  +created_at: timestamp
+}
+
+UserAdmin "1" -- "*" Pendaftar : Memverifikasi >
+UserAdmin "1" -- "1" PengaturanSistem : Mengelola >
+UserAdmin "1" -- "*" PengaturanPendaftaran : Mengatur >
+UserAdmin "1" -- "*" DataMaster : Mengelola >
+UserAdmin "1" -- "*" JalurPendaftaran : Mengelola >
+UserAdmin "1" -- "*" LogAktivitas : Tercatat pada >
+
+Pendaftar "1" -- "1" Biodata : Memiliki >
+Pendaftar "1" -- "1" Dokumen : Mengunggah >
+Pendaftar "*" -- "1" JalurPendaftaran : Memilih >
+Biodata "*" -- "1" DataMaster : Menggunakan (Relasi) >
+
+@enduml
+

@@ -1,0 +1,30 @@
+@startuml
+skinparam linetype ortho
+mainframe act Verifikasi Berkas
+|Admin|
+start
+:Buka Menu Data Pendaftar;
+:Sistem menampilkan daftar pendaftar;
+:Pilih salah satu Calon Siswa (Klik Detail);
+|Sistem|
+:Tampilkan Detail Biodata & Dokumen;
+|Admin|
+:Mengecek kesesuaian dokumen (KK, Ijazah, Foto, dll);
+if (Dokumen Lengkap & Valid?) then (Ya)
+  :Klik Tombol "Verifikasi / Terima Berkas";
+  |Sistem|
+  :Ubah Status Berkas menjadi "Terverifikasi";
+else (Tidak)
+  |Admin|
+  :Klik Tombol "Tolak / Perbaikan";
+  :Masukkan Catatan Kekurangan Berkas;
+  |Sistem|
+  :Ubah Status Berkas menjadi "Perlu Perbaikan";
+  :Kirim Notifikasi ke Calon Siswa;
+endif
+|Sistem|
+:Simpan Perubahan ke Database;
+:Kembali ke Halaman Daftar Pendaftar;
+stop
+@enduml
+

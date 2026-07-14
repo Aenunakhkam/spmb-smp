@@ -1,0 +1,27 @@
+@startuml
+skinparam linetype ortho
+mainframe act Upload Berkas
+|Calon Siswa|
+start
+:Pilih Menu Upload Berkas;
+|Sistem|
+:Tampilkan Form Upload (KK, Ijazah/SKHU, Pas Foto);
+|Calon Siswa|
+:Pilih file dari perangkat lokal (JPG/PDF);
+:Klik "Upload Berkas";
+|Sistem|
+:Validasi tipe file dan ukuran file maksimal;
+if (Sesuai Syarat?) then (Ya)
+  :Simpan file ke server (Storage);
+  :Update path dokumen di Database;
+  :Ubah status berkas menjadi "Menunggu Verifikasi";
+  :Tampilkan Pesan Sukses;
+else (Tidak)
+  :Tampilkan Pesan Error (File terlalu besar/Tipe tidak diizinkan);
+  |Calon Siswa|
+  :Pilih ulang file yang sesuai;
+  :Klik "Upload Berkas";
+endif
+stop
+@enduml
+

@@ -1,0 +1,29 @@
+@startuml
+skinparam linetype ortho
+mainframe uc Sistem Penerimaan Siswa Baru
+left to right direction
+actor "Calon Siswa" as siswa
+
+rectangle "Sistem Penerimaan Siswa Baru (SPMB)" {
+  usecase "Registrasi Akun" as UC1
+  usecase "Login" as UC2
+  usecase "Isi Formulir Biodata" as UC3
+  usecase "Upload Berkas Persyaratan" as UC4
+  usecase "Cetak Kartu Pendaftaran" as UC6
+  usecase "Lihat Pengumuman" as UC7
+  usecase "Lupa Password (Reset)" as UC8
+}
+
+siswa --> UC1
+siswa --> UC2
+siswa --> UC3
+siswa --> UC4
+siswa --> UC6
+siswa --> UC7
+siswa --> UC8
+
+UC3 .> UC2 : include
+UC4 .> UC2 : include
+UC6 .> UC2 : include
+@enduml
+

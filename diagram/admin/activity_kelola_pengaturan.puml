@@ -1,0 +1,21 @@
+@startuml
+skinparam linetype ortho
+mainframe act Kelola Pengaturan
+|Admin|
+start
+:Buka Menu Pengaturan;
+fork
+  :Pilih "Pengaturan Sistem";
+  :Ubah Nama Sekolah, Logo, dan Kontak;
+fork again
+  :Pilih "Pengaturan Pendaftaran";
+  :Ubah Status Gelombang (Buka/Tutup);
+  :Atur Tanggal Mulai dan Selesai;
+end fork
+|Sistem|
+:Validasi Form Pengaturan;
+:Simpan Perubahan ke Database;
+:Tampilkan Notifikasi "Pengaturan Berhasil Disimpan";
+stop
+@enduml
+

@@ -1,0 +1,22 @@
+@startuml
+skinparam linetype ortho
+mainframe act Cetak Formulir
+|Calon Siswa|
+start
+:Buka Halaman Dashboard;
+:Pilih Menu "Cetak Formulir Pendaftaran";
+|Sistem|
+:Cek Data Biodata Siswa;
+if (Biodata Lengkap?) then (Ya)
+  :Tarik seluruh data diri, alamat, dan data orang tua;
+  :Generate PDF Formulir Pendaftaran;
+  :Tampilkan Preview Formulir PDF;
+  |Calon Siswa|
+  :Klik "Download" atau "Cetak Formulir";
+else (Tidak)
+  |Sistem|
+  :Tampilkan Pesan Error\n("Lengkapi biodata terlebih dahulu");
+endif
+stop
+@enduml
+

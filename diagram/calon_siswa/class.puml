@@ -1,0 +1,47 @@
+@startuml
+skinparam linetype ortho
+mainframe class Sistem Penerimaan Siswa Baru
+
+class User {
+  +id: int
+  +email: string
+  +password: string
+  +role: string
+  +register()
+  +login()
+}
+
+class Biodata {
+  +id: int
+  +user_id: int
+  +nama_lengkap: string
+  +tempat_lahir: string
+  +tanggal_lahir: date
+  +alamat: text
+  +asal_sekolah: string
+  +simpanData()
+}
+
+class Berkas {
+  +id: int
+  +user_id: int
+  +kartu_keluarga: string
+  +ijazah: string
+  +pas_foto: string
+  +uploadBerkas()
+}
+
+class Pengumuman {
+  +id: int
+  +judul: string
+  +isi: text
+  +tanggal: date
+  +lihatPengumuman()
+}
+
+User "1" -- "1" Biodata : Memiliki >
+User "1" -- "1" Berkas : Mengupload >
+User "*" -- "*" Pengumuman : Melihat >
+
+@enduml
+

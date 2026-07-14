@@ -478,7 +478,7 @@ const steps = [
 
 .hero-stat-box {
     position: absolute;
-    bottom: 20%; left: -40px;
+    bottom: 10%; left: -70px;
     background: white;
     padding: 16px 24px;
     border-radius: 20px;
@@ -489,7 +489,7 @@ const steps = [
 
 .floating-badge-v2 {
     position: absolute;
-    top: 15%; right: -10px;
+    top: 5%; right: -40px;
     background: white;
     padding: 12px 20px;
     border-radius: 50px;

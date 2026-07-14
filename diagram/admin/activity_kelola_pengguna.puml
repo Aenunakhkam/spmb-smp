@@ -1,0 +1,25 @@
+@startuml
+skinparam linetype ortho
+mainframe act Kelola Pengguna
+|Admin|
+start
+:Buka Menu Pengguna (Admin);
+|Sistem|
+:Tampilkan Daftar Akun Admin;
+|Admin|
+fork
+  :Tambah Admin Baru;
+  :Isi Nama, Email, Password;
+fork again
+  :Edit Data Admin;
+  :Ubah Nama, Email, atau Password;
+fork again
+  :Hapus/Nonaktifkan Akun Admin;
+end fork
+:Klik Simpan / Konfirmasi;
+|Sistem|
+:Update Data Admin di Database;
+:Tampilkan Notifikasi Berhasil;
+stop
+@enduml
+

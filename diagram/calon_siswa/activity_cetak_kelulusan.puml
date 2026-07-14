@@ -1,0 +1,25 @@
+@startuml
+skinparam linetype ortho
+mainframe act Cetak Kelulusan
+|Calon Siswa|
+start
+:Buka Halaman Dashboard atau Pengumuman;
+:Pilih Menu "Cek Hasil Kelulusan";
+|Sistem|
+:Cek Status Kelulusan di Database;
+if (Status = "Diterima"?) then (Ya)
+  :Tampilkan Ucapan Selamat & Status "DITERIMA";
+  :Generate Surat Keterangan Lulus (SKL) / Bukti Diterima format PDF;
+  |Calon Siswa|
+  :Klik "Cetak Bukti Kelulusan";
+else (Tidak)
+  |Sistem|
+  if (Status = "Tidak Diterima"?) then (Ya)
+    :Tampilkan Pesan Mohon Maaf & Status "TIDAK DITERIMA";
+  else (Belum Diumumkan)
+    :Tampilkan Pesan "Pengumuman belum tersedia";
+  endif
+endif
+stop
+@enduml
+

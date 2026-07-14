@@ -1,0 +1,30 @@
+@startuml
+skinparam linetype ortho
+mainframe act Alur Sistem
+|Calon Siswa|
+start
+:Buka Halaman Registrasi;
+:Isi Data Akun & Register;
+|Sistem|
+:Simpan Data Akun;
+:Redirect ke Halaman Login;
+|Calon Siswa|
+:Login;
+|Sistem|
+if (Valid?) then (Ya)
+  :Tampilkan Dashboard Pendaftar;
+  |Calon Siswa|
+  :Isi Biodata Lengkap;
+  :Upload Berkas Persyaratan;
+  |Sistem|
+  :Menunggu Verifikasi Admin;
+  |Calon Siswa|
+  :Cetak Kartu Pendaftaran;
+  :Lihat Pengumuman Hasil;
+else (Tidak)
+  |Sistem|
+  :Tampilkan Pesan Error;
+endif
+stop
+@enduml
+

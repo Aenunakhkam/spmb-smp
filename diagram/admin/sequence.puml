@@ -1,0 +1,28 @@
+@startuml
+skinparam linetype ortho
+mainframe sd Sistem Penerimaan Siswa Baru
+actor Admin
+boundary "Halaman Data Pendaftar" as UI
+control "PendaftarController" as Controller
+entity "Pendaftar" as Model
+database "Database" as DB
+
+Admin -> UI : Buka Menu Pendaftar
+UI -> Controller : GET /admin/pendaftar
+Controller -> Model : getAll()
+Model -> DB : SELECT * FROM pendaftars
+DB --> Model : Data Pendaftar
+Model --> Controller : Data Pendaftar
+Controller --> UI : Render View Pendaftar
+UI --> Admin : Tampilkan Data Pendaftar
+
+Admin -> UI : Klik Verifikasi (ID)
+UI -> Controller : POST /admin/pendaftar/verifikasi/{id}
+Controller -> Model : updateStatus(id, 'Terverifikasi')
+Model -> DB : UPDATE pendaftars SET status='Terverifikasi'
+DB --> Model : Success
+Model --> Controller : Success
+Controller --> UI : Redirect with Success Msg
+UI --> Admin : Tampilkan Pesan Sukses
+@enduml
+

@@ -1,0 +1,29 @@
+@startuml
+skinparam linetype ortho
+mainframe uc Sistem Penerimaan Siswa Baru
+left to right direction
+actor "Admin" as admin
+
+rectangle "Sistem Penerimaan Siswa Baru (SPMB)" {
+  usecase "Login" as UC1
+  usecase "Kelola Data Pendaftar" as UC2
+  usecase "Verifikasi Berkas" as UC4
+  usecase "Kelola Pengumuman" as UC5
+  usecase "Cetak Laporan / Export Data" as UC6
+  usecase "Kelola Pengaturan Sistem & Pendaftaran" as UC7
+  usecase "Kelola Data Master" as UC8
+  usecase "Kelola Pengguna (Users)" as UC9
+  usecase "Melihat Log Aktivitas" as UC10
+}
+
+admin --> UC1
+admin --> UC2
+admin --> UC4
+admin --> UC5
+admin --> UC6
+admin --> UC7
+admin --> UC8
+admin --> UC9
+admin --> UC10
+@enduml
+

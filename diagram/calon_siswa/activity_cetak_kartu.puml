@@ -1,0 +1,21 @@
+@startuml
+skinparam linetype ortho
+mainframe act Cetak Kartu
+|Calon Siswa|
+start
+:Buka Halaman Dashboard;
+:Pilih Menu "Cetak Kartu Pendaftaran";
+|Sistem|
+:Cek Status Kelengkapan Data & Dokumen;
+if (Status = Finalisasi & Terverifikasi?) then (Ya)
+  :Generate PDF Kartu Pendaftaran\n(Berisi No Pendaftaran, Nama, Jadwal Ujian);
+  :Tampilkan Preview Kartu PDF;
+  |Calon Siswa|
+  :Klik "Download" atau "Cetak";
+else (Tidak)
+  |Sistem|
+  :Tampilkan Pesan Peringatan\n("Lengkapi Data & Tunggu Verifikasi Berkas");
+endif
+stop
+@enduml
+
