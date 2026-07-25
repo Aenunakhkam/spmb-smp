@@ -233,13 +233,7 @@ const saveGrades = (nextTab) => {
     const fd = new FormData();
     fd.append('registration_id', props.registration?.id);
     props.subjectsRequired.forEach(s => fd.append(s.key, gradeForm[s.key] || 0));
-    const listToSave = prestasiList.value.map(p => ({ ...p, file: (p.file instanceof File) ? undefined : p.file }));
-    fd.append('prestasiList', JSON.stringify(listToSave));
-    prestasiList.value.forEach((p, idx) => {
-        if (p.file instanceof File) {
-            fd.append(`prestasi_files[${idx}]`, p.file);
-        }
-    });
+    fd.append('prestasiList', JSON.stringify(prestasiList.value));
     if (gradeForm.proof_file) fd.append('proof_file', gradeForm.proof_file);
     gradeForm.post(route('register.saveGrades'), {
         preserveScroll: true,
@@ -1108,10 +1102,6 @@ onMounted(() => {
                                     <label class="field-label-sm">No. Sertifikat (opsional)</label>
                                     <input type="text" v-model="currentPrestasi.certificate_number" class="field-input-sm" placeholder="Nomor sertifikat">
                                 </div>
-                                <div class="col-span-1 md:col-span-2">
-                                    <label class="field-label-sm">Upload Sertifikat (opsional, PDF/JPG)</label>
-                                    <input type="file" @change="e => currentPrestasi.file = e.target.files[0]" accept=".pdf,.jpg,.jpeg,.png" class="block w-full text-sm text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-amber-100 file:text-amber-700 file:font-bold hover:file:bg-amber-200" />
-                                </div>
                             </div>
                             <div class="flex items-center justify-between mt-3">
                                 <div class="flex items-center gap-2">
@@ -1132,14 +1122,6 @@ onMounted(() => {
                                 <div class="flex-1 min-w-0">
                                     <div class="text-sm font-bold text-slate-800 truncate">{{ p.name }}</div>
                                     <div class="text-xs text-slate-500">{{ p.level }} &bull; {{ p.rank }} &bull; {{ p.year }}</div>
-                                    <div v-if="p.file && typeof p.file === 'string'" class="mt-1">
-                                        <a :href="'/storage/' + p.file" target="_blank" class="text-blue-600 hover:underline text-[10px] font-semibold flex items-center gap-1">
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> Lihat Berkas
-                                        </a>
-                                    </div>
-                                    <div v-else-if="p.file && typeof p.file === 'object'" class="mt-1 text-emerald-600 text-[10px] font-semibold flex items-center gap-1">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> File siap diunggah
-                                    </div>
                                 </div>
                                 <span class="text-xs font-black text-amber-700 bg-amber-100 px-2 py-0.5 rounded-lg shrink-0">+{{ p.score }}</span>
                                 <button type="button" @click="removePrestasi(idx)" class="text-red-400 hover:text-red-600 transition-colors shrink-0">

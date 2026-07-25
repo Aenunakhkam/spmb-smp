@@ -343,14 +343,6 @@ class RegistrationController extends Controller
         // Handle Prestasi List
         if ($request->has('prestasiList')) {
             $prestasiList = json_decode($request->input('prestasiList'), true) ?? [];
-            if ($request->hasFile('prestasi_files')) {
-                foreach ($request->file('prestasi_files') as $idx => $file) {
-                    if (isset($prestasiList[$idx])) {
-                        $path = $file->store('prestasi_proof', 'public');
-                        $prestasiList[$idx]['file'] = $path;
-                    }
-                }
-            }
             $existingAdditional = $grade->additional_data ?? [];
             $existingAdditional['prestasiList'] = $prestasiList;
             $grade->additional_data = $existingAdditional;
