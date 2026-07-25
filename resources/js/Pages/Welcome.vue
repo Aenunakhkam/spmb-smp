@@ -414,7 +414,7 @@ const agendas = computed(() => {
                                         </v-avatar>
                                         <div>
                                             <div class="text-caption font-weight-bold opacity-60">WHATSAPP PANITIA</div>
-                                            <div class="text-h6 font-weight-black color-main">0812-3456-7890</div>
+                                            <div class="text-h6 font-weight-black color-main">{{ contactWhatsapp || 'Belum diatur' }}</div>
                                         </div>
                                     </div>
                                 </v-card>
@@ -425,7 +425,7 @@ const agendas = computed(() => {
                                         </v-avatar>
                                         <div>
                                             <div class="text-caption font-weight-bold opacity-60">EMAIL RESMI</div>
-                                            <div class="text-h6 font-weight-black color-main">info@smpbu.sch.id</div>
+                                            <div class="text-h6 font-weight-black color-main">{{ contactEmail || 'Belum diatur' }}</div>
                                         </div>
                                     </div>
                                 </v-card>
