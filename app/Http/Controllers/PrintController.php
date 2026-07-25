@@ -47,8 +47,9 @@ class PrintController extends Controller
         $registration = Registration::with(['studentDetail', 'parentDetail'])
             ->findOrFail($id);
         $settings = $this->getSettings();
+        $isPdf = true;
 
-        $pdf = Pdf::loadView('print.kartu', compact('registration', 'settings'))
+        $pdf = Pdf::loadView('print.kartu', compact('registration', 'settings', 'isPdf'))
             ->setPaper([0, 0, 609.45, 935.43], 'portrait');
 
         $filename = 'Kartu_Peserta_' . $registration->registration_number . '.pdf';
@@ -63,8 +64,9 @@ class PrintController extends Controller
         $registration = Registration::with(['studentDetail', 'parentDetail', 'grade'])
             ->findOrFail($id);
         $settings = $this->getSettings();
+        $isPdf = true;
 
-        $pdf = Pdf::loadView('print.formulir', compact('registration', 'settings'))
+        $pdf = Pdf::loadView('print.formulir', compact('registration', 'settings', 'isPdf'))
             ->setPaper([0, 0, 609.45, 935.43], 'portrait');
 
         $filename = 'Formulir_Pendaftaran_' . $registration->registration_number . '.pdf';

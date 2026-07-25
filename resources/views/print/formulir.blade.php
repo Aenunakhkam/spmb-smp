@@ -2,17 +2,15 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulir Pendaftaran - {{ $registration->registration_number }}</title>
     <style>
         @page {
             size: 215mm 330mm portrait;
-            margin: 12mm 15mm 20mm 15mm;
+            margin: 12mm 15mm 15mm 15mm;
         }
         @media print {
             body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: transparent !important; margin: 0 !important; padding: 0 !important; }
             .no-print { display: none !important; }
-            .page-break { page-break-before: always; }
         }
 
         body {
@@ -20,18 +18,15 @@
             font-size: 9.5pt;
             line-height: 1.4;
             color: #000;
-            background: #e9ecef;
+            background: #fff;
             margin: 0;
-            padding: 20px 0;
+            padding: 0;
         }
 
         .print-container {
-            max-width: 215mm;
-            min-height: 330mm;
+            width: 100%;
             margin: 0 auto;
-            padding: 12mm 15mm;
             background: #fff;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
             box-sizing: border-box;
             position: relative;
         }
@@ -39,82 +34,74 @@
         /* WATERMARK */
         .watermark {
             position: absolute;
-            top: 50%;
+            top: 40%;
             left: 50%;
             transform: translate(-50%, -50%);
             opacity: 0.04;
             z-index: 0;
-            width: 420px;
-            pointer-events: none;
+            width: 400px;
         }
 
         /* KOP SURAT */
-        .kop-surat { width: 100%; margin-bottom: 12px; position: relative; z-index: 1; }
+        .kop-surat { width: 100%; margin-bottom: 10px; position: relative; z-index: 1; }
         .kop-table { width: 100%; border-collapse: collapse; border: none; }
         .kop-table td { border: none; padding: 0; }
-        .kop-logo { width: 13%; text-align: left; vertical-align: middle; }
-        .kop-logo img { max-width: 88px; max-height: 88px; width: auto; height: auto; object-fit: contain; }
-        .kop-text { width: 87%; text-align: center; vertical-align: middle; }
+        .kop-logo { width: 85px; text-align: left; vertical-align: middle; }
+        .kop-logo img { width: 80px; height: 80px; object-fit: contain; }
+        .kop-text { text-align: center; vertical-align: middle; }
         .kop-yayasan { font-size: 11pt; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; font-family: 'Times New Roman', Times, serif; }
-        .kop-sekolah { font-size: 17pt; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 2px; text-transform: uppercase; font-family: 'Times New Roman', Times, serif; color: #1B5E20; }
+        .kop-sekolah { font-size: 16pt; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 2px; text-transform: uppercase; font-family: 'Times New Roman', Times, serif; color: #1B5E20; }
         .kop-alamat { font-size: 9pt; margin-bottom: 2px; }
         .kop-kontak { font-size: 8.5pt; }
-        .garis-kop-1 { border-top: 4px solid #000; margin-top: 8px; margin-bottom: 2px; }
-        .garis-kop-2 { border-top: 1px solid #000; margin-top: 0; margin-bottom: 14px; }
+        .garis-kop-1 { border-top: 3px solid #000; margin-top: 6px; margin-bottom: 2px; }
+        .garis-kop-2 { border-top: 1px solid #000; margin-top: 0; margin-bottom: 12px; }
 
         /* JUDUL */
-        .judul-dokumen { text-align: center; margin-bottom: 14px; position: relative; z-index: 1; }
-        .judul-teks { font-size: 13pt; font-weight: bold; text-transform: uppercase; text-decoration: underline; letter-spacing: 1px; }
-        .sub-judul { font-size: 10pt; font-weight: bold; margin-top: 3px; }
+        .judul-dokumen { text-align: center; margin-bottom: 12px; position: relative; z-index: 1; }
+        .judul-teks { font-size: 12pt; font-weight: bold; text-transform: uppercase; text-decoration: underline; letter-spacing: 0.5px; }
+        .sub-judul { font-size: 9.5pt; font-weight: bold; margin-top: 2px; }
 
         /* KONTEN */
         .content-wrapper { position: relative; z-index: 1; }
 
         .section-title {
             font-weight: bold;
-            font-size: 9.5pt;
+            font-size: 9pt;
             background-color: #1B5E20;
             color: #fff;
-            padding: 5px 10px;
-            margin: 12px 0 0 0;
+            padding: 4px 8px;
+            margin-top: 10px;
+            margin-bottom: 0;
             text-transform: uppercase;
             border: 1px solid #000;
-            border-bottom: none;
-            page-break-after: avoid;
-            page-break-inside: avoid;
         }
 
         table.data-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 0;
-            page-break-inside: auto;
-        }
-        table.data-table tr {
-            page-break-inside: avoid;
-            page-break-after: auto;
         }
         table.data-table td {
             border: 1px solid #000;
             padding: 4px 7px;
             vertical-align: middle;
-            font-size: 9pt;
+            font-size: 8.5pt;
         }
         .td-label {
-            width: 38%;
+            width: 36%;
             font-weight: bold;
             background-color: #f6f9f6;
         }
         .td-value {
-            width: 62%;
+            width: 64%;
             text-transform: uppercase;
         }
         .td-sub-header {
             background-color: #d4e8d4;
             font-weight: bold;
             text-align: center;
-            font-size: 9pt;
-            padding: 4px;
+            font-size: 8.5pt;
+            padding: 3px;
         }
 
         /* NILAI TABEL (Horizontal) */
@@ -125,9 +112,9 @@
         }
         table.nilai-table th, table.nilai-table td {
             border: 1px solid #000;
-            padding: 5px;
+            padding: 4px;
             text-align: center;
-            font-size: 9pt;
+            font-size: 8.5pt;
         }
         table.nilai-table th { background-color: #f6f9f6; font-weight: bold; }
 
@@ -147,42 +134,60 @@
         table.prestasi-table th { background-color: #f6f9f6; font-weight: bold; text-align: center; }
 
         /* TANDA TANGAN */
-        .ttd-container { width: 100%; margin-top: 20px; position: relative; z-index: 1; page-break-inside: avoid; }
-        .ttd-table { width: 100%; border: none; }
-        .ttd-table td { width: 50%; text-align: center; vertical-align: top; border: none; padding: 0; font-size: 9.5pt; }
-        .ttd-nama { font-weight: bold; text-decoration: underline; margin-top: 60px; text-transform: uppercase; }
+        .ttd-container { width: 100%; margin-top: 18px; position: relative; z-index: 1; page-break-inside: avoid; }
+        .ttd-table { width: 100%; border: none; border-collapse: collapse; }
+        .ttd-table td { width: 50%; text-align: center; vertical-align: top; border: none; padding: 0; font-size: 9pt; }
+        .ttd-nama { font-weight: bold; text-decoration: underline; margin-top: 55px; text-transform: uppercase; }
 
-        /* TOMBOL CETAK */
+        /* TOMBOL CETAK (Hanya di browser) */
         .btn-print {
-            display: block; width: 280px; margin: 0 auto 20px auto; padding: 12px;
+            display: block; width: 280px; margin: 15px auto; padding: 10px;
             background: #1B5E20; color: white; text-align: center; border-radius: 8px;
-            font-weight: bold; cursor: pointer; border: none; font-size: 12pt;
+            font-weight: bold; cursor: pointer; border: none; font-size: 11pt;
             box-shadow: 0 4px 10px rgba(27,94,32,0.3);
         }
-        .btn-print:hover { background: #144d18; }
 
         /* FOOTER */
         .page-footer {
             width: 100%;
-            margin-top: 20px;
-            padding-top: 8px;
+            margin-top: 15px;
+            padding-top: 6px;
             border-top: 2px solid #1B5E20;
-            font-size: 8pt;
+            font-size: 7.5pt;
             color: #555;
             display: table;
-            width: 100%;
         }
         .footer-left { display: table-cell; text-align: left; }
         .footer-right { display: table-cell; text-align: right; font-weight: bold; color: #1B5E20; }
     </style>
 </head>
 <body>
-    <button class="btn-print no-print" onclick="window.print()">🖨️ Cetak Formulir (Ukuran F4)</button>
+    @if(!isset($isPdf) || !$isPdf)
+        <button class="btn-print no-print" onclick="window.print()">Cetak / Print Formulir (Ukuran F4)</button>
+    @endif
+
+    @php
+        $logoSrc = null;
+        $logoPath = null;
+        if (!empty($settings['school_logo_path'])) {
+            $storagePath = storage_path('app/public/' . $settings['school_logo_path']);
+            if (file_exists($storagePath)) {
+                $logoPath = $storagePath;
+            }
+        }
+        if (!$logoPath && file_exists(public_path('images/logo.png'))) {
+            $logoPath = public_path('images/logo.png');
+        }
+        if ($logoPath && file_exists($logoPath)) {
+            $ext = pathinfo($logoPath, PATHINFO_EXTENSION);
+            $logoSrc = 'data:image/' . ($ext === 'svg' ? 'svg+xml' : $ext) . ';base64,' . base64_encode(file_get_contents($logoPath));
+        }
+    @endphp
 
     <div class="print-container">
 
-        @if(isset($settings['school_logo_path']) && $settings['school_logo_path'])
-            <img src="{{ asset('storage/' . $settings['school_logo_path']) }}" class="watermark" alt="">
+        @if($logoSrc)
+            <img src="{{ $logoSrc }}" class="watermark" alt="">
         @endif
 
         {{-- KOP SURAT --}}
@@ -190,10 +195,8 @@
             <table class="kop-table">
                 <tr>
                     <td class="kop-logo">
-                        @if(isset($settings['school_logo_path']) && $settings['school_logo_path'])
-                            <img src="{{ asset('storage/' . $settings['school_logo_path']) }}" alt="Logo">
-                        @else
-                            <img src="{{ asset('images/logo.png') }}" alt="Logo">
+                        @if($logoSrc)
+                            <img src="{{ $logoSrc }}" alt="Logo">
                         @endif
                     </td>
                     <td class="kop-text">
@@ -327,7 +330,18 @@
                 <tr><td class="td-label">Tinggi / Berat Badan</td><td class="td-value">{{ $s_add['height'] ?? '-' }} cm / {{ $s_add['weight'] ?? '-' }} kg</td></tr>
                 @endif
                 @if(!empty($s_add['distance_to_school']))
-                <tr><td class="td-label">Jarak Rumah ke Sekolah</td><td class="td-value">{{ $s_add['distance_to_school'] }}@if(!empty($s_add['distance_km'])) ({{ $s_add['distance_km'] }} km)@endif@if(!empty($s_add['travel_time'])), Waktu Tempuh ± {{ $s_add['travel_time'] }} menit@endif</td></tr>
+                @php
+                    $jarakParts = [];
+                    $jarakParts[] = $s_add['distance_to_school'];
+                    if (!empty($s_add['distance_km'])) {
+                        $jarakParts[] = '(' . $s_add['distance_km'] . ' km)';
+                    }
+                    if (!empty($s_add['travel_time'])) {
+                        $jarakParts[] = 'Waktu Tempuh ~' . $s_add['travel_time'] . ' menit';
+                    }
+                    $jarakStr = implode(', ', $jarakParts);
+                @endphp
+                <tr><td class="td-label">Jarak &amp; Waktu Tempuh</td><td class="td-value">{{ $jarakStr }}</td></tr>
                 @endif
                 @if(!empty($s_add['transportation']))
                 <tr><td class="td-label">Moda Transportasi</td><td class="td-value">{{ $s_add['transportation'] }}</td></tr>
@@ -380,13 +394,12 @@
             <div class="section-title">G. DATA PRESTASI</div>
             <table class="prestasi-table">
                 <tr>
-                    <th width="3%">No</th>
-                    <th width="30%">Nama Prestasi</th>
+                    <th width="5%">No</th>
+                    <th width="35%">Nama Prestasi</th>
                     <th width="15%">Kategori</th>
                     <th width="20%">Tingkat</th>
-                    <th width="12%">Peringkat</th>
-                    <th width="12%">Tahun</th>
-                    <th width="8%">Skor</th>
+                    <th width="10%">Peringkat</th>
+                    <th width="15%">Tahun</th>
                 </tr>
                 @foreach($prestasiList as $i => $prestasi)
                 <tr>
@@ -396,7 +409,6 @@
                     <td>{{ $prestasi['level'] ?? '-' }}</td>
                     <td style="text-align:center">{{ $prestasi['rank'] ?? '-' }}</td>
                     <td style="text-align:center">{{ $prestasi['year'] ?? '-' }}</td>
-                    <td style="text-align:center"><b>{{ $prestasi['score'] ?? '0' }}</b></td>
                 </tr>
                 @endforeach
             </table>
@@ -446,7 +458,7 @@
             </table>
             @endif
 
-            {{-- I. DATA BANTUAN (hanya jika ada) --}}
+            {{-- I. DATA BANTUAN --}}
             @php
                 $hasBantuan = !empty($s_add['kip_number']) || !empty($s_add['pkh_number']) || !empty($s_add['kks_number']);
             @endphp

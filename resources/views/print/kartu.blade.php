@@ -2,7 +2,6 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kartu Tanda Peserta - {{ $registration->registration_number }}</title>
     <style>
         @page { 
@@ -11,40 +10,36 @@
         }
         @media print {
             body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: transparent !important; }
-            .print-container { border: none !important; padding: 0 !important; box-shadow: none !important; margin: 0 !important; width: 100% !important;}
-            .btn-print { display: none !important; }
+            .no-print { display: none !important; }
         }
         
         body { 
             font-family: 'Arial', Helvetica, sans-serif; 
-            font-size: 10pt; 
+            font-size: 9.5pt; 
             line-height: 1.4; 
             color: #000; 
-            background: #e9ecef; 
+            background: #fff; 
             margin: 0; 
-            padding: 20px 0; 
+            padding: 0; 
         }
         
         .print-container { 
-            max-width: 215mm; 
-            min-height: 330mm;
+            width: 100%; 
             margin: 0 auto; 
-            padding: 15mm; 
             background: #fff;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
             box-sizing: border-box; 
             position: relative;
         }
 
         /* KARTU WRAPPER */
         .kartu-wrapper {
-            width: 175mm;
-            margin: 0 auto 25mm auto;
+            width: 100%;
+            margin: 0 auto 20px auto;
             border: 2px dashed #000;
-            padding: 25px;
+            padding: 20px;
             background: #fff;
             position: relative;
-            z-index: 1;
+            box-sizing: border-box;
         }
 
         /* WATERMARK */
@@ -56,61 +51,62 @@
             opacity: 0.04;
             z-index: 0;
             width: 300px;
-            pointer-events: none;
         }
         
         /* KOP SURAT */
-        .kop-surat { width: 100%; margin-bottom: 15px; position: relative; z-index: 1; }
+        .kop-surat { width: 100%; margin-bottom: 12px; position: relative; z-index: 1; }
         .kop-table { width: 100%; border-collapse: collapse; border: none;}
         .kop-table td { border: none; padding: 0; }
-        .kop-logo { width: 16%; text-align: left; vertical-align: middle; }
-        .kop-logo img { max-width: 80px; max-height: 80px; width: auto; height: auto; object-fit: contain; }
-        .kop-text { width: 84%; text-align: center; vertical-align: middle; }
-        .kop-yayasan { font-size: 11pt; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; font-family: 'Times New Roman', Times, serif; }
-        .kop-sekolah { font-size: 16pt; font-weight: bold; letter-spacing: 1px; margin-bottom: 2px; text-transform: uppercase; font-family: 'Times New Roman', Times, serif; }
-        .kop-alamat { font-size: 9pt; margin-bottom: 2px; }
+        .kop-logo { width: 75px; text-align: left; vertical-align: middle; }
+        .kop-logo img { width: 70px; height: 70px; object-fit: contain; }
+        .kop-text { text-align: center; vertical-align: middle; }
+        .kop-yayasan { font-size: 10.5pt; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; font-family: 'Times New Roman', Times, serif; }
+        .kop-sekolah { font-size: 15pt; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 2px; text-transform: uppercase; font-family: 'Times New Roman', Times, serif; color: #1B5E20; }
+        .kop-alamat { font-size: 8.5pt; margin-bottom: 2px; }
         .kop-kontak { font-size: 8pt; }
-        .garis-kop-1 { border-top: 3px solid #000; margin-top: 10px; margin-bottom: 2px; }
-        .garis-kop-2 { border-top: 1px solid #000; margin-top: 0; margin-bottom: 20px; }
+        .garis-kop-1 { border-top: 3px solid #000; margin-top: 8px; margin-bottom: 2px; }
+        .garis-kop-2 { border-top: 1px solid #000; margin-top: 0; margin-bottom: 15px; }
 
         /* JUDUL */
-        .judul-dokumen { text-align: center; margin-bottom: 20px; position: relative; z-index: 1; }
-        .judul-teks { font-size: 13pt; font-weight: bold; text-transform: uppercase; text-decoration: underline; margin-bottom: 5px; }
-        .sub-judul { font-size: 10pt; font-weight: bold; }
+        .judul-dokumen { text-align: center; margin-bottom: 15px; position: relative; z-index: 1; }
+        .judul-teks { font-size: 12pt; font-weight: bold; text-transform: uppercase; text-decoration: underline; margin-bottom: 3px; }
+        .sub-judul { font-size: 9.5pt; font-weight: bold; }
 
-        /* KONTEN KARTU */
-        .kartu-content {
-            display: flex;
-            gap: 20px;
+        /* KONTEN KARTU - TABLE LAYOUT UNTUK DOMPDF */
+        .kartu-layout-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: none;
             position: relative;
             z-index: 1;
         }
-
-        .biodata-section {
-            flex: 1;
+        .kartu-layout-table td {
+            vertical-align: top;
+            border: none;
+            padding: 0;
         }
 
         .biodata-table { 
             width: 100%; 
             border-collapse: collapse; 
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
-        .biodata-table th, .biodata-table td {
+        .biodata-table td {
             border: 1px solid #000;
-            padding: 8px 10px;
+            padding: 6px 8px;
             vertical-align: middle;
-            font-size: 9.5pt;
+            font-size: 9pt;
         }
-        .td-label { width: 35%; font-weight: bold; text-transform: uppercase; }
+        .td-label { width: 35%; font-weight: bold; text-transform: uppercase; background-color: #f6f9f6; }
         .td-value { width: 65%; font-weight: bold; text-transform: uppercase; }
         
         .no-pendaftaran {
-            font-size: 14pt;
+            font-size: 13pt;
             font-weight: bold;
             text-align: center;
             border: 2px solid #000;
-            padding: 10px;
-            margin-bottom: 15px;
+            padding: 8px;
+            margin-bottom: 12px;
             letter-spacing: 1px;
             background: #fff;
         }
@@ -118,94 +114,97 @@
         /* INFORMASI PENTING */
         .info-box {
             border: 1px solid #000;
-            padding: 12px 15px;
+            padding: 10px 12px;
             background-color: #fff;
         }
-        .info-title { font-weight: bold; margin-bottom: 5px; font-size: 9pt; text-transform: uppercase; text-decoration: underline; }
-        .info-list { margin: 0; padding-left: 15px; text-align: justify; font-size: 8.5pt;}
-        .info-list li { margin-bottom: 4px; }
+        .info-title { font-weight: bold; margin-bottom: 4px; font-size: 8.5pt; text-transform: uppercase; text-decoration: underline; }
+        .info-list { margin: 0; padding-left: 14px; font-size: 8pt;}
+        .info-list li { margin-bottom: 3px; }
 
         /* KOTAK FOTO & CAP (SEBELAH KANAN) */
-        .right-section {
-            width: 4.5cm;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
         .foto-box {
             width: 3cm;
             height: 4cm;
             border: 1px solid #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             text-align: center;
             font-size: 8pt;
             background: #fff;
-            margin-bottom: 15px;
+            margin: 0 auto 12px auto;
+            padding-top: 1.3cm;
+            box-sizing: border-box;
         }
         .cap-box {
-            width: 2.5cm;
-            height: 2.5cm;
+            width: 2.2cm;
+            height: 2.2cm;
             border: 1px dashed #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             text-align: center;
             font-size: 8pt;
             color: #333;
             border-radius: 50%;
-            margin-bottom: 15px;
+            margin: 0 auto 12px auto;
+            padding-top: 0.6cm;
+            box-sizing: border-box;
         }
 
         /* TANDA TANGAN */
         .ttd-box {
             width: 100%;
             text-align: center;
-            font-size: 9pt;
+            font-size: 8.5pt;
         }
-        .ttd-nama { font-weight: bold; text-decoration: underline; margin-top: 50px; text-transform: uppercase; font-size: 9pt; }
+        .ttd-nama { font-weight: bold; text-decoration: underline; margin-top: 45px; text-transform: uppercase; font-size: 8.5pt; }
 
         /* TOMBOL CETAK */
         .btn-print { 
-            display: block; width: 280px; margin: 0 auto 20px auto; padding: 12px; 
+            display: block; width: 280px; margin: 15px auto; padding: 10px; 
             background: #1B5E20; color: white; text-align: center; border-radius: 8px; 
-            font-weight: bold; cursor: pointer; border: none; font-size: 12pt;
+            font-weight: bold; cursor: pointer; border: none; font-size: 11pt;
             box-shadow: 0 4px 10px rgba(27,94,32,0.3);
-            transition: 0.3s;
         }
-        .btn-print:hover { background: #144d18; transform: translateY(-2px);}
         
         /* FOOTER KERTAS */
         .page-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
             width: 100%;
-            padding: 10px 15mm 15mm 15mm;
+            margin-top: 15px;
+            padding-top: 6px;
             border-top: 1px solid #000;
-            font-size: 8pt;
+            font-size: 7.5pt;
             color: #333;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            background: #fff;
-            box-sizing: border-box;
-            z-index: 10;
+            display: table;
         }
-        .footer-left { text-align: left; }
-        .footer-right { text-align: right; font-weight: bold; }
+        .footer-left { display: table-cell; text-align: left; }
+        .footer-right { display: table-cell; text-align: right; font-weight: bold; }
     </style>
 </head>
 <body>
-    <button class="btn-print" onclick="window.print()">🖨️ Cetak Kartu Peserta</button>
+    @if(!isset($isPdf) || !$isPdf)
+        <button class="btn-print no-print" onclick="window.print()">Cetak / Print Kartu Peserta</button>
+    @endif
     
+    @php
+        $logoSrc = null;
+        $logoPath = null;
+        if (!empty($settings['school_logo_path'])) {
+            $storagePath = storage_path('app/public/' . $settings['school_logo_path']);
+            if (file_exists($storagePath)) {
+                $logoPath = $storagePath;
+            }
+        }
+        if (!$logoPath && file_exists(public_path('images/logo.png'))) {
+            $logoPath = public_path('images/logo.png');
+        }
+        if ($logoPath && file_exists($logoPath)) {
+            $ext = pathinfo($logoPath, PATHINFO_EXTENSION);
+            $logoSrc = 'data:image/' . ($ext === 'svg' ? 'svg+xml' : $ext) . ';base64,' . base64_encode(file_get_contents($logoPath));
+        }
+    @endphp
+
     <div class="print-container">
         
-        <!-- BINGKAI KARTU PUTUS-PUTUS (UNTUK DIGUNTING NANTI) -->
+        <!-- BINGKAI KARTU PUTUS-PUTUS -->
         <div class="kartu-wrapper">
-            @if(isset($settings['school_logo_path']) && $settings['school_logo_path'])
-                <img src="{{ asset('storage/' . $settings['school_logo_path']) }}" class="watermark" alt="Watermark">
+            @if($logoSrc)
+                <img src="{{ $logoSrc }}" class="watermark" alt="">
             @endif
 
             <!-- KOP SURAT KARTU -->
@@ -213,10 +212,8 @@
                 <table class="kop-table">
                     <tr>
                         <td class="kop-logo">
-                            @if(isset($settings['school_logo_path']) && $settings['school_logo_path'])
-                                <img src="{{ asset('storage/' . $settings['school_logo_path']) }}" alt="Logo">
-                            @else
-                                <img src="{{ asset('images/logo.png') }}" alt="Logo">
+                            @if($logoSrc)
+                                <img src="{{ $logoSrc }}" alt="Logo">
                             @endif
                         </td>
                         <td class="kop-text">
@@ -237,55 +234,54 @@
                 <div class="sub-judul">TAHUN PELAJARAN {{ \App\Models\Setting::where('key', 'academic_year')->first()?->value ?? date('Y').'/'.(date('Y')+1) }}</div>
             </div>
 
-            <!-- ISI KARTU (2 KOLOM: KIRI BIODATA, KANAN FOTO+TTD) -->
-            <div class="kartu-content">
-                
-                <div class="biodata-section">
-                    <div class="no-pendaftaran">NO: {{ $registration->registration_number }}</div>
+            <!-- ISI KARTU (2 KOLOM TABLE) -->
+            <table class="kartu-layout-table">
+                <tr>
+                    <td style="width: 70%; padding-right: 15px;">
+                        <div class="no-pendaftaran">NO: {{ $registration->registration_number }}</div>
 
-                    <table class="biodata-table">
-                        <tr>
-                            <td class="td-label">NAMA LENGKAP</td>
-                            <td class="td-value">{{ $registration->studentDetail->full_name ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="td-label">NISN</td>
-                            <td class="td-value">{{ $registration->studentDetail->nisn ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="td-label">TEMPAT, TGL LAHIR</td>
-                            <td class="td-value">{{ $registration->studentDetail->place_of_birth ?? '-' }}, {{ \Carbon\Carbon::parse($registration->studentDetail->date_of_birth)->isoFormat('D MMMM YYYY') }}</td>
-                        </tr>
-                        <tr>
-                            <td class="td-label">ASAL SEKOLAH</td>
-                            <td class="td-value">{{ $registration->studentDetail->origin_school_name ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td class="td-label">PILIHAN MINAT</td>
-                            <td class="td-value">{{ $registration->additional_data['major'] ?? 'UMUM' }}</td>
-                        </tr>
-                    </table>
+                        <table class="biodata-table">
+                            <tr>
+                                <td class="td-label">NAMA LENGKAP</td>
+                                <td class="td-value">{{ $registration->studentDetail->full_name ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="td-label">NISN</td>
+                                <td class="td-value">{{ $registration->studentDetail->nisn ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="td-label">TEMPAT, TGL LAHIR</td>
+                                <td class="td-value">{{ $registration->studentDetail->place_of_birth ?? '-' }}, {{ $registration->studentDetail->date_of_birth ? \Carbon\Carbon::parse($registration->studentDetail->date_of_birth)->isoFormat('D MMMM YYYY') : '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="td-label">ASAL SEKOLAH</td>
+                                <td class="td-value">{{ $registration->studentDetail->origin_school_name ?? '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="td-label">PILIHAN MINAT</td>
+                                <td class="td-value">{{ $registration->additional_data['major'] ?? 'UMUM' }}</td>
+                            </tr>
+                        </table>
 
-                    <div class="info-box">
-                        <div class="info-title">PERHATIAN:</div>
-                        <ul class="info-list">
-                            <li>Kartu ini adalah bukti sah pendaftaran.</li>
-                            <li>Wajib dibawa saat mengikuti seleksi, tes tertulis, tes lisan atau pada saat mendaftar ulang.</li>
-                            <li>Harap segera menempelkan pas foto ukuran 3x4 berwarna pada kolom yang disediakan.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="right-section">
-                    <div class="foto-box">Pas Foto<br>3 x 4</div>
-                    <div class="cap-box">Cap<br>Panitia</div>
-                    <div class="ttd-box">
-                        Brebes, {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY') }}<br>Panitia Pendaftaran,
-                        <div class="ttd-nama">_______________________</div>
-                    </div>
-                </div>
-
-            </div>
+                        <div class="info-box">
+                            <div class="info-title">PERHATIAN:</div>
+                            <ul class="info-list">
+                                <li>Kartu ini adalah bukti sah pendaftaran.</li>
+                                <li>Wajib dibawa saat mengikuti seleksi, tes, atau daftar ulang.</li>
+                                <li>Harap menempelkan pas foto ukuran 3x4 berwarna.</li>
+                            </ul>
+                        </div>
+                    </td>
+                    <td style="width: 30%; text-align: center;">
+                        <div class="foto-box">Pas Foto<br>3 x 4</div>
+                        <div class="cap-box">Cap<br>Panitia</div>
+                        <div class="ttd-box">
+                            {{ $settings['city'] ?? 'Brebes' }}, {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY') }}<br>Panitia Pendaftaran,
+                            <div class="ttd-nama">_______________________</div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
 
         </div> <!-- end kartu-wrapper -->
 
@@ -293,7 +289,7 @@
         <div class="page-footer">
             <div class="footer-left">
                 <b>Kartu Peserta Resmi</b> - {{ $settings['app_name'] ?? 'SMP BUSTANUL ULUM NU JATIROKEH' }}<br>
-                Dicetak pada: {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY HH:mm:ss') }} WIB
+                Dicetak pada: {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY HH:mm') }} WIB
             </div>
             <div class="footer-right">
                 Lembar Cetak (Gunting Sesuai Garis Putus-putus)
