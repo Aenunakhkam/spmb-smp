@@ -5,43 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulir Pendaftaran - {{ $registration->registration_number }}</title>
     <style>
-        @page { 
-            size: 215mm 330mm portrait; /* Ukuran F4 / Folio */
-            margin: 15mm; 
+        @page {
+            size: 215mm 330mm portrait;
+            margin: 12mm 15mm 18mm 15mm;
         }
         @media print {
-            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: transparent !important; margin: 0 !important; padding: 0 !important;}
-            .print-container { 
-                border: none !important; 
-                padding: 0 !important; 
-                box-shadow: none !important; 
-                margin: 0 !important; 
-                width: 100% !important;
-                max-width: 100% !important;
-                min-height: auto !important;
-            }
-            .btn-print { display: none !important; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: transparent !important; margin: 0 !important; padding: 0 !important; }
+            .no-print { display: none !important; }
             .page-break { page-break-before: always; }
         }
-        
-        body { 
-            font-family: 'Arial', Helvetica, sans-serif; 
-            font-size: 10pt; 
-            line-height: 1.4; 
-            color: #000; 
-            background: #e9ecef; 
-            margin: 0; 
-            padding: 20px 0; 
+
+        body {
+            font-family: 'Arial', Helvetica, sans-serif;
+            font-size: 9.5pt;
+            line-height: 1.4;
+            color: #000;
+            background: #e9ecef;
+            margin: 0;
+            padding: 20px 0;
         }
-        
-        .print-container { 
-            max-width: 215mm; 
+
+        .print-container {
+            max-width: 215mm;
             min-height: 330mm;
-            margin: 0 auto; 
-            padding: 15mm; 
+            margin: 0 auto;
+            padding: 12mm 15mm;
             background: #fff;
             box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-            box-sizing: border-box; 
+            box-sizing: border-box;
             position: relative;
         }
 
@@ -53,95 +44,130 @@
             transform: translate(-50%, -50%);
             opacity: 0.04;
             z-index: 0;
-            width: 450px;
+            width: 420px;
             pointer-events: none;
         }
 
         /* KOP SURAT */
-        .kop-surat { width: 100%; margin-bottom: 15px; position: relative; z-index: 1; }
+        .kop-surat { width: 100%; margin-bottom: 12px; position: relative; z-index: 1; }
         .kop-table { width: 100%; border-collapse: collapse; border: none; }
         .kop-table td { border: none; padding: 0; }
-        .kop-logo { width: 15%; text-align: left; vertical-align: middle; }
-        .kop-logo img { max-width: 100px; max-height: 100px; width: auto; height: auto; object-fit: contain; }
-        .kop-text { width: 85%; text-align: center; vertical-align: middle; }
-        .kop-yayasan { font-size: 13pt; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; font-family: 'Times New Roman', Times, serif; }
-        .kop-sekolah { font-size: 18pt; font-weight: bold; letter-spacing: 1px; margin-bottom: 2px; text-transform: uppercase; font-family: 'Times New Roman', Times, serif; color: #1B5E20; }
-        .kop-alamat { font-size: 9.5pt; margin-bottom: 2px; }
-        .kop-kontak { font-size: 9pt; }
-        .garis-kop-1 { border-top: 4px solid #000; margin-top: 10px; margin-bottom: 2px; }
-        .garis-kop-2 { border-top: 1px solid #000; margin-top: 0; margin-bottom: 20px; }
+        .kop-logo { width: 13%; text-align: left; vertical-align: middle; }
+        .kop-logo img { max-width: 88px; max-height: 88px; width: auto; height: auto; object-fit: contain; }
+        .kop-text { width: 87%; text-align: center; vertical-align: middle; }
+        .kop-yayasan { font-size: 11pt; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; font-family: 'Times New Roman', Times, serif; }
+        .kop-sekolah { font-size: 17pt; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 2px; text-transform: uppercase; font-family: 'Times New Roman', Times, serif; color: #1B5E20; }
+        .kop-alamat { font-size: 9pt; margin-bottom: 2px; }
+        .kop-kontak { font-size: 8.5pt; }
+        .garis-kop-1 { border-top: 4px solid #000; margin-top: 8px; margin-bottom: 2px; }
+        .garis-kop-2 { border-top: 1px solid #000; margin-top: 0; margin-bottom: 14px; }
 
         /* JUDUL */
-        .judul-dokumen { text-align: center; margin-bottom: 20px; position: relative; z-index: 1; }
-        .judul-teks { font-size: 14pt; font-weight: bold; text-transform: uppercase; text-decoration: underline; margin-bottom: 5px; letter-spacing: 1px; }
-        .sub-judul { font-size: 11pt; font-weight: bold; }
+        .judul-dokumen { text-align: center; margin-bottom: 14px; position: relative; z-index: 1; }
+        .judul-teks { font-size: 13pt; font-weight: bold; text-transform: uppercase; text-decoration: underline; letter-spacing: 1px; }
+        .sub-judul { font-size: 10pt; font-weight: bold; margin-top: 3px; }
 
-        /* KONTEN BENTUK FORM (TABEL RAPI) */
-        .content-wrapper { position: relative; z-index: 1; }
-        
-        .section-title { 
-            font-weight: bold; 
-            font-size: 10.5pt; 
-            background-color: #1B5E20; 
+        /* KONTEN */
+        .content-wrapper { position: relative; z-index: 1; padding-bottom: 22mm; }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 9.5pt;
+            background-color: #1B5E20;
             color: #fff;
-            padding: 5px 10px; 
-            margin: 15px 0 0 0; 
-            text-transform: uppercase; 
-            border: 1px solid #000; 
+            padding: 5px 10px;
+            margin: 12px 0 0 0;
+            text-transform: uppercase;
+            border: 1px solid #000;
             border-bottom: none;
-            page-break-after: avoid; /* Jangan memotong judul dengan tabel di bawahnya */
+            page-break-after: avoid;
             page-break-inside: avoid;
         }
-        
-        table.data-table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-bottom: 15px; 
-            page-break-inside: auto; /* Memungkinkan tabel berlanjut ke halaman berikutnya */
+
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+            page-break-inside: auto;
         }
         table.data-table tr {
-            page-break-inside: avoid; /* Jangan potong baris (isinya) di tengah-tengah halaman */
+            page-break-inside: avoid;
             page-break-after: auto;
         }
-        table.data-table th, table.data-table td { 
-            border: 1px solid #000; 
-            padding: 5px 8px; 
-            vertical-align: middle; 
-            font-size: 9.5pt;
+        table.data-table td {
+            border: 1px solid #000;
+            padding: 4px 7px;
+            vertical-align: middle;
+            font-size: 9pt;
         }
-        .td-label { 
-            width: 35%; 
-            font-weight: bold; 
-            background-color: #f8faf8; 
+        .td-label {
+            width: 38%;
+            font-weight: bold;
+            background-color: #f6f9f6;
         }
-        .td-value { 
-            width: 65%; 
+        .td-value {
+            width: 62%;
             text-transform: uppercase;
         }
+        .td-sub-header {
+            background-color: #d4e8d4;
+            font-weight: bold;
+            text-align: center;
+            font-size: 9pt;
+            padding: 4px;
+        }
+
+        /* NILAI TABEL (Horizontal) */
+        table.nilai-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+        table.nilai-table th, table.nilai-table td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: center;
+            font-size: 9pt;
+        }
+        table.nilai-table th { background-color: #f6f9f6; font-weight: bold; }
+
+        /* PRESTASI */
+        table.prestasi-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+            font-size: 8.5pt;
+        }
+        table.prestasi-table th, table.prestasi-table td {
+            border: 1px solid #000;
+            padding: 4px 6px;
+            text-align: left;
+            vertical-align: top;
+        }
+        table.prestasi-table th { background-color: #f6f9f6; font-weight: bold; text-align: center; }
 
         /* TANDA TANGAN */
-        .ttd-container { width: 100%; margin-top: 30px; position: relative; z-index: 1; page-break-inside: avoid; }
+        .ttd-container { width: 100%; margin-top: 20px; position: relative; z-index: 1; page-break-inside: avoid; }
         .ttd-table { width: 100%; border: none; }
-        .ttd-table td { width: 50%; text-align: center; vertical-align: top; border: none; padding: 0; font-size: 10pt;}
-        .ttd-nama { font-weight: bold; text-decoration: underline; margin-top: 70px; text-transform: uppercase; }
+        .ttd-table td { width: 50%; text-align: center; vertical-align: top; border: none; padding: 0; font-size: 9.5pt; }
+        .ttd-nama { font-weight: bold; text-decoration: underline; margin-top: 60px; text-transform: uppercase; }
 
         /* TOMBOL CETAK */
-        .btn-print { 
-            display: block; width: 280px; margin: 0 auto 20px auto; padding: 12px; 
-            background: #1B5E20; color: white; text-align: center; border-radius: 8px; 
+        .btn-print {
+            display: block; width: 280px; margin: 0 auto 20px auto; padding: 12px;
+            background: #1B5E20; color: white; text-align: center; border-radius: 8px;
             font-weight: bold; cursor: pointer; border: none; font-size: 12pt;
             box-shadow: 0 4px 10px rgba(27,94,32,0.3);
-            transition: 0.3s;
         }
-        .btn-print:hover { background: #144d18; transform: translateY(-2px);}
-        
+        .btn-print:hover { background: #144d18; }
+
         /* FOOTER */
         .page-footer {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            padding: 10px 15mm 15mm 15mm; /* Sesuaikan dengan margin kertas F4 */
+            padding: 6px 15mm 12mm 15mm;
             border-top: 2px solid #1B5E20;
             font-size: 8pt;
             color: #555;
@@ -154,24 +180,18 @@
         }
         .footer-left { text-align: left; }
         .footer-right { text-align: right; font-weight: bold; color: #1B5E20; }
-        
-        .content-wrapper { 
-            position: relative; 
-            z-index: 1; 
-            padding-bottom: 25mm; /* Memberi ruang agar teks tidak tertutup footer di halaman terakhir */
-        }
     </style>
 </head>
 <body>
-    <button class="btn-print" onclick="window.print()">🖨️ Cetak Formulir (Ukuran F4)</button>
-    
+    <button class="btn-print no-print" onclick="window.print()">🖨️ Cetak Formulir (Ukuran F4)</button>
+
     <div class="print-container">
-        
+
         @if(isset($settings['school_logo_path']) && $settings['school_logo_path'])
-            <img src="{{ asset('storage/' . $settings['school_logo_path']) }}" class="watermark" alt="Watermark">
+            <img src="{{ asset('storage/' . $settings['school_logo_path']) }}" class="watermark" alt="">
         @endif
 
-        <!-- KOP SURAT -->
+        {{-- KOP SURAT --}}
         <div class="kop-surat">
             <table class="kop-table">
                 <tr>
@@ -186,9 +206,7 @@
                         <div class="kop-yayasan">PANITIA SISTEM PENERIMAAN MURID BARU</div>
                         <div class="kop-sekolah">{{ $settings['app_name'] ?? 'SMP BUSTANUL ULUM NU JATIROKEH' }}</div>
                         <div class="kop-alamat">{{ $settings['address'] ?? 'Jln. Pramuka No. 01 Jatirokeh Kec. Songgom Kab. Brebes 52266' }}</div>
-                        <div class="kop-kontak">
-                            Telepon/WA: {{ $settings['phone'] ?? '-' }} | Email: {{ $settings['email'] ?? '-' }}
-                        </div>
+                        <div class="kop-kontak">Telp/WA: {{ $settings['phone'] ?? '-' }} | Email: {{ $settings['email'] ?? '-' }}</div>
                     </td>
                 </tr>
             </table>
@@ -196,154 +214,286 @@
             <div class="garis-kop-2"></div>
         </div>
 
-        <!-- JUDUL -->
+        {{-- JUDUL --}}
         <div class="judul-dokumen">
             <div class="judul-teks">FORMULIR PENDAFTARAN PESERTA DIDIK BARU</div>
             <div class="sub-judul">TAHUN PELAJARAN {{ \App\Models\Setting::where('key', 'academic_year')->first()?->value ?? date('Y').'/'.(date('Y')+1) }}</div>
         </div>
 
         <div class="content-wrapper">
+
+            {{-- A. DATA PENDAFTARAN --}}
             <div class="section-title">A. KETERANGAN PENDAFTARAN</div>
             <table class="data-table">
-                <tr><td class="td-label">Nomor Pendaftaran</td><td class="td-value">{{ $registration->registration_number }}</td></tr>
-                <tr><td class="td-label">Pilihan Minat</td><td class="td-value">{{ $registration->additional_data['major'] ?? 'Belum Memilih' }}</td></tr>
-                <tr><td class="td-label">Jalur Pendaftaran</td><td class="td-value">{{ $registration->additional_data['registration_type'] ?? 'UMUM' }}</td></tr>
-                <tr><td class="td-label">Sumber Informasi</td><td class="td-value">{{ $registration->additional_data['information_source'] ?? '-' }}</td></tr>
+                <tr><td class="td-label">Nomor Pendaftaran</td><td class="td-value"><b>{{ $registration->registration_number }}</b></td></tr>
+                @if(!empty($registration->additional_data['major']))
+                <tr><td class="td-label">Pilihan Peminatan</td><td class="td-value">{{ $registration->additional_data['major'] }}</td></tr>
+                @endif
+                @if(!empty($registration->additional_data['registration_type']))
+                <tr><td class="td-label">Jalur Pendaftaran</td><td class="td-value">{{ $registration->additional_data['registration_type'] }}</td></tr>
+                @endif
+                @if(!empty($registration->additional_data['school_type']))
+                <tr><td class="td-label">Jenis Sekolah Asal</td><td class="td-value">{{ $registration->additional_data['school_type'] }} / {{ $registration->additional_data['school_status'] ?? '-' }}</td></tr>
+                @endif
+                @if(!empty($registration->additional_data['school_city']))
+                <tr><td class="td-label">Kabupaten Sekolah Asal</td><td class="td-value">{{ $registration->additional_data['school_city'] }}</td></tr>
+                @endif
+                @if(!empty($registration->additional_data['information_source']))
+                <tr><td class="td-label">Mengetahui Info Sekolah dari</td><td class="td-value">{{ $registration->additional_data['information_source'] }}</td></tr>
+                @endif
             </table>
 
+            {{-- B. IDENTITAS SISWA --}}
+            @php $s = $registration->studentDetail; $s_add = $s?->additional_data ?? []; @endphp
             <div class="section-title">B. IDENTITAS DIRI PESERTA DIDIK</div>
             <table class="data-table">
-                <tr><td class="td-label">Nama Lengkap</td><td class="td-value">{{ $registration->studentDetail->full_name ?? '-' }}</td></tr>
-                <tr><td class="td-label">Jenis Kelamin</td><td class="td-value">{{ ($registration->studentDetail->gender ?? '') == 'L' ? 'LAKI-LAKI' : 'PEREMPUAN' }}</td></tr>
-                <tr><td class="td-label">NISN / NIK (No. KTP)</td><td class="td-value">{{ $registration->studentDetail->nisn ?? '-' }} / {{ $registration->studentDetail->nik ?? '-' }}</td></tr>
-                <tr><td class="td-label">Nomor Kartu Keluarga (KK)</td><td class="td-value">{{ $registration->studentDetail->additional_data['kk_number'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">No. Akta Kelahiran</td><td class="td-value">{{ $registration->studentDetail->additional_data['akta_number'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Tempat, Tanggal Lahir</td><td class="td-value">{{ $registration->studentDetail->place_of_birth ?? '-' }}, {{ $registration->studentDetail->date_of_birth ? \Carbon\Carbon::parse($registration->studentDetail->date_of_birth)->isoFormat('D MMMM YYYY') : '-' }}</td></tr>
-                <tr><td class="td-label">Agama / Kepercayaan</td><td class="td-value">{{ $registration->studentDetail->religion ?? '-' }}</td></tr>
-                <tr><td class="td-label">Kewarganegaraan / Negara</td><td class="td-value">{{ $registration->studentDetail->additional_data['citizenship'] ?? 'WNI' }} / {{ $registration->studentDetail->additional_data['country_name'] ?? 'INDONESIA' }}</td></tr>
-                <tr><td class="td-label">Berkebutuhan Khusus</td><td class="td-value">{{ $registration->studentDetail->additional_data['special_needs'] ?? 'TIDAK ADA' }}</td></tr>
-                <tr><td class="td-label">Anak Ke / Jml Saudara</td><td class="td-value">ANAK KE-{{ $registration->studentDetail->additional_data['child_order'] ?? '-' }} DARI {{ $registration->studentDetail->additional_data['siblings_count'] ?? '-' }} BERSAUDARA</td></tr>
-                <tr><td class="td-label">Alamat Lengkap (Jalan)</td><td class="td-value">{{ $registration->studentDetail->address ?? '-' }}</td></tr>
-                <tr><td class="td-label">RT / RW</td><td class="td-value">{{ $registration->studentDetail->additional_data['rt'] ?? '-' }} / {{ $registration->studentDetail->additional_data['rw'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Kelurahan / Desa</td><td class="td-value">{{ $registration->studentDetail->village ?? '-' }}</td></tr>
-                <tr><td class="td-label">Kecamatan</td><td class="td-value">{{ $registration->studentDetail->district ?? '-' }}</td></tr>
-                <tr><td class="td-label">Kabupaten/Kota - Provinsi</td><td class="td-value">{{ $registration->studentDetail->city ?? '-' }} - {{ $registration->studentDetail->province ?? '-' }}</td></tr>
-                <tr><td class="td-label">Kode Pos</td><td class="td-value">{{ $registration->studentDetail->postal_code ?? '-' }}</td></tr>
-                <tr><td class="td-label">Tempat Tinggal</td><td class="td-value">{{ $registration->studentDetail->additional_data['residence_type'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">No. Telepon / WhatsApp</td><td class="td-value">{{ $registration->studentDetail->phone ?? '-' }}</td></tr>
-                <tr><td class="td-label">Email</td><td class="td-value">{{ $registration->studentDetail->email ?? '-' }}</td></tr>
+                @if(!empty($s?->full_name))
+                <tr><td class="td-label">Nama Lengkap</td><td class="td-value"><b>{{ $s->full_name }}</b></td></tr>
+                @endif
+                <tr><td class="td-label">Jenis Kelamin</td><td class="td-value">{{ ($s?->gender ?? '') == 'L' ? 'LAKI-LAKI' : 'PEREMPUAN' }}</td></tr>
+                @if(!empty($s?->nisn))
+                <tr><td class="td-label">NISN</td><td class="td-value">{{ $s->nisn }}</td></tr>
+                @endif
+                @if(!empty($s?->nik))
+                <tr><td class="td-label">NIK</td><td class="td-value">{{ $s->nik }}</td></tr>
+                @endif
+                @if(!empty($s_add['kk_number']))
+                <tr><td class="td-label">No. Kartu Keluarga (KK)</td><td class="td-value">{{ $s_add['kk_number'] }}</td></tr>
+                @endif
+                @if(!empty($s_add['akta_number']))
+                <tr><td class="td-label">No. Akta Kelahiran</td><td class="td-value">{{ $s_add['akta_number'] }}</td></tr>
+                @endif
+                @if(!empty($s?->place_of_birth) || !empty($s?->date_of_birth))
+                <tr><td class="td-label">Tempat, Tanggal Lahir</td><td class="td-value">{{ $s?->place_of_birth ?? '-' }}, {{ $s?->date_of_birth ? \Carbon\Carbon::parse($s->date_of_birth)->isoFormat('D MMMM YYYY') : '-' }}</td></tr>
+                @endif
+                @if(!empty($s?->religion))
+                <tr><td class="td-label">Agama</td><td class="td-value">{{ $s->religion }}</td></tr>
+                @endif
+                @if(!empty($s_add['child_order']) || !empty($s_add['siblings_count']))
+                <tr><td class="td-label">Anak ke- / Jumlah Saudara</td><td class="td-value">Anak ke-{{ $s_add['child_order'] ?? '-' }} dari {{ $s_add['siblings_count'] ?? '-' }} bersaudara</td></tr>
+                @endif
+                @if(!empty($s?->phone))
+                <tr><td class="td-label">No. HP / WhatsApp</td><td class="td-value">{{ $s->phone }}</td></tr>
+                @endif
             </table>
-            
-            <div class="section-title">C. FISIK & TAMBAHAN</div>
+
+            {{-- C. ALAMAT --}}
+            @php
+                $hasAlamat = !empty($s?->address) || !empty($s?->village) || !empty($s?->district) || !empty($s?->city);
+            @endphp
+            @if($hasAlamat)
+            <div class="section-title">C. ALAMAT TEMPAT TINGGAL</div>
             <table class="data-table">
-                <tr><td class="td-label">Tinggi Badan / Berat Badan</td><td class="td-value">{{ $registration->studentDetail->additional_data['height'] ?? '-' }} CM / {{ $registration->studentDetail->additional_data['weight'] ?? '-' }} KG</td></tr>
-                <tr><td class="td-label">Lingkar Kepala</td><td class="td-value">{{ $registration->studentDetail->additional_data['head_circumference'] ?? '-' }} CM</td></tr>
-                <tr><td class="td-label">Jarak ke Sekolah</td><td class="td-value">{{ $registration->studentDetail->additional_data['distance_to_school'] ?? '-' }} ({{ $registration->studentDetail->additional_data['distance_km'] ?? '-' }} KM)</td></tr>
-                <tr><td class="td-label">Moda Transportasi</td><td class="td-value">{{ $registration->studentDetail->additional_data['transportation'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Minat Ekstrakurikuler</td><td class="td-value">{{ $registration->studentDetail->additional_data['extracurricular_interest'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Hobi</td><td class="td-value">{{ $registration->studentDetail->additional_data['hobby'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Cita - Cita</td><td class="td-value">{{ $registration->studentDetail->additional_data['ambition'] ?? '-' }}</td></tr>
+                @if(!empty($s?->address))
+                <tr><td class="td-label">Alamat Jalan</td><td class="td-value">{{ $s->address }}</td></tr>
+                @endif
+                @if(!empty($s_add['rt']) || !empty($s_add['rw']))
+                <tr><td class="td-label">RT / RW</td><td class="td-value">{{ $s_add['rt'] ?? '-' }} / {{ $s_add['rw'] ?? '-' }}</td></tr>
+                @endif
+                @if(!empty($s?->village))
+                <tr><td class="td-label">Desa / Kelurahan</td><td class="td-value">{{ $s->village }}</td></tr>
+                @endif
+                @if(!empty($s?->district))
+                <tr><td class="td-label">Kecamatan</td><td class="td-value">{{ $s->district }}</td></tr>
+                @endif
+                @if(!empty($s?->city) || !empty($s?->province))
+                <tr><td class="td-label">Kabupaten / Provinsi</td><td class="td-value">{{ $s?->city ?? '-' }} — {{ $s?->province ?? '-' }}</td></tr>
+                @endif
+                @if(!empty($s?->postal_code))
+                <tr><td class="td-label">Kode Pos</td><td class="td-value">{{ $s->postal_code }}</td></tr>
+                @endif
+                @if(!empty($s_add['residence_type']))
+                <tr><td class="td-label">Status Tempat Tinggal</td><td class="td-value">{{ $s_add['residence_type'] }}</td></tr>
+                @endif
             </table>
+            @endif
 
-
-
-            <div class="section-title">D. ASAL SEKOLAH, PRESTASI & NILAI</div>
+            {{-- D. SEKOLAH ASAL --}}
+            @if(!empty($s?->origin_school_name))
+            <div class="section-title">D. ASAL SEKOLAH</div>
             <table class="data-table">
-                <tr><td class="td-label" colspan="2" style="background-color: #e8eee8; text-align: center;"><b>DATA ASAL SEKOLAH</b></td></tr>
-                <tr><td class="td-label">Nama Sekolah Asal</td><td class="td-value">{{ $registration->studentDetail->origin_school_name ?? '-' }}</td></tr>
-                <tr><td class="td-label">Jenis / Status Sekolah</td><td class="td-value">{{ $registration->additional_data['school_type'] ?? '-' }} / {{ $registration->additional_data['school_status'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">NPSN Asal Sekolah</td><td class="td-value">{{ $registration->studentDetail->additional_data['origin_school_npsn'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Kabupaten/Kota Sekolah</td><td class="td-value">{{ $registration->additional_data['school_city'] ?? '-' }}</td></tr>
-                
-                <tr><td class="td-label" colspan="2" style="background-color: #e8eee8; text-align: center;"><b>DATA PRESTASI</b></td></tr>
-                <tr><td class="td-label">Jenis Prestasi</td><td class="td-value">{{ $registration->studentDetail->additional_data['achievement_type'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Nama Prestasi</td><td class="td-value">{{ $registration->studentDetail->additional_data['achievement_name'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Tahun / Penyelenggara</td><td class="td-value">{{ $registration->studentDetail->additional_data['achievement_year'] ?? '-' }} / {{ $registration->studentDetail->additional_data['achievement_organizer'] ?? '-' }}</td></tr>
+                <tr><td class="td-label">Nama Sekolah Asal</td><td class="td-value">{{ $s->origin_school_name }}</td></tr>
+                @if(!empty($registration->additional_data['school_type']))
+                <tr><td class="td-label">Jenis / Status Sekolah</td><td class="td-value">{{ $registration->additional_data['school_type'] }} / {{ $registration->additional_data['school_status'] ?? '-' }}</td></tr>
+                @endif
+                @if(!empty($registration->additional_data['school_city']))
+                <tr><td class="td-label">Kabupaten Sekolah</td><td class="td-value">{{ $registration->additional_data['school_city'] }}</td></tr>
+                @endif
             </table>
+            @endif
 
-            <div class="section-title">E. NILAI RAPOR TERAKHIR</div>
-            <table class="data-table" style="text-align: center;">
-                <tr style="background-color: #f8faf8;">
-                    <th>Agama</th>
-                    <th>PKn</th>
-                    <th>B. Indonesia</th>
-                    <th>Matematika</th>
-                    <th>IPA</th>
-                    <th>IPS</th>
+            {{-- E. DATA FISIK & TRANSPORTASI --}}
+            @php
+                $hasFisik = !empty($s_add['height']) || !empty($s_add['weight']) || !empty($s_add['distance_to_school']);
+            @endphp
+            @if($hasFisik)
+            <div class="section-title">E. DATA FISIK &amp; TRANSPORTASI</div>
+            <table class="data-table">
+                @if(!empty($s_add['height']) || !empty($s_add['weight']))
+                <tr><td class="td-label">Tinggi / Berat Badan</td><td class="td-value">{{ $s_add['height'] ?? '-' }} cm / {{ $s_add['weight'] ?? '-' }} kg</td></tr>
+                @endif
+                @if(!empty($s_add['distance_to_school']))
+                <tr><td class="td-label">Jarak Rumah ke Sekolah</td><td class="td-value">{{ $s_add['distance_to_school'] }}@if(!empty($s_add['distance_km'])) ({{ $s_add['distance_km'] }} km)@endif@if(!empty($s_add['travel_time'])), Waktu Tempuh ± {{ $s_add['travel_time'] }} menit@endif</td></tr>
+                @endif
+                @if(!empty($s_add['transportation']))
+                <tr><td class="td-label">Moda Transportasi</td><td class="td-value">{{ $s_add['transportation'] }}</td></tr>
+                @endif
+                @if(!empty($s_add['extracurricular_interest']))
+                <tr><td class="td-label">Minat Ekstrakurikuler</td><td class="td-value">{{ $s_add['extracurricular_interest'] }}</td></tr>
+                @endif
+                @if(!empty($s_add['hobby']))
+                <tr><td class="td-label">Hobi</td><td class="td-value">{{ $s_add['hobby'] }}</td></tr>
+                @endif
+                @if(!empty($s_add['ambition']))
+                <tr><td class="td-label">Cita-cita</td><td class="td-value">{{ $s_add['ambition'] }}</td></tr>
+                @endif
+            </table>
+            @endif
+
+            {{-- F. NILAI RAPOR --}}
+            @php $g = $registration->grade; @endphp
+            @if($g && ($g->mathematics || $g->indonesian || $g->english || $g->religion || $g->ipa || $g->ips || $g->pkn))
+            <div class="section-title">F. NILAI RAPOR TERAKHIR</div>
+            <table class="nilai-table">
+                <tr>
+                    @if($g->religion)<th>Agama</th>@endif
+                    @if($g->pkn)<th>PKn</th>@endif
+                    @if($g->indonesian)<th>B. Indonesia</th>@endif
+                    @if($g->mathematics)<th>Matematika</th>@endif
+                    @if($g->ipa)<th>IPA</th>@endif
+                    @if($g->ips)<th>IPS</th>@endif
+                    @if($g->english)<th>B. Inggris</th>@endif
+                    <th>Rata-rata</th>
                 </tr>
                 <tr>
-                    <td><b>{{ $registration->grade->religion ?? '-' }}</b></td>
-                    <td><b>{{ $registration->grade->pkn ?? '-' }}</b></td>
-                    <td><b>{{ $registration->grade->indonesian ?? '-' }}</b></td>
-                    <td><b>{{ $registration->grade->mathematics ?? '-' }}</b></td>
-                    <td><b>{{ $registration->grade->ipa ?? '-' }}</b></td>
-                    <td><b>{{ $registration->grade->ips ?? '-' }}</b></td>
+                    @if($g->religion)<td><b>{{ $g->religion }}</b></td>@endif
+                    @if($g->pkn)<td><b>{{ $g->pkn }}</b></td>@endif
+                    @if($g->indonesian)<td><b>{{ $g->indonesian }}</b></td>@endif
+                    @if($g->mathematics)<td><b>{{ $g->mathematics }}</b></td>@endif
+                    @if($g->ipa)<td><b>{{ $g->ipa }}</b></td>@endif
+                    @if($g->ips)<td><b>{{ $g->ips }}</b></td>@endif
+                    @if($g->english)<td><b>{{ $g->english }}</b></td>@endif
+                    <td><b>{{ $registration->average_score ?? '-' }}</b></td>
                 </tr>
-                <tr style="background-color: #f8faf8;">
-                    <td colspan="6" style="text-align: right; padding-right: 15px;">Rata-rata Keseluruhan: <b style="font-size: 11pt;">{{ $registration->average_score ?? '-' }}</b></td>
+            </table>
+            @endif
+
+            {{-- G. PRESTASI --}}
+            @php
+                $prestasiList = $registration->grade?->additional_data['prestasiList'] ?? [];
+            @endphp
+            @if(!empty($prestasiList) && count($prestasiList) > 0)
+            <div class="section-title">G. DATA PRESTASI</div>
+            <table class="prestasi-table">
+                <tr>
+                    <th width="3%">No</th>
+                    <th width="30%">Nama Prestasi</th>
+                    <th width="15%">Kategori</th>
+                    <th width="20%">Tingkat</th>
+                    <th width="12%">Peringkat</th>
+                    <th width="12%">Tahun</th>
+                    <th width="8%">Skor</th>
                 </tr>
+                @foreach($prestasiList as $i => $prestasi)
+                <tr>
+                    <td style="text-align:center">{{ $i + 1 }}</td>
+                    <td>{{ $prestasi['name'] ?? '-' }}<br><small style="color:#555">{{ $prestasi['organizer'] ?? '' }}</small></td>
+                    <td>{{ $prestasi['category'] ?? '-' }}</td>
+                    <td>{{ $prestasi['level'] ?? '-' }}</td>
+                    <td style="text-align:center">{{ $prestasi['rank'] ?? '-' }}</td>
+                    <td style="text-align:center">{{ $prestasi['year'] ?? '-' }}</td>
+                    <td style="text-align:center"><b>{{ $prestasi['score'] ?? '0' }}</b></td>
+                </tr>
+                @endforeach
             </table>
+            @endif
 
-            <div class="section-title">F. KESEJAHTERAAN & BANTUAN SOSIAL</div>
+            {{-- H. DATA ORANG TUA --}}
+            @php $p = $registration->parentDetail; $p_add = $p?->additional_data ?? []; @endphp
+            @if($p)
+            <div class="section-title">H. IDENTITAS ORANG TUA / WALI</div>
             <table class="data-table">
-                <tr><td class="td-label">Nomor KKS</td><td class="td-value">{{ $registration->studentDetail->additional_data['kks_number'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Penerima KKS / PKH</td><td class="td-value">{{ $registration->studentDetail->additional_data['pkh_receiver'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Nomor KSS / Nomor PKH</td><td class="td-value">{{ $registration->studentDetail->additional_data['kps_number'] ?? '-' }} / {{ $registration->studentDetail->additional_data['pkh_number'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Penerima KIP / Fisik KIP</td><td class="td-value">{{ $registration->studentDetail->additional_data['kip_receiver'] ?? '-' }} / {{ $registration->studentDetail->additional_data['kip_physical'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Nomor KIP</td><td class="td-value">{{ $registration->studentDetail->additional_data['kip_number'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Nama di KIP</td><td class="td-value">{{ $registration->studentDetail->additional_data['kip_name'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Usulan / Alasan Layak PIP</td><td class="td-value">{{ $registration->studentDetail->additional_data['pip_eligible'] ?? '-' }} / {{ $registration->studentDetail->additional_data['pip_reason'] ?? '-' }}</td></tr>
-            </table>
+                {{-- AYAH --}}
+                @if(!empty($p->father_name))
+                <tr><td colspan="2" class="td-sub-header">DATA AYAH KANDUNG</td></tr>
+                <tr><td class="td-label">Nama Ayah</td><td class="td-value">{{ $p->father_name }}</td></tr>
+                @if(!empty($p_add['father_nik']))<tr><td class="td-label">NIK Ayah</td><td class="td-value">{{ $p_add['father_nik'] }}</td></tr>@endif
+                @if(!empty($p_add['father_education']))<tr><td class="td-label">Pendidikan Terakhir Ayah</td><td class="td-value">{{ $p_add['father_education'] }}</td></tr>@endif
+                @if(!empty($p->father_occupation))<tr><td class="td-label">Pekerjaan Ayah</td><td class="td-value">{{ $p->father_occupation }}</td></tr>@endif
+                @if(!empty($p_add['father_income']))<tr><td class="td-label">Penghasilan Ayah / Bulan</td><td class="td-value">{{ $p_add['father_income'] }}</td></tr>@endif
+                @endif
 
-            <div class="section-title">G. IDENTITAS ORANG TUA / WALI</div>
+                {{-- IBU --}}
+                @if(!empty($p->mother_name))
+                <tr><td colspan="2" class="td-sub-header">DATA IBU KANDUNG</td></tr>
+                <tr><td class="td-label">Nama Ibu</td><td class="td-value">{{ $p->mother_name }}</td></tr>
+                @if(!empty($p_add['mother_nik']))<tr><td class="td-label">NIK Ibu</td><td class="td-value">{{ $p_add['mother_nik'] }}</td></tr>@endif
+                @if(!empty($p_add['mother_education']))<tr><td class="td-label">Pendidikan Terakhir Ibu</td><td class="td-value">{{ $p_add['mother_education'] }}</td></tr>@endif
+                @if(!empty($p->mother_occupation))<tr><td class="td-label">Pekerjaan Ibu</td><td class="td-value">{{ $p->mother_occupation }}</td></tr>@endif
+                @if(!empty($p_add['mother_income']))<tr><td class="td-label">Penghasilan Ibu / Bulan</td><td class="td-value">{{ $p_add['mother_income'] }}</td></tr>@endif
+                @if(!empty($p_add['mother_phone']))<tr><td class="td-label">No. HP Ibu</td><td class="td-value">{{ $p_add['mother_phone'] }}</td></tr>@endif
+                @endif
+
+                {{-- KONTAK UTAMA --}}
+                @if(!empty($p->parent_phone))
+                <tr><td colspan="2" class="td-sub-header">KONTAK ORANG TUA</td></tr>
+                <tr><td class="td-label">No. HP Orang Tua (Utama)</td><td class="td-value">{{ $p->parent_phone }}</td></tr>
+                @if(!empty($p->parent_address))<tr><td class="td-label">Alamat Orang Tua</td><td class="td-value">{{ $p->parent_address }}</td></tr>@endif
+                @endif
+
+                {{-- WALI --}}
+                @if(!empty($p_add['guardian_name']))
+                <tr><td colspan="2" class="td-sub-header">DATA WALI</td></tr>
+                <tr><td class="td-label">Nama Wali</td><td class="td-value">{{ $p_add['guardian_name'] }}</td></tr>
+                @if(!empty($p_add['guardian_education']))<tr><td class="td-label">Pendidikan Wali</td><td class="td-value">{{ $p_add['guardian_education'] }}</td></tr>@endif
+                @if(!empty($p_add['guardian_occupation']))<tr><td class="td-label">Pekerjaan Wali</td><td class="td-value">{{ $p_add['guardian_occupation'] }}</td></tr>@endif
+                @if(!empty($p_add['guardian_income']))<tr><td class="td-label">Penghasilan Wali</td><td class="td-value">{{ $p_add['guardian_income'] }}</td></tr>@endif
+                @endif
+            </table>
+            @endif
+
+            {{-- I. DATA BANTUAN (hanya jika ada) --}}
+            @php
+                $hasBantuan = !empty($s_add['kip_number']) || !empty($s_add['pkh_number']) || !empty($s_add['kks_number']);
+            @endphp
+            @if($hasBantuan)
+            <div class="section-title">I. DATA BANTUAN PENDIDIKAN (KIP / PKH / KKS)</div>
             <table class="data-table">
-                <tr><td class="td-label" colspan="2" style="background-color: #e8eee8; text-align: center;"><b>DATA AYAH KANDUNG</b></td></tr>
-                <tr><td class="td-label">Nama Ayah / NIK Ayah</td><td class="td-value">{{ $registration->parentDetail->father_name ?? '-' }} / {{ $registration->parentDetail->additional_data['father_nik'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Tahun Lahir / Pendidikan Ayah</td><td class="td-value">{{ $registration->parentDetail->additional_data['father_birth_year'] ?? '-' }} / {{ $registration->parentDetail->additional_data['father_education'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Pekerjaan / Penghasilan Ayah</td><td class="td-value">{{ $registration->parentDetail->father_occupation ?? '-' }} / {{ $registration->parentDetail->additional_data['father_income'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Berkebutuhan Khusus Ayah</td><td class="td-value">{{ $registration->parentDetail->additional_data['father_special_needs'] ?? '-' }}</td></tr>
-                
-                <tr><td class="td-label" colspan="2" style="background-color: #e8eee8; text-align: center;"><b>DATA IBU KANDUNG</b></td></tr>
-                <tr><td class="td-label">Nama Ibu / NIK Ibu</td><td class="td-value">{{ $registration->parentDetail->mother_name ?? '-' }} / {{ $registration->parentDetail->additional_data['mother_nik'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Tahun Lahir / Pendidikan Ibu</td><td class="td-value">{{ $registration->parentDetail->additional_data['mother_birth_year'] ?? '-' }} / {{ $registration->parentDetail->additional_data['mother_education'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Pekerjaan / Penghasilan Ibu</td><td class="td-value">{{ $registration->parentDetail->mother_occupation ?? '-' }} / {{ $registration->parentDetail->additional_data['mother_income'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Berkebutuhan Khusus Ibu</td><td class="td-value">{{ $registration->parentDetail->additional_data['mother_special_needs'] ?? '-' }}</td></tr>
-                
-                <tr><td class="td-label" colspan="2" style="background-color: #e8eee8; text-align: center;"><b>DATA WALI & KONTAK PENTING</b></td></tr>
-                <tr><td class="td-label">Nama Wali</td><td class="td-value">{{ $registration->parentDetail->additional_data['guardian_name'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Tahun Lahir / Pendidikan Wali</td><td class="td-value">{{ $registration->parentDetail->additional_data['guardian_birth_year'] ?? '-' }} / {{ $registration->parentDetail->additional_data['guardian_education'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">Pekerjaan / Penghasilan Wali</td><td class="td-value">{{ $registration->parentDetail->additional_data['guardian_occupation'] ?? '-' }} / {{ $registration->parentDetail->additional_data['guardian_income'] ?? '-' }}</td></tr>
-                <tr><td class="td-label">No. Telepon Rumah / HP (Ortu)</td><td class="td-value">{{ $registration->parentDetail->parent_phone ?? '-' }}</td></tr>
+                @if(!empty($s_add['kip_number']))<tr><td class="td-label">No. KIP</td><td class="td-value">{{ $s_add['kip_number'] }}</td></tr>@endif
+                @if(!empty($s_add['pkh_number']))<tr><td class="td-label">No. PKH</td><td class="td-value">{{ $s_add['pkh_number'] }}</td></tr>@endif
+                @if(!empty($s_add['kks_number']))<tr><td class="td-label">No. KKS</td><td class="td-value">{{ $s_add['kks_number'] }}</td></tr>@endif
             </table>
+            @endif
 
-            <!-- Tanda Tangan Section -->
+            {{-- TANDA TANGAN --}}
             <div class="ttd-container">
                 <table class="ttd-table">
                     <tr>
                         <td>
-                            Mengetahui,<br>Orang Tua/Wali Calon Peserta Didik,
-                            <div class="ttd-nama">_______________________</div>
+                            Mengetahui,<br>Orang Tua / Wali Calon Peserta Didik,
+                            <div class="ttd-nama">_________________________</div>
                         </td>
                         <td>
-                            Brebes, {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY') }}<br>Calon Peserta Didik Baru,
-                            <div class="ttd-nama">{{ $registration->studentDetail->full_name ?? '_______________________' }}</div>
+                            {{ $settings['city'] ?? 'Brebes' }}, {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY') }}<br>Calon Peserta Didik Baru,
+                            <div class="ttd-nama">{{ $registration->studentDetail?->full_name ?? '_________________________' }}</div>
                         </td>
                     </tr>
                 </table>
             </div>
-            
-        </div> <!-- End of content-wrapper -->
 
-        <!-- FOOTER (Sekarang posisinya FIXED di ujung bawah kertas) -->
+        </div>{{-- end content-wrapper --}}
+
+        {{-- FOOTER KERTAS --}}
         <div class="page-footer">
             <div class="footer-left">
-                <b>Dokumen Resmi PPDB</b> - {{ $settings['app_name'] ?? 'SMP BUSTANUL ULUM NU JATIROKEH' }}<br>
-                Dicetak pada: {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY HH:mm:ss') }} WIB
+                <b>Dokumen Resmi Panitia SPMB</b> — {{ $settings['app_name'] ?? 'SMP BUSTANUL ULUM NU JATIROKEH' }}<br>
+                Dicetak pada: {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY, HH:mm') }} WIB &nbsp;|&nbsp; No. Pendaftaran: <b>{{ $registration->registration_number }}</b>
             </div>
             <div class="footer-right">
-                Lembar Pendaftaran (F4)
+                Formulir Pendaftaran (F4)
             </div>
         </div>
+
     </div>
 </body>
 </html>
