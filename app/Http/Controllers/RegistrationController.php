@@ -426,8 +426,8 @@ class RegistrationController extends Controller
         }
         
         // Delete the physical file from storage
-        if ($grade->proof_file_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($grade->proof_file_path)) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($grade->proof_file_path);
+        if ($grade->proof_file_path && Storage::disk('public')->exists($grade->proof_file_path)) {
+            Storage::disk('public')->delete($grade->proof_file_path);
         }
         
         $grade->update(['proof_file_path' => null]);
