@@ -443,7 +443,7 @@ onMounted(() => {
                 </div>
 
                 <!-- ── TAB: DASHBOARD ── -->
-            <div v-if="activeTab === 'dashboard'" class="p-4 md:p-8 md:py-10 max-w-5xl mx-auto space-y-6">
+            <div v-if="activeTab === 'dashboard'" class="max-w-5xl mx-auto space-y-6">
 
                 <!-- Welcome Hero -->
                 <div class="relative rounded-2xl overflow-hidden text-white p-8" style="background: linear-gradient(135deg, #1d4ed8 0%, #4f46e5 50%, #7c3aed 100%)">
@@ -576,7 +576,7 @@ onMounted(() => {
             <!-- (defined inline below for clarity) -->
 
             <!-- ── TAB: IDENTITAS DIRI ── -->
-            <div v-if="activeTab === 'data_pribadi'" class="p-4 md:p-8 md:py-10 max-w-4xl mx-auto">
+            <div v-if="activeTab === 'data_pribadi'" class="pb-10 max-w-4xl mx-auto">
                 <form @submit.prevent="saveSection('Identitas Diri', 'data_ortu')">
                     <fieldset :disabled="isLocked">
                     <!-- Section header -->
@@ -895,7 +895,7 @@ onMounted(() => {
             </div>
 
             <!-- ── TAB: DATA ORANG TUA ── -->
-            <div v-if="activeTab === 'data_ortu'" class="p-4 md:p-8 md:py-10 max-w-4xl mx-auto">
+            <div v-if="activeTab === 'data_ortu'" class="pb-10 max-w-4xl mx-auto">
                 <form @submit.prevent="saveSection('Data Orang Tua', 'akademik')">
                     <fieldset :disabled="isLocked">
                     <div class="mb-6">
@@ -1030,7 +1030,7 @@ onMounted(() => {
             </div>
 
             <!-- ── TAB: AKADEMIK & NILAI ── -->
-            <div v-if="activeTab === 'akademik'" class="p-4 md:p-8 md:py-10 max-w-4xl mx-auto">
+            <div v-if="activeTab === 'akademik'" class="pb-10 max-w-4xl mx-auto">
                 <form @submit.prevent="saveGrades('berkas')">
                     <fieldset :disabled="isLocked">
                     <div class="mb-6">
@@ -1176,7 +1176,7 @@ onMounted(() => {
             </div>
 
             <!-- ── TAB: UPLOAD BERKAS ── -->
-            <div v-if="activeTab === 'berkas'" class="p-4 md:p-8 md:py-10 max-w-4xl mx-auto">
+            <div v-if="activeTab === 'berkas'" class="pb-10 max-w-4xl mx-auto">
                 <fieldset :disabled="isLocked">
                 <div class="mb-6">
                     <h2 class="text-2xl font-black text-slate-800">Unggah Berkas Persyaratan</h2>
