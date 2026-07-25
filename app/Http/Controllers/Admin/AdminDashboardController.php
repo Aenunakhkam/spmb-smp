@@ -31,6 +31,7 @@ class AdminDashboardController extends Controller
             'quota' => $quota,
             'academic_year' => $academicYear,
             'status' => $registrationStatus,
+            'show_ranking' => Setting::where('key', 'show_ranking')->first()?->value !== '0',
         ];
 
         // Gender Stats

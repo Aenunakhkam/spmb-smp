@@ -32,12 +32,12 @@ const quotaPercentage = computed(() => {
 const runRanking = () => {
     Swal.fire({
         title: 'Jalankan Ranking Otomatis?',
-        text: 'Status kelulusan siswa akan diperbarui berdasarkan rata-rata nilai rapor.',
+        text: 'Status kelulusan siswa akan diperbarui dan ranking akan TAMPIL di dashboard siswa.',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3b82f6', // modern blue
-        cancelButtonColor: '#ef4444', // modern red
-        confirmButtonText: 'Ya, Jalankan!',
+        confirmButtonColor: '#2563eb',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, Jalankan & Tampilkan!',
         cancelButtonText: 'Batal',
         customClass: {
             popup: 'rounded-xl',
@@ -47,6 +47,28 @@ const runRanking = () => {
     }).then((result) => {
         if (result.isConfirmed) {
             router.post(route('admin.registrations.runRanking'));
+        }
+    });
+};
+
+const disableRanking = () => {
+    Swal.fire({
+        title: 'Matikan Tampilan Ranking?',
+        text: 'Card Peringkat Sementara akan DISEMBUNYIKAN dari dashboard siswa.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, Matikan Ranking!',
+        cancelButtonText: 'Batal',
+        customClass: {
+            popup: 'rounded-xl',
+            confirmButton: 'rounded-lg px-6',
+            cancelButton: 'rounded-lg px-6'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            router.post(route('admin.registrations.toggleRanking'), { active: false });
         }
     });
 };
@@ -186,20 +208,31 @@ const schoolsChartOptions = {
 
 
         <!-- Quick Actions Bar -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
                     <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                 </div>
                 <div>
-                    <div class="text-sm font-bold text-slate-800">Ranking Otomatis</div>
-                    <div class="text-xs text-slate-500">Perbarui status kelulusan berdasarkan nilai rapor siswa</div>
+                    <div class="flex items-center gap-2">
+                        <div class="text-sm font-bold text-slate-800">Sistem Ranking Siswa</div>
+                        <span :class="stats?.show_ranking ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'" class="px-2 py-0.5 rounded text-[11px] font-bold">
+                            {{ stats?.show_ranking ? '● Aktif (Tampil)' : '○ Nonaktif (Tersembunyi)' }}
+                        </span>
+                    </div>
+                    <div class="text-xs text-slate-500">Atur kalkulasi dan visibilitas card peringkat sementara pada siswa</div>
                 </div>
             </div>
-            <button @click="runRanking" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-sm transition-all shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                Jalankan Ranking
-            </button>
+            <div class="flex items-center gap-2 shrink-0">
+                <button @click="runRanking" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white px-4 py-2.5 rounded-lg text-sm font-bold shadow-sm transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Jalankan Ranking
+                </button>
+                <button @click="disableRanking" class="flex items-center justify-center gap-2 bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 border border-slate-200 active:scale-95 px-4 py-2.5 rounded-lg text-sm font-bold shadow-sm transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                    Matikan Ranking
+                </button>
+            </div>
         </div>
 
         <!-- Stats Overview Row -->

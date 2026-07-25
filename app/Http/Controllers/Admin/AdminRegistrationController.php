@@ -134,12 +134,26 @@ class AdminRegistrationController extends Controller
             ]);
         }
 
+        // Pastikan tampilan ranking di siswa diaktifkan
+        Setting::updateOrCreate(['key' => 'show_ranking'], ['value' => '1']);
+
         $this->logActivity('run_ranking', 'System', [
             'total_processed' => $registrations->count(),
             'quota' => $quota,
         ]);
 
         return back()->with('success', 'Proses seleksi dan ranking otomatis berhasil dijalankan.');
+    }
+
+    public function toggleRanking(Request $request)
+    {
+        $active = $request->boolean('active', true);
+        Setting::updateOrCreate(['key' => 'show_ranking'], ['value' => $active ? '1' : '0']);
+
+        $statusText = $active ? 'diaktifkan dan ditampilkan pada dashboard siswa' : 'dinonaktifkan dan disembunyikan dari dashboard siswa';
+        $this->logActivity('toggle_ranking', 'System', ['active' => $active]);
+
+        return back()->with('success', 'Status ranking siswa berhasil ' . $statusText . '.');
     }
 
     public function edit($id)

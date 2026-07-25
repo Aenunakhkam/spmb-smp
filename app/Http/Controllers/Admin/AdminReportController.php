@@ -53,6 +53,10 @@ class AdminReportController extends Controller
 
     private function getReportData()
     {
+        $registrations = Registration::with(['studentDetail', 'parentDetail', 'grade'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return [
             'totalRegistrations' => Registration::count(),
             'byStatus' => Registration::select('status', DB::raw('count(*) as total'))->groupBy('status')->get(),
@@ -60,6 +64,7 @@ class AdminReportController extends Controller
                 return ['label' => $item->gender === 'L' ? 'Laki-laki' : ($item->gender === 'P' ? 'Perempuan' : 'Tidak Diketahui'), 'total' => $item->total];
             }),
             'bySchool' => StudentDetail::select('origin_school_name', DB::raw('count(*) as total'))->groupBy('origin_school_name')->orderByDesc('total')->get(),
+            'registrations' => $registrations,
             'settings' => Setting::pluck('value', 'key')->toArray()
         ];
     }
@@ -67,10 +72,11 @@ class AdminReportController extends Controller
     public function exportPdf()
     {
         $data = $this->getReportData();
+        // F4 Landscape: 215mm x 330mm
         $pdf = Pdf::loadView('print.reports-pdf', $data)
-            ->setPaper('a4', 'portrait');
+            ->setPaper([0, 0, 609.45, 935.43], 'landscape');
 
-        return $pdf->download('Laporan_Statistik_PPDB.pdf');
+        return $pdf->download('Laporan_Resmi_PPDB_' . date('Ymd') . '.pdf');
     }
 
     public function exportExcel()

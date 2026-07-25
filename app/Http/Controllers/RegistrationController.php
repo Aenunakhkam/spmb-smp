@@ -564,6 +564,7 @@ class RegistrationController extends Controller
         return Inertia::render('Student/Dashboard', [
             'realtimeRank' => $realtimeRank,
             'totalCandidates' => $totalCandidates,
+            'showRanking' => ($settings['show_ranking'] ?? '1') !== '0',
             'registration' => $registration,
             'reportSemester' => $settings['report_semester'] ?? 'Kelas 6 Semester 2',
             'subjectsRequired' => array_values($subjectsRequiredDetails),

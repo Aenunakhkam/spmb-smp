@@ -14,6 +14,7 @@ const props = defineProps({
     options: { type: Object, default: () => ({}) },
     realtimeRank: [Number, String],
     totalCandidates: Number,
+    showRanking: { type: Boolean, default: true },
     contactWhatsapp: String,
     contactEmail: String,
     socialTiktok: String,
@@ -536,7 +537,7 @@ onMounted(() => {
                         </div>
                     </div>
                     
-                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center justify-between">
+                    <div v-if="showRanking" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center justify-between">
                         <div>
                             <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Peringkat Sementara</div>
                             <div class="text-3xl font-black text-amber-500">

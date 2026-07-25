@@ -100,6 +100,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::delete('/registrations/document/{id}', [App\Http\Controllers\Admin\AdminRegistrationController::class, 'deleteDocument'])->name('admin.registrations.deleteDocument');
     Route::post('/registrations/{id}/status', [App\Http\Controllers\Admin\AdminRegistrationController::class, 'updateStatus'])->name('admin.registrations.updateStatus');
     Route::post('/registrations/run-ranking', [App\Http\Controllers\Admin\AdminRegistrationController::class, 'runRanking'])->name('admin.registrations.runRanking');
+    Route::post('/registrations/toggle-ranking', [App\Http\Controllers\Admin\AdminRegistrationController::class, 'toggleRanking'])->name('admin.registrations.toggleRanking');
 
     Route::get('/settings', [App\Http\Controllers\Admin\AdminSettingController::class, 'index'])->name('admin.settings.index');
     Route::post('/settings', [App\Http\Controllers\Admin\AdminSettingController::class, 'update'])->name('admin.settings.update');
