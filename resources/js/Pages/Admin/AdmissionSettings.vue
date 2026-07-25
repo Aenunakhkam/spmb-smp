@@ -243,7 +243,7 @@ const deleteBanner = () => {
                             
                             <div v-if="settings.popup_banner" class="mb-4">
                                 <div class="relative inline-block group">
-                                    <img src="'/storage/' + settings.popup_banner" class="w-full h-full object-cover">
+                                    <img :src="'/storage/' + settings.popup_banner" class="w-full h-full object-cover rounded-lg">
                                     <button @click="deleteBanner" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all">
                                         Hapus Banner
                                     </button>
