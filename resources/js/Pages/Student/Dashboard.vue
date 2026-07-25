@@ -577,6 +577,16 @@ onMounted(() => {
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Finalisasi Pendaftaran
                     </button>
+                    <a :href="`/unduh/kartu/${registration?.id}`"
+                        class="flex items-center gap-2 bg-white border border-emerald-300 hover:bg-emerald-50 text-emerald-700 px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Unduh Kartu
+                    </a>
+                    <a :href="`/unduh/formulir/${registration?.id}`"
+                        class="flex items-center gap-2 bg-white border border-blue-300 hover:bg-blue-50 text-blue-700 px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Unduh Formulir
+                    </a>
                 </div>
             </div>
 
@@ -1272,18 +1282,6 @@ onMounted(() => {
                         </div>
 
                         <!-- Tombol Cetak & Unduh -->
-                        <div class="grid grid-cols-2 gap-3 pt-1">
-                            <a :href="`/unduh/kartu/${registration?.id}`"
-                                class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-colors">
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                Unduh Kartu Peserta
-                            </a>
-                            <a :href="`/unduh/formulir/${registration?.id}`"
-                                class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-colors">
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                Unduh Formulir
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
