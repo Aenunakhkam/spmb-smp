@@ -34,19 +34,11 @@ class Registration extends Model
     {
         $totalAchievementScore = 0;
         
-        static $achievementScores = null;
-        if ($achievementScores === null) {
-            $achievementScores = json_decode(\App\Models\Setting::where('key', 'achievement_scores')->first()?->value ?? '{}', true);
-        }
-        
-        $studentDetail = $this->studentDetail;
-        if ($studentDetail && isset($studentDetail->additional_data['achievements'])) {
-            foreach ($studentDetail->additional_data['achievements'] as $ach) {
-                $level = $ach['level'] ?? null;
-                $rank = $ach['rank'] ?? null;
-                if ($level && $rank && isset($achievementScores[$level][$rank])) {
-                    $totalAchievementScore += $achievementScores[$level][$rank];
-                }
+        $grade = $this->grade;
+        if ($grade && isset($grade->additional_data['prestasiList'])) {
+            foreach ($grade->additional_data['prestasiList'] as $ach) {
+                $score = $ach['score'] ?? 0;
+                $totalAchievementScore += (int)$score;
             }
         }
         
