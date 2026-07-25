@@ -53,7 +53,7 @@
                     <img src="{{ $logoPath }}" alt="Logo">
                 </td>
                 <td class="kop-text">
-                    <div class="kop-yayasan">PANITIA PENERIMAAN PESERTA DIDIK BARU</div>
+                    <div class="kop-yayasan">PANITIA SISTEM PENERIMAAN MURID BARU</div>
                     <div class="kop-sekolah">{{ $settings['app_name'] ?? 'SMP BUSTANUL ULUM NU JATIROKEH' }}</div>
                     <div class="kop-alamat">{{ $settings['address'] ?? 'Jln. Pramuka No. 01 Jatirokeh Kec. Songgom Kab. Brebes 52266' }}</div>
                     <div class="kop-kontak">Telp/WA: {{ $settings['phone'] ?? '-' }} | Email: {{ $settings['email'] ?? '-' }}</div>

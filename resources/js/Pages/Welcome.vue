@@ -209,7 +209,7 @@ const agendas = computed(() => {
                     <v-row align="center" class="min-vh-80 py-16">
                         <v-col cols="12" lg="7" class="text-center text-lg-left">
                             <v-chip color="primary" variant="tonal" class="mb-6 font-weight-bold px-4" size="small">
-                                PENERIMAAN PESERTA DIDIK BARU 2026/2027
+                                SISTEM PENERIMAAN MURID BARU 2026/2027
                             </v-chip>
                             <h1 class="hero-display-text mb-6">
                                 Masa Depan Gemilang di <br class="hidden-sm-and-down"/>
