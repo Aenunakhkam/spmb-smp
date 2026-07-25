@@ -551,9 +551,13 @@ const agendas = computed(() => {
             </footer>
 
             <!-- Floating WhatsApp Button -->
-            <a v-if="contactWhatsapp" :href="'https://wa.me/' + contactWhatsapp.replace(/[^0-9]/g, '')" target="_blank" class="floating-wa">
-                <v-icon size="x-large">mdi-whatsapp</v-icon>
-            </a>
+            <v-tooltip text="Hubungi Tim SPMB jika ada kendala melalui WhatsApp" location="left">
+                <template v-slot:activator="{ props }">
+                    <a v-if="contactWhatsapp" v-bind="props" :href="'https://wa.me/' + contactWhatsapp.replace(/[^0-9]/g, '')" target="_blank" class="floating-wa">
+                        <v-icon size="x-large">mdi-whatsapp</v-icon>
+                    </a>
+                </template>
+            </v-tooltip>
         </v-main>
     </v-app>
 </template>
