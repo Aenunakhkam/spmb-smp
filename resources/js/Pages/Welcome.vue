@@ -18,6 +18,12 @@ const props = defineProps({
     academicYear: String,
     faqs: Array,
     popupBanner: String,
+    socialTiktok: String,
+    socialInstagram: String,
+    socialFacebook: String,
+    socialX: String,
+    contactWhatsapp: String,
+    contactEmail: String,
 });
 
 const chartData = computed(() => {
@@ -492,9 +498,10 @@ const agendas = computed(() => {
                             <div class="text-h5 font-weight-black color-main mb-6">SMP <span class="text-primary">BUSTANUL ULUM</span></div>
                             <p class="text-body-1 text-grey-darken-1 max-width-400 mb-8">Lembaga pendidikan yang berkomitmen mencetak generasi Qur'ani yang cerdas di era digital.</p>
                             <div class="d-flex ga-4">
-                                <v-btn icon="mdi-facebook" variant="tonal" size="small" color="primary"></v-btn>
-                                <v-btn icon="mdi-instagram" variant="tonal" size="small" color="primary"></v-btn>
-                                <v-btn icon="mdi-youtube" variant="tonal" size="small" color="primary"></v-btn>
+                                <v-btn v-if="socialFacebook" :href="socialFacebook" target="_blank" icon="mdi-facebook" variant="tonal" size="small" color="primary"></v-btn>
+                                <v-btn v-if="socialInstagram" :href="socialInstagram" target="_blank" icon="mdi-instagram" variant="tonal" size="small" color="primary"></v-btn>
+                                <v-btn v-if="socialTiktok" :href="socialTiktok" target="_blank" icon="mdi-music-note" variant="tonal" size="small" color="primary"></v-btn>
+                                <v-btn v-if="socialX" :href="socialX" target="_blank" icon="mdi-twitter" variant="tonal" size="small" color="primary"></v-btn>
                             </div>
                         </v-col>
                         
@@ -523,6 +530,9 @@ const agendas = computed(() => {
                                 Kabupaten Brebes, <br/>
                                 Jawa Tengah 52266
                             </p>
+                            <p v-if="contactEmail" class="text-body-2 text-primary font-weight-bold mt-2">
+                                <v-icon size="small" start>mdi-email</v-icon> {{ contactEmail }}
+                            </p>
                         </v-col>
                     </v-row>
                     
@@ -537,6 +547,11 @@ const agendas = computed(() => {
                     </div>
                 </v-container>
             </footer>
+
+            <!-- Floating WhatsApp Button -->
+            <a v-if="contactWhatsapp" :href="'https://wa.me/' + contactWhatsapp.replace(/[^0-9]/g, '')" target="_blank" class="floating-wa">
+                <v-icon size="x-large">mdi-whatsapp</v-icon>
+            </a>
         </v-main>
     </v-app>
 </template>
@@ -762,6 +777,30 @@ const agendas = computed(() => {
     .hero-display-text { font-size: 2.5rem; letter-spacing: -1.5px; }
     .hero-fluid { padding-top: 100px; }
     .hero-subtext { font-size: 1.1rem; }
+}
+
+
+
+/* Floating WA */
+.floating-wa {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #25d366;
+    color: white !important;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+.floating-wa:hover {
+    transform: scale(1.1);
 }
 
 .abstract-header-bg {
