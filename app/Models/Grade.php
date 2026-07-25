@@ -16,9 +16,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'ips',
     'pkn',
     'proof_file_path',
+    'additional_data',
 ])]
 class Grade extends Model
 {
+    protected $casts = [
+        'additional_data' => 'array',
+    ];
+
     public function registration(): BelongsTo
     {
         return $this->belongsTo(Registration::class);
