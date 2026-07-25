@@ -72,9 +72,13 @@ Route::post('/lupa-akses', [RegistrationController::class, 'recoverAccess'])->na
 Route::get('/dashboard-siswa/{number}/{code}', [RegistrationController::class, 'dashboard'])->name('student.dashboard');
 Route::get('/pengumuman/{number}/{code}', [RegistrationController::class, 'announcement'])->name('announcement');
 
-// Print Routes
+// Print Routes (Preview HTML)
 Route::get('/cetak/kartu/{id}', [\App\Http\Controllers\PrintController::class, 'kartu'])->name('print.kartu');
 Route::get('/cetak/formulir/{id}', [\App\Http\Controllers\PrintController::class, 'formulir'])->name('print.formulir');
+
+// Print Routes (Download PDF langsung)
+Route::get('/unduh/kartu/{id}', [\App\Http\Controllers\PrintController::class, 'downloadKartu'])->name('print.kartu.pdf');
+Route::get('/unduh/formulir/{id}', [\App\Http\Controllers\PrintController::class, 'downloadFormulir'])->name('print.formulir.pdf');
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('admin.dashboard');

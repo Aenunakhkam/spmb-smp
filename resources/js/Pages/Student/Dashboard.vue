@@ -403,23 +403,6 @@ onMounted(() => {
                 </button>
             </nav>
 
-            <!-- Print Buttons -->
-            <div class="px-3 pb-2 border-t border-slate-100 pt-3" v-if="!isSidebarCollapsed">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-2 px-1">Cetak Dokumen</p>
-                <div class="space-y-1.5">
-                    <a :href="`/cetak/kartu/${registration?.id}`" target="_blank"
-                        class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-[12px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg>
-                        Kartu Peserta
-                    </a>
-                    <a :href="`/cetak/formulir/${registration?.id}`" target="_blank"
-                        class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-[12px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        Formulir Pendaftaran
-                    </a>
-                </div>
-            </div>
-
             <!-- Logout -->
             <div class="p-4 border-t border-slate-100">
                 <button @click="logout" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-bold text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors">
@@ -1277,7 +1260,7 @@ onMounted(() => {
                             </div>
                         </div>
 
-                        <!-- Finalize Button -->
+                        <!-- Finalize + Print Buttons -->
                         <div v-if="registration?.status === 'incomplete'" class="bg-amber-50 rounded-xl p-4 border border-amber-200">
                             <p class="text-xs text-amber-700 font-medium mb-3">⚠️ Setelah finalisasi, data tidak dapat diubah. Pastikan semua informasi sudah benar!</p>
                             <button @click="finalize" :disabled="finalizeForm.processing" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-200">
@@ -1286,6 +1269,20 @@ onMounted(() => {
                         </div>
                         <div v-else class="bg-blue-50 rounded-xl p-4 border border-blue-200 text-sm text-blue-700 font-medium text-center">
                             Pendaftaran Anda sudah dikirim ke panitia. Pantau status di dashboard.
+                        </div>
+
+                        <!-- Tombol Cetak & Unduh -->
+                        <div class="grid grid-cols-2 gap-3 pt-1">
+                            <a :href="`/unduh/kartu/${registration?.id}`"
+                                class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-colors">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                Unduh Kartu Peserta
+                            </a>
+                            <a :href="`/unduh/formulir/${registration?.id}`"
+                                class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-colors">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                Unduh Formulir
+                            </a>
                         </div>
                     </div>
                 </div>

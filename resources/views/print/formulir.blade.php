@@ -7,7 +7,7 @@
     <style>
         @page {
             size: 215mm 330mm portrait;
-            margin: 12mm 15mm 18mm 15mm;
+            margin: 12mm 15mm 20mm 15mm;
         }
         @media print {
             body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: transparent !important; margin: 0 !important; padding: 0 !important; }
@@ -68,7 +68,7 @@
         .sub-judul { font-size: 10pt; font-weight: bold; margin-top: 3px; }
 
         /* KONTEN */
-        .content-wrapper { position: relative; z-index: 1; padding-bottom: 22mm; }
+        .content-wrapper { position: relative; z-index: 1; }
 
         .section-title {
             font-weight: bold;
@@ -163,23 +163,17 @@
 
         /* FOOTER */
         .page-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
             width: 100%;
-            padding: 6px 15mm 12mm 15mm;
+            margin-top: 20px;
+            padding-top: 8px;
             border-top: 2px solid #1B5E20;
             font-size: 8pt;
             color: #555;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            background: #fff;
-            box-sizing: border-box;
-            z-index: 10;
+            display: table;
+            width: 100%;
         }
-        .footer-left { text-align: left; }
-        .footer-right { text-align: right; font-weight: bold; color: #1B5E20; }
+        .footer-left { display: table-cell; text-align: left; }
+        .footer-right { display: table-cell; text-align: right; font-weight: bold; color: #1B5E20; }
     </style>
 </head>
 <body>
