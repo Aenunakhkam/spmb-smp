@@ -107,12 +107,45 @@ Jika Anda telah menjalankan perintah `--seed` pada tahap instalasi di atas, Anda
 
 ---
 
-## 🏗️ Mengemas ke Production (Build)
-Apabila Anda hendak meng-unggah (hosting) sistem ini ke server nyata (production), pastikan Anda melakukan *build assets* terlebih dahulu agar ukuran file menjadi optimal dan tidak bergantung pada *node server*:
+## 🏗️ Mengemas ke Production (Build & Hosting)
 
+Apabila Anda hendak mengunggah (hosting) sistem ini ke server nyata (production) seperti cPanel atau Shared Hosting, ikuti langkah berikut:
+
+### 1. Build Aset Frontend (Lokal)
+Sebelum di-upload, pastikan Anda melakukan *build* terhadap file Vue.js di komputer lokal Anda agar file menjadi statis dan ukurannya optimal:
 ```bash
 npm run build
 ```
+*(Proses ini akan menghasilkan folder `public/build`)*
+
+### 2. Konfigurasi File .env untuk Production
+Ubah nilai `.env` sesuai dengan *database* pada hosting Anda:
+```env
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://domain-anda.com
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=nama_db_hosting
+DB_USERNAME=user_db_hosting
+DB_PASSWORD=password_db_hosting
+```
+
+### 3. Upload File ke Hosting (cPanel)
+- Kompres (ZIP) seluruh folder proyek SPMB (Kecuali folder `node_modules` karena ukurannya besar dan tidak diperlukan di production).
+- Buka **File Manager** di cPanel Anda.
+- Jika ini domain utama, arahkan Document Root/Web Root ke folder `public/` milik aplikasi SPMB. Anda bisa meletakkan *source code* di `public_html` dan menyesuaikan struktur folder atau meletakkannya di luar `public_html` lalu membuat *symlink*.
+
+### 4. Menjalankan Migrasi di Hosting
+Jika Anda memiliki akses terminal (SSH) di cPanel, jalankan:
+```bash
+php artisan migrate --seed
+php artisan storage:link
+php artisan optimize:clear
+```
+*(Jika tidak ada akses terminal, ekspor database dari lokal via phpMyAdmin, lalu impor ke database hosting Anda)*
 
 ---
 *Dikembangkan secara eksklusif untuk kemajuan pendidikan SMP Indonesia.*
