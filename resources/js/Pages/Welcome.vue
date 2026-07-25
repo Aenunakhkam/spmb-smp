@@ -22,6 +22,7 @@ const props = defineProps({
     socialInstagram: String,
     socialFacebook: String,
     socialX: String,
+    socialYoutube: String,
     contactWhatsapp: String,
     contactEmail: String,
 });
@@ -502,6 +503,7 @@ const agendas = computed(() => {
                                 <v-btn v-if="socialInstagram" :href="socialInstagram" target="_blank" icon="mdi-instagram" variant="tonal" size="small" color="primary"></v-btn>
                                 <v-btn v-if="socialTiktok" :href="socialTiktok" target="_blank" icon="mdi-music-note" variant="tonal" size="small" color="primary"></v-btn>
                                 <v-btn v-if="socialX" :href="socialX" target="_blank" icon="mdi-twitter" variant="tonal" size="small" color="primary"></v-btn>
+                                <v-btn v-if="socialYoutube" :href="socialYoutube" target="_blank" icon="mdi-youtube" variant="tonal" size="small" color="primary"></v-btn>
                             </div>
                         </v-col>
                         

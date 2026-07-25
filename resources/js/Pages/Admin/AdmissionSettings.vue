@@ -29,9 +29,16 @@ const form = useForm({
     opt_kebutuhan_khusus: [...props.settings.opt_kebutuhan_khusus],
     opt_tempat_tinggal: [...props.settings.opt_tempat_tinggal],
     opt_ekstrakurikuler: [...props.settings.opt_ekstrakurikuler],
-    opt_peminatan: [...props.settings.opt_peminatan],
-    opt_moda_transportasi: [...props.settings.opt_moda_transportasi],
-    opt_alasan_kip: [...props.settings.opt_alasan_kip],
+    opt_peminatan: props.settings.opt_peminatan || [],
+    opt_moda_transportasi: props.settings.opt_moda_transportasi || [],
+    opt_alasan_kip: props.settings.opt_alasan_kip || [],
+    social_tiktok: props.settings.social_tiktok || '',
+    social_instagram: props.settings.social_instagram || '',
+    social_facebook: props.settings.social_facebook || '',
+    social_x: props.settings.social_x || '',
+    social_youtube: props.settings.social_youtube || '',
+    contact_whatsapp: props.settings.contact_whatsapp || '',
+    contact_email: props.settings.contact_email || '',
 });
 
 const activeTab = ref('umum');
@@ -107,6 +114,7 @@ const deleteBanner = () => {
                         <v-tab value="jadwal" class="font-weight-bold"><v-icon start>mdi-calendar-clock</v-icon> Jadwal & Info</v-tab>
                         <v-tab value="skor" class="font-weight-bold"><v-icon start>mdi-medal-outline</v-icon> Skor Prestasi</v-tab>
                         <v-tab value="referensi" class="font-weight-bold"><v-icon start>mdi-database-outline</v-icon> Data Referensi</v-tab>
+                        <v-tab value="sosmed" class="font-weight-bold"><v-icon start>mdi-web</v-icon> Kontak & Sosmed</v-tab>
                     </v-tabs>
 
                     <v-window v-model="activeTab">
@@ -408,6 +416,46 @@ const deleteBanner = () => {
 
                         </div>
                     </div>
+                    </v-window-item>
+
+                    <!-- TAB SOSMED & KONTAK -->
+                    <v-window-item value="sosmed">
+                        <v-card variant="outlined" class="mb-6 rounded-xl border-secondary">
+                            <v-card-title class="bg-grey-lighten-4 py-3 border-b"><v-icon start color="primary">mdi-card-account-phone-outline</v-icon> Kontak Pendaftaran</v-card-title>
+                            <v-card-text class="pt-5">
+                                <v-row>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field v-model="form.contact_whatsapp" label="Nomor WhatsApp Admin (Floating)" placeholder="Contoh: 628123456789" hint="Awali dengan 62 tanpa spasi/tanda hubung (+). Akan digunakan untuk tombol melayang di halaman depan." persistent-hint prepend-inner-icon="mdi-whatsapp" color="success" :error-messages="form.errors.contact_whatsapp"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field v-model="form.contact_email" label="Email Informasi" placeholder="email@sekolah.sch.id" prepend-inner-icon="mdi-email-outline" color="primary" :error-messages="form.errors.contact_email"></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+
+                        <v-card variant="outlined" class="mb-6 rounded-xl border-secondary">
+                            <v-card-title class="bg-grey-lighten-4 py-3 border-b"><v-icon start color="primary">mdi-share-variant-outline</v-icon> Tautan Sosial Media (Footer)</v-card-title>
+                            <v-card-text class="pt-5">
+                                <v-row>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field v-model="form.social_tiktok" label="URL Profil TikTok" placeholder="https://tiktok.com/@..." prepend-inner-icon="mdi-music-note" color="primary" :error-messages="form.errors.social_tiktok"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field v-model="form.social_instagram" label="URL Profil Instagram" placeholder="https://instagram.com/..." prepend-inner-icon="mdi-instagram" color="primary" :error-messages="form.errors.social_instagram"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="4">
+                                        <v-text-field v-model="form.social_facebook" label="URL Halaman Facebook" placeholder="https://facebook.com/..." prepend-inner-icon="mdi-facebook" color="primary" :error-messages="form.errors.social_facebook"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="4">
+                                        <v-text-field v-model="form.social_x" label="URL Profil X / Twitter" placeholder="https://x.com/..." prepend-inner-icon="mdi-twitter" color="primary" :error-messages="form.errors.social_x"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="4">
+                                        <v-text-field v-model="form.social_youtube" label="URL Channel YouTube" placeholder="https://youtube.com/..." prepend-inner-icon="mdi-youtube" color="primary" :error-messages="form.errors.social_youtube"></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
                     </v-window-item>
                     </v-window>
 

@@ -94,6 +94,13 @@ class AdmissionSettingController extends Controller
                 'opt_moda_transportasi' => $this->normalizeOptions($settings['opt_moda_transportasi'] ?? null, $defaultTransportasi),
                 'opt_alasan_kip' => $this->normalizeOptions($settings['opt_alasan_kip'] ?? null, $defaultAlasanKip),
                 'popup_banner' => $settings['popup_banner'] ?? null,
+                'social_tiktok' => $settings['social_tiktok'] ?? '',
+                'social_instagram' => $settings['social_instagram'] ?? '',
+                'social_facebook' => $settings['social_facebook'] ?? '',
+                'social_x' => $settings['social_x'] ?? '',
+                'social_youtube' => $settings['social_youtube'] ?? '',
+                'contact_whatsapp' => $settings['contact_whatsapp'] ?? '',
+                'contact_email' => $settings['contact_email'] ?? '',
             ]
         ]);
     }
@@ -120,6 +127,13 @@ class AdmissionSettingController extends Controller
             'opt_peminatan' => 'required|array',
             'opt_moda_transportasi' => 'required|array',
             'opt_alasan_kip' => 'required|array',
+            'social_tiktok' => 'nullable|string',
+            'social_instagram' => 'nullable|string',
+            'social_facebook' => 'nullable|string',
+            'social_x' => 'nullable|string',
+            'social_youtube' => 'nullable|string',
+            'contact_whatsapp' => 'nullable|string',
+            'contact_email' => 'nullable|email',
         ], [
             'popup_banner_file.max' => 'Ukuran gambar banner tidak boleh lebih dari 10MB (10240 KB).',
             'popup_banner_file.image' => 'File banner harus berupa gambar.',
@@ -147,6 +161,13 @@ class AdmissionSettingController extends Controller
             'opt_peminatan' => json_encode($request->opt_peminatan),
             'opt_moda_transportasi' => json_encode($request->opt_moda_transportasi),
             'opt_alasan_kip' => json_encode($request->opt_alasan_kip),
+            'social_tiktok' => $request->social_tiktok,
+            'social_instagram' => $request->social_instagram,
+            'social_facebook' => $request->social_facebook,
+            'social_x' => $request->social_x,
+            'social_youtube' => $request->social_youtube,
+            'contact_whatsapp' => $request->contact_whatsapp,
+            'contact_email' => $request->contact_email,
         ];
 
         if ($request->hasFile('popup_banner_file')) {

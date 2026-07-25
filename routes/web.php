@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    $settings = \App\Models\Setting::whereIn('key', ['academic_year', 'registration_start_date', 'registration_end_date', 'ppdb_agenda', 'frontend_faqs', 'popup_banner'])->pluck('value', 'key');
+    $settings = \App\Models\Setting::whereIn('key', ['academic_year', 'registration_start_date', 'registration_end_date', 'ppdb_agenda', 'frontend_faqs', 'popup_banner', 'social_tiktok', 'social_instagram', 'social_facebook', 'social_x', 'social_youtube', 'contact_whatsapp', 'contact_email'])->pluck('value', 'key');
     $academicYear = $settings['academic_year'] ?? date('Y');
     
     $defaultFaqs = [
@@ -35,7 +35,14 @@ Route::get('/', function () {
         'ppdbAgenda' => json_decode($settings['ppdb_agenda'] ?? '[]', true),
         'academicYear' => $academicYear,
         'faqs' => $faqs,
-        'popupBanner' => $settings['popup_banner'] ?? null,
+        'popupBanner' => isset($settings['popup_banner']) ? '/storage/' . $settings['popup_banner'] : null,
+        'socialTiktok' => $settings['social_tiktok'] ?? null,
+        'socialInstagram' => $settings['social_instagram'] ?? null,
+        'socialFacebook' => $settings['social_facebook'] ?? null,
+        'socialX' => $settings['social_x'] ?? null,
+        'socialYoutube' => $settings['social_youtube'] ?? null,
+        'contactWhatsapp' => $settings['contact_whatsapp'] ?? null,
+        'contactEmail' => $settings['contact_email'] ?? null,
     ]);
 })->name('home');
 
