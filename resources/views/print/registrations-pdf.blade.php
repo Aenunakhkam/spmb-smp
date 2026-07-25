@@ -82,6 +82,15 @@
             </tr>
         </thead>
         <tbody>
+            @php
+                $statusLabels = [
+                    'incomplete' => 'Belum Lengkap',
+                    'pending' => 'Menunggu Verifikasi',
+                    'verified' => 'Terverifikasi',
+                    'passed' => 'Diterima',
+                    'failed' => 'Tidak Diterima',
+                ];
+            @endphp
             @forelse($registrations as $index => $reg)
             <tr>
                 <td class="text-center">{{ $index + 1 }}</td>
@@ -91,7 +100,7 @@
                 <td class="text-center">{{ $reg->studentDetail->gender ?? '-' }}</td>
                 <td>{{ $reg->studentDetail->origin_school_name ?? '-' }}</td>
                 <td class="text-center">{{ $reg->additional_data['major'] ?? 'UMUM' }}</td>
-                <td class="text-center">{{ strtoupper($reg->status) }}</td>
+                <td class="text-center">{{ $statusLabels[$reg->status] ?? strtoupper($reg->status) }}</td>
             </tr>
             @empty
             <tr>

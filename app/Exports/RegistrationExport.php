@@ -25,6 +25,14 @@ class RegistrationExport implements FromCollection, WithHeadings, WithMapping, W
     public function map($registration): array
     {
         $this->rowNumber++;
+        $statusLabels = [
+            'incomplete' => 'Belum Lengkap',
+            'pending' => 'Menunggu Verifikasi',
+            'verified' => 'Terverifikasi',
+            'passed' => 'Diterima',
+            'failed' => 'Tidak Diterima',
+        ];
+
         return [
             $this->rowNumber,
             $registration->registration_number,
@@ -34,7 +42,7 @@ class RegistrationExport implements FromCollection, WithHeadings, WithMapping, W
             $registration->studentDetail->origin_school_name ?? '-',
             $registration->additional_data['major'] ?? 'UMUM',
             $registration->average_score ?? '-',
-            strtoupper($registration->status),
+            $statusLabels[$registration->status] ?? strtoupper($registration->status),
         ];
     }
 

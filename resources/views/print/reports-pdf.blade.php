@@ -83,10 +83,19 @@
             </tr>
         </thead>
         <tbody>
+            @php
+                $statusLabels = [
+                    'incomplete' => 'Belum Lengkap',
+                    'pending' => 'Menunggu Verifikasi',
+                    'verified' => 'Terverifikasi',
+                    'passed' => 'Diterima',
+                    'failed' => 'Tidak Diterima',
+                ];
+            @endphp
             @foreach($byStatus as $index => $stat)
             <tr>
                 <td class="text-center">{{ $index + 1 }}</td>
-                <td>{{ strtoupper($stat->status) }}</td>
+                <td>{{ $statusLabels[$stat->status] ?? strtoupper($stat->status) }}</td>
                 <td class="text-center">{{ $stat->total }}</td>
             </tr>
             @endforeach
