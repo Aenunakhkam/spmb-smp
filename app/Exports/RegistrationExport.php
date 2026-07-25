@@ -36,7 +36,7 @@ class RegistrationExport implements FromCollection, WithHeadings, WithMapping, W
         return [
             $this->rowNumber,
             $registration->registration_number,
-            $registration->studentDetail->nisn ?? '-',
+            isset($registration->studentDetail->nisn) ? "'" . $registration->studentDetail->nisn : '-',
             $registration->studentDetail->full_name ?? '-',
             $registration->studentDetail->gender == 'L' ? 'Laki-laki' : ($registration->studentDetail->gender == 'P' ? 'Perempuan' : '-'),
             $registration->studentDetail->origin_school_name ?? '-',
@@ -91,6 +91,15 @@ class RegistrationExport implements FromCollection, WithHeadings, WithMapping, W
                     'borderStyle' => Border::BORDER_THIN,
                     'color' => ['argb' => 'FF000000'],
                 ],
+            ],
+        ]);
+
+        // Style for data rows alignment
+        $sheet->getStyle('A2:' . $lastColumn . $lastRow)->applyFromArray([
+            'alignment' => [
+                'vertical' => Alignment::VERTICAL_TOP,
+                'horizontal' => Alignment::HORIZONTAL_LEFT,
+                'wrapText' => true
             ],
         ]);
 

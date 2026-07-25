@@ -113,14 +113,14 @@ class MasterDataExport implements FromCollection, WithHeadings, WithMapping, Wit
             $reg->created_at ? $reg->created_at->format('d/m/Y H:i') : '',
 
             // Biodata Siswa
-            $s->nisn ?? '',
-            $s->nik ?? '',
+            isset($s->nisn) ? "'" . $s->nisn : '',
+            isset($s->nik) ? "'" . $s->nik : '',
             $s->full_name ?? '',
             $s ? ($s->gender === 'L' ? 'Laki-laki' : ($s->gender === 'P' ? 'Perempuan' : '')) : '',
             $s->place_of_birth ?? '',
             $s->date_of_birth ? \Carbon\Carbon::parse($s->date_of_birth)->format('d/m/Y') : '',
             $s->religion ?? '',
-            $s->phone ?? '',
+            isset($s->phone) ? "'" . $s->phone : '',
             $s->email ?? '',
 
             // Alamat
@@ -133,7 +133,7 @@ class MasterDataExport implements FromCollection, WithHeadings, WithMapping, Wit
 
             // Sekolah Asal
             $s->origin_school_name ?? '',
-            $s->origin_school_npsn ?? '',
+            isset($s->origin_school_npsn) ? "'" . $s->origin_school_npsn : '',
             $s->origin_school_address ?? '',
 
             // Nilai
@@ -150,9 +150,9 @@ class MasterDataExport implements FromCollection, WithHeadings, WithMapping, Wit
             $p->father_occupation ?? '',
             $p->mother_name ?? '',
             $p->mother_occupation ?? '',
-            $p->parent_phone ?? '',
+            isset($p->parent_phone) ? "'" . $p->parent_phone : '',
             $p->parent_address ?? '',
-            $p->aid_card_number ?? '',
+            isset($p->aid_card_number) ? "'" . $p->aid_card_number : '',
 
             // Dokumen
             $reg->documents ? $reg->documents->count() : 0,
@@ -280,9 +280,13 @@ class MasterDataExport implements FromCollection, WithHeadings, WithMapping, Wit
             ],
         ]);
 
-        // ── Vertical align data rows ──
+        // ── Align data rows ──
         $sheet->getStyle('A2:' . $lastCol . $lastRow)->applyFromArray([
-            'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
+            'alignment' => [
+                'vertical' => Alignment::VERTICAL_TOP,
+                'horizontal' => Alignment::HORIZONTAL_LEFT,
+                'wrapText' => true
+            ],
         ]);
 
         return [];
