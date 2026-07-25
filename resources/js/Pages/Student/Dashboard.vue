@@ -617,7 +617,7 @@ onMounted(() => {
                                 <input type="text" v-model="form.student_details.additional_data.kk_number" @input="form.student_details.additional_data.kk_number = $event.target.value.replace(/\D/g, '')" maxlength="16" minlength="16" class="field-input" placeholder="16 digit No. KK">
                             </div>
                             <div>
-                                <label class="field-label">No. Akta Kelahiran</label>
+                                <label class="field-label">No. Akta Kelahiran <span class="req">*wajib di isi</span></label>
                                 <input type="text" v-model="form.student_details.additional_data.akta_number" class="field-input" placeholder="Nomor Akta Kelahiran">
                             </div>
                             <div>
@@ -642,11 +642,11 @@ onMounted(() => {
                                 <input type="date" v-model="form.student_details.date_of_birth" class="field-input">
                             </div>
                             <div>
-                                <label class="field-label">Anak ke-</label>
+                                <label class="field-label">Anak ke- <span class="req">*wajib di isi</span></label>
                                 <input type="number" v-model="form.student_details.additional_data.child_order" class="field-input" placeholder="Anak ke berapa" min="1">
                             </div>
                             <div>
-                                <label class="field-label">Jumlah Saudara Kandung</label>
+                                <label class="field-label">Jumlah Saudara Kandung <span class="req">*wajib di isi</span></label>
                                 <input type="number" v-model="form.student_details.additional_data.siblings_count" class="field-input" placeholder="Jumlah saudara kandung" min="0">
                             </div>
                             <div>
@@ -703,19 +703,19 @@ onMounted(() => {
                                 <textarea v-model="form.student_details.address" class="field-input" rows="2" placeholder="Nama jalan, nomor rumah, dll"></textarea>
                             </div>
                             <div>
-                                <label class="field-label">RT</label>
+                                <label class="field-label">RT <span class="req">*wajib di isi</span></label>
                                 <input type="text" v-model="form.student_details.additional_data.rt" @input="form.student_details.additional_data.rt = $event.target.value.replace(/\D/g, '')" class="field-input" placeholder="RT">
                             </div>
                             <div>
-                                <label class="field-label">RW</label>
+                                <label class="field-label">RW <span class="req">*wajib di isi</span></label>
                                 <input type="text" v-model="form.student_details.additional_data.rw" @input="form.student_details.additional_data.rw = $event.target.value.replace(/\D/g, '')" class="field-input" placeholder="RW">
                             </div>
                             <div>
-                                <label class="field-label">Kode Pos</label>
+                                <label class="field-label">Kode Pos <span class="req">*wajib di isi</span></label>
                                 <input type="text" v-model="form.student_details.postal_code" @input="form.student_details.postal_code = $event.target.value.replace(/\D/g, '')" class="field-input" placeholder="5 digit kode pos">
                             </div>
                             <div>
-                                <label class="field-label">Tempat Tinggal</label>
+                                <label class="field-label">Tempat Tinggal <span class="req">*wajib di isi</span></label>
                                 <select v-model="form.student_details.additional_data.residence_type" class="field-input">
                                     <option value="">-- Pilih --</option>
                                     <option v-for="t in optTempatTinggal" :key="t" :value="t">{{ t }}</option>
@@ -923,25 +923,25 @@ onMounted(() => {
                                 <input type="text" v-model="form.parent_details.father_name" @input="form.parent_details.father_name = $event.target.value.replace(/[^a-zA-Z\s'.,]/g, '')" class="field-input" placeholder="Nama lengkap ayah kandung">
                             </div>
                             <div>
-                                <label class="field-label">NIK Ayah</label>
+                                <label class="field-label">NIK Ayah <span class="req">*wajib di isi</span></label>
                                 <input type="text" v-model="form.parent_details.additional_data.father_nik" @input="form.parent_details.additional_data.father_nik = $event.target.value.replace(/\D/g, '')" maxlength="16" minlength="16" class="field-input" placeholder="16 digit NIK">
                             </div>
                             <div>
-                                <label class="field-label">Pendidikan Terakhir Ayah</label>
+                                <label class="field-label">Pendidikan Terakhir Ayah <span class="req">*wajib di isi</span></label>
                                 <select v-model="form.parent_details.additional_data.father_education" class="field-input">
                                     <option value="">-- Pilih Pendidikan --</option>
                                     <option v-for="p in optPendidikan" :key="p" :value="p">{{ p }}</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="field-label">Pekerjaan Ayah</label>
+                                <label class="field-label">Pekerjaan Ayah <span class="req">*wajib di isi</span></label>
                                 <select v-model="form.parent_details.father_occupation" class="field-input">
                                     <option value="">-- Pilih Pekerjaan --</option>
                                     <option v-for="p in optPekerjaan" :key="p" :value="p">{{ p }}</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="field-label">Penghasilan Ayah / Bulan</label>
+                                <label class="field-label">Penghasilan Ayah / Bulan <span class="req">*wajib di isi</span></label>
                                 <select v-model="form.parent_details.additional_data.father_income" class="field-input">
                                     <option value="">-- Pilih Penghasilan --</option>
                                     <option v-for="p in optPenghasilan" :key="p" :value="p">{{ p }}</option>
@@ -962,25 +962,25 @@ onMounted(() => {
                                 <input type="text" v-model="form.parent_details.mother_name" @input="form.parent_details.mother_name = $event.target.value.replace(/[^a-zA-Z\s'.,]/g, '')" class="field-input" placeholder="Nama lengkap ibu kandung">
                             </div>
                             <div>
-                                <label class="field-label">NIK Ibu</label>
+                                <label class="field-label">NIK Ibu <span class="req">*wajib di isi</span></label>
                                 <input type="text" v-model="form.parent_details.additional_data.mother_nik" @input="form.parent_details.additional_data.mother_nik = $event.target.value.replace(/\D/g, '')" maxlength="16" minlength="16" class="field-input" placeholder="16 digit NIK">
                             </div>
                             <div>
-                                <label class="field-label">Pendidikan Terakhir Ibu</label>
+                                <label class="field-label">Pendidikan Terakhir Ibu <span class="req">*wajib di isi</span></label>
                                 <select v-model="form.parent_details.additional_data.mother_education" class="field-input">
                                     <option value="">-- Pilih Pendidikan --</option>
                                     <option v-for="p in optPendidikan" :key="p" :value="p">{{ p }}</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="field-label">Pekerjaan Ibu</label>
+                                <label class="field-label">Pekerjaan Ibu <span class="req">*wajib di isi</span></label>
                                 <select v-model="form.parent_details.mother_occupation" class="field-input">
                                     <option value="">-- Pilih Pekerjaan --</option>
                                     <option v-for="p in optPekerjaan" :key="p" :value="p">{{ p }}</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="field-label">No. HP Ibu</label>
+                                <label class="field-label">No. HP Ibu <span class="req">*wajib di isi</span></label>
                                 <input type="tel" v-model="form.parent_details.additional_data.mother_phone" @input="form.parent_details.additional_data.mother_phone = $event.target.value.replace(/\D/g, '')" class="field-input" placeholder="Nomor WA aktif ibu">
                             </div>
                             <div>
