@@ -82,6 +82,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::get('/registrations/{id}/edit', [App\Http\Controllers\Admin\AdminRegistrationController::class, 'edit'])->name('admin.registrations.edit');
     Route::put('/registrations/{id}', [App\Http\Controllers\Admin\AdminRegistrationController::class, 'update'])->name('admin.registrations.update');
     Route::delete('/registrations/{id}', [App\Http\Controllers\Admin\AdminRegistrationController::class, 'destroy'])->name('admin.registrations.destroy');
+    Route::delete('/registrations/document/{id}', [App\Http\Controllers\Admin\AdminRegistrationController::class, 'deleteDocument'])->name('admin.registrations.deleteDocument');
     Route::post('/registrations/{id}/status', [App\Http\Controllers\Admin\AdminRegistrationController::class, 'updateStatus'])->name('admin.registrations.updateStatus');
     Route::post('/registrations/run-ranking', [App\Http\Controllers\Admin\AdminRegistrationController::class, 'runRanking'])->name('admin.registrations.runRanking');
 

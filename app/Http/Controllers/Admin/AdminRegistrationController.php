@@ -15,6 +15,19 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class AdminRegistrationController extends Controller
 {
     use Loggable;
+
+    public function deleteDocument($id)
+    {
+        $document = \App\Models\Document::findOrFail($id);
+        
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($document->file_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($document->file_path);
+        }
+        
+        $document->delete();
+        
+        return back()->with('success', 'Dokumen berhasil dihapus oleh Admin.');
+    }
     public function index(Request $request)
     {
         $query = Registration::with('studentDetail')

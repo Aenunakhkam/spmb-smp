@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, router } from '@inertiajs/vue3';
 
 const props = defineProps({
     registration: Object
@@ -74,6 +74,14 @@ const allGrades = computed(() => {
     }
     return list;
 });
+
+const deleteDoc = (id) => {
+    if (confirm('Yakin ingin menghapus dokumen ini secara permanen?')) {
+        router.delete(route('admin.registrations.deleteDocument', id), {
+            preserveScroll: true,
+        });
+    }
+};
 </script>
 
 <template>
@@ -313,7 +321,11 @@ const allGrades = computed(() => {
                     <v-col v-for="doc in registration.documents" :key="doc.id" cols="12" sm="6" md="4">
                         <v-card variant="outlined" class="pa-3 text-center h-100 d-flex flex-column justify-center bg-grey-lighten-5">
                             <div class="font-weight-bold mb-2">{{ docMap[doc.type] || doc.type }}</div>
-                            <v-btn color="primary" size="small" :href="'/storage/' + doc.file_path" target="_blank" prepend-icon="mdi-eye" variant="elevated">Lihat File</v-btn>
+                            <div class="d-flex justify-center ga-2">
+                                <v-btn color="primary" size="small" :href="'/storage/' + doc.file_path" target="_blank" icon="mdi-eye" title="Lihat" variant="elevated"></v-btn>
+                                <v-btn color="info" size="small" :href="'/storage/' + doc.file_path" download icon="mdi-download" title="Unduh" variant="elevated"></v-btn>
+                                <v-btn color="error" size="small" @click="deleteDoc(doc.id)" icon="mdi-delete" title="Hapus" variant="elevated"></v-btn>
+                            </div>
                         </v-card>
                     </v-col>
                 </v-row>
