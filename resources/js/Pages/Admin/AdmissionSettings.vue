@@ -233,28 +233,7 @@ const deleteBanner = () => {
                     <!-- TAB JADWAL & INFO -->
                     <v-window-item value="jadwal">
                         
-                        <!-- Pop-up Banner PPDB -->
-                        <div class="neo-card p-6 mb-6">
-                            <div class="d-flex align-center mb-4 border-b pb-3">
-                                <v-icon color="indigo" class="mr-2" size="28">mdi-image-multiple-outline</v-icon>
-                                <h3 class="text-lg font-bold text-slate-800">Pop-up Banner Pendaftaran</h3>
-                            </div>
-                            <p class="text-body-2 text-grey-darken-1 mb-4">Unggah poster atau banner informasi PPDB yang akan otomatis muncul (pop up) di halaman utama pendaftaran.</p>
-                            
-                            <div v-if="settings.popup_banner" class="mb-4">
-                                <div class="relative inline-block group">
-                                    <img :src="'/storage/' + settings.popup_banner" class="w-full h-full object-cover rounded-lg">
-                                    <button @click="deleteBanner" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all">
-                                        Hapus Banner
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-4 border border-slate-200 rounded-lg p-3 bg-slate-50">
-                                <input type="file" @change="e => form.popup_banner_file = e.target.files[0]" accept="image/png, image/jpeg, image/jpg" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
-                                <div v-if="form.errors.popup_banner_file" class="text-error text-caption mt-1">{{ form.errors.popup_banner_file }}</div>
-                            </div>
-                        </div>
+
 
                         <!-- Agenda / Timeline PPDB -->
                         <div class="neo-card p-6 mb-6">
@@ -386,12 +365,7 @@ const deleteBanner = () => {
                                 :showInput="true"
                             />
 
-                            <OptionListEditor
-                                v-model="form.opt_kebutuhan_khusus"
-                                title="Opsi Kebutuhan Khusus"
-                                :showInput="true"
-                                :hasHeader="true"
-                            />
+
                         </div>
                     </div>
                     
@@ -431,11 +405,7 @@ const deleteBanner = () => {
                                 title="Opsi Peminatan / Jurusan"
                                 :showInput="true"
                             />
-                            <OptionListEditor
-                                v-model="form.opt_alasan_kip"
-                                title="Opsi Alasan Layak KIP / PIP"
-                                :showInput="true"
-                            />
+
                         </div>
                     </div>
                     </v-window-item>
