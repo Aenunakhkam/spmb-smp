@@ -230,12 +230,10 @@ const saveSection = (sectionName, nextTab) => {
 };
 
 const saveGrades = (nextTab) => {
-    const fd = new FormData();
-    fd.append('registration_id', props.registration?.id);
-    props.subjectsRequired.forEach(s => fd.append(s.key, gradeForm[s.key] || 0));
-    fd.append('prestasiList', JSON.stringify(prestasiList.value));
-    if (gradeForm.proof_file) fd.append('proof_file', gradeForm.proof_file);
-    gradeForm.post(route('register.saveGrades'), {
+    gradeForm.transform((data) => ({
+        ...data,
+        prestasiList: JSON.stringify(prestasiList.value)
+    })).post(route('register.saveGrades'), {
         preserveScroll: true,
         onSuccess: () => { showSuccess('Nilai Rapor & Prestasi berhasil disimpan!'); if (nextTab) activeTab.value = nextTab; },
         onError: (errors) => Swal.fire({ title: 'Gagal!', text: Object.values(errors).join('\n'), icon: 'error' }),
