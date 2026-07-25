@@ -518,8 +518,8 @@ onMounted(() => {
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center justify-between">
                         <div>
-                            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Rata-rata Nilai</div>
-                            <div class="text-3xl font-black text-blue-700">{{ registration?.average_score || '-' }}</div>
+                            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Skor Akhir</div>
+                            <div class="text-3xl font-black text-blue-700">{{ registration?.final_score || '-' }}</div>
                         </div>
                         <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
                             <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
@@ -1222,7 +1222,7 @@ onMounted(() => {
                             <div class="bg-slate-50 rounded-xl p-3"><div class="text-xs text-slate-400 mb-1">Nama</div><div class="font-bold text-slate-800">{{ registration?.student_detail?.full_name || '-' }}</div></div>
                             <div class="bg-slate-50 rounded-xl p-3"><div class="text-xs text-slate-400 mb-1">NISN</div><div class="font-bold text-slate-800">{{ registration?.student_detail?.nisn || '-' }}</div></div>
                             <div class="bg-slate-50 rounded-xl p-3"><div class="text-xs text-slate-400 mb-1">Asal Sekolah</div><div class="font-bold text-slate-800 truncate">{{ registration?.student_detail?.origin_school_name || '-' }}</div></div>
-                            <div class="bg-slate-50 rounded-xl p-3"><div class="text-xs text-slate-400 mb-1">Rata-rata Nilai</div><div class="font-bold text-blue-600 text-xl">{{ registration?.average_score || '-' }}</div></div>
+                            <div class="bg-slate-50 rounded-xl p-3"><div class="text-xs text-slate-400 mb-1">Skor Akhir</div><div class="font-bold text-blue-600 text-xl">{{ registration?.final_score || '-' }}</div></div>
                         </div>
 
                         <!-- Checklist -->
