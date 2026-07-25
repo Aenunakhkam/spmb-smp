@@ -26,6 +26,8 @@ const docMap = {
     'kip': 'KIP',
     'pkh': 'PKH',
     'kks': 'KKS',
+    'prestasi': 'Sertifikat Prestasi',
+    'ktp_wali': 'KTP / KK Wali',
 };
 
 const formatDate = (dateStr) => {

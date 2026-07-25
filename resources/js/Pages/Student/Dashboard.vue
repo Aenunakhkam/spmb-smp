@@ -249,6 +249,7 @@ const docTypes = [
     { key: 'ijazah',  label: 'Ijazah / SKL SD/MI',           info: 'Format JPG/PNG/PDF, max 5MB' },
     { key: 'ktp_ayah',label: 'KTP Ayah',                     info: 'Format JPG/PNG/PDF, max 5MB' },
     { key: 'ktp_ibu', label: 'KTP Ibu',                      info: 'Format JPG/PNG/PDF, max 5MB' },
+    { key: 'ktp_wali',label: 'KTP / KK Wali (opsional)',     info: 'Wajib bagi yang tinggal bersama wali, max 5MB' },
     { key: 'foto',    label: 'Pas Foto Terbaru (3x4)',        info: 'Format JPG/PNG, background merah/biru' },
     { key: 'kip',     label: 'Kartu KIP (jika ada)',         info: 'Opsional' },
     { key: 'prestasi',label: 'Sertifikat Prestasi (jika ada)', info: 'Opsional, format JPG/PNG/PDF' },
