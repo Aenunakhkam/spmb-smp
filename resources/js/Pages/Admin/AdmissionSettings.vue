@@ -193,7 +193,7 @@ const deleteBanner = () => {
                                     <div class="d-flex align-center ga-2 mb-3">
                                         <div class="mb-4"><label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Kode (cth: mtk)</label><input type="text" v-model="newSubject.key" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-slate-50 hover:bg-white focus:bg-white"></div>
                                         <div class="mb-4"><label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nama Mata Pelajaran</label><input type="text" v-model="newSubject.label" class="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-slate-50 hover:bg-white focus:bg-white"></div>
-                                        <button @click="addSubject" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all"></button>
+                                        <button @click="addSubject" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all flex items-center gap-1"><v-icon size="16">mdi-plus</v-icon> Tambah</button>
                                     </div>
                                     <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg text-sm text-blue-800">
                                         {{ form.errors.available_subjects }}
@@ -220,7 +220,7 @@ const deleteBanner = () => {
                                             </template>
                                             <v-list-item-title class="text-wrap" style="line-height: 1.2;">{{ subj.label }} <span class="text-caption text-grey">({{ subj.key }})</span></v-list-item-title>
                                             <template v-slot:append>
-                                                <button @click="removeSubject(index, subj.key)" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all"></button>
+                                                <button @click="removeSubject(index, subj.key)" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm transition-all flex items-center gap-1"><v-icon size="16">mdi-delete</v-icon> Hapus</button>
                                             </template>
                                         </v-list-item>
                                     </v-list>
@@ -285,7 +285,7 @@ const deleteBanner = () => {
                                         <v-text-field v-model="agenda.description" variant="underlined" density="compact" hide-details placeholder="Keterangan singkat"></v-text-field>
                                     </td>
                                     <td class="text-center">
-                                        <button @click="form.ppdb_agenda.splice(i, 1)" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all"></button>
+                                        <button @click="form.ppdb_agenda.splice(i, 1)" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm transition-all flex items-center gap-1"><v-icon size="16">mdi-delete</v-icon> Hapus</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -320,7 +320,7 @@ const deleteBanner = () => {
                                         <v-textarea v-model="faq.answer" rows="2" auto-grow variant="underlined" density="compact" hide-details placeholder="Jawaban lengkap"></v-textarea>
                                     </td>
                                     <td class="text-center">
-                                        <button @click="form.frontend_faqs.splice(i, 1)" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all"></button>
+                                        <button @click="form.frontend_faqs.splice(i, 1)" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm transition-all flex items-center gap-1"><v-icon size="16">mdi-delete</v-icon> Hapus</button>
                                     </td>
                                 </tr>
                             </tbody>
