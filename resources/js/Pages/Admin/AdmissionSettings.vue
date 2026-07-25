@@ -264,35 +264,41 @@ const deleteBanner = () => {
                         </div>
                         <p class="text-body-2 text-grey-darken-1 mb-4">Tambahkan jadwal agenda PPDB seperti Ujian Masuk, Daftar Ulang, Pengumuman, dll.</p>
 
-                        <div class="overflow-x-auto"><table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-grey-lighten-4">
-                                    <th class="font-weight-bold" style="width: 200px;">Tanggal / Waktu</th>
-                                    <th class="font-weight-bold">Nama Agenda</th>
-                                    <th class="font-weight-bold">Deskripsi</th>
-                                    <th class="font-weight-bold text-center" style="width: 100px;">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(agenda, i) in form.ppdb_agenda" :key="i">
-                                    <td>
-                                        <TextInput type="date" v-model="agenda.date" class="w-full" density="compact" />
-                                    </td>
-                                    <td>
-                                        <v-text-field v-model="agenda.title" variant="underlined" density="compact" hide-details placeholder="Nama Agenda"></v-text-field>
-                                    </td>
-                                    <td>
-                                        <v-text-field v-model="agenda.description" variant="underlined" density="compact" hide-details placeholder="Keterangan singkat"></v-text-field>
-                                    </td>
-                                    <td class="text-center">
-                                        <button @click="form.ppdb_agenda.splice(i, 1)" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm transition-all flex items-center gap-1"><v-icon size="16">mdi-delete</v-icon> Hapus</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table></div>
-                        <button @click="form.ppdb_agenda.push({title: '', description: '', date: ''})" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all">
-                            Tambah Agenda
-                        </button>
+                        <div class="overflow-x-auto border border-slate-200 rounded-lg">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-slate-200">
+                                        <th class="font-semibold text-slate-700 px-4 py-3" style="width: 200px;">Tanggal / Waktu</th>
+                                        <th class="font-semibold text-slate-700 px-4 py-3">Nama Agenda</th>
+                                        <th class="font-semibold text-slate-700 px-4 py-3">Deskripsi</th>
+                                        <th class="font-semibold text-slate-700 px-4 py-3 text-center" style="width: 100px;">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    <tr v-for="(agenda, i) in form.ppdb_agenda" :key="i" class="hover:bg-slate-50/50 transition-colors">
+                                        <td class="p-3">
+                                            <TextInput type="date" v-model="agenda.date" class="w-full" density="compact" />
+                                        </td>
+                                        <td class="p-3">
+                                            <v-text-field v-model="agenda.title" variant="underlined" density="compact" hide-details placeholder="Nama Agenda"></v-text-field>
+                                        </td>
+                                        <td class="p-3">
+                                            <v-text-field v-model="agenda.description" variant="underlined" density="compact" hide-details placeholder="Keterangan singkat"></v-text-field>
+                                        </td>
+                                        <td class="p-3">
+                                            <div class="flex justify-center">
+                                                <button @click="form.ppdb_agenda.splice(i, 1)" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm transition-all flex items-center justify-center gap-1"><v-icon size="16">mdi-delete</v-icon> Hapus</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4">
+                            <button @click="form.ppdb_agenda.push({title: '', description: '', date: ''})" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all">
+                                Tambah Agenda
+                            </button>
+                        </div>
                     </div>
 
                     <!-- FAQ (Pertanyaan yang sering diajukan) -->
@@ -303,31 +309,37 @@ const deleteBanner = () => {
                         </div>
                         <p class="text-body-2 text-grey-darken-1 mb-4">Tambahkan pertanyaan dan jawaban yang akan ditampilkan di halaman utama pendaftaran (Welcome).</p>
 
-                        <div class="overflow-x-auto"><table class="w-full text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-grey-lighten-4">
-                                    <th class="font-weight-bold" style="width: 40%;">Pertanyaan</th>
-                                    <th class="font-weight-bold">Jawaban</th>
-                                    <th class="font-weight-bold text-center" style="width: 100px;">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(faq, i) in form.frontend_faqs" :key="i">
-                                    <td>
-                                        <v-text-field v-model="faq.question" variant="underlined" density="compact" hide-details placeholder="Pertanyaan"></v-text-field>
-                                    </td>
-                                    <td>
-                                        <v-textarea v-model="faq.answer" rows="2" auto-grow variant="underlined" density="compact" hide-details placeholder="Jawaban lengkap"></v-textarea>
-                                    </td>
-                                    <td class="text-center">
-                                        <button @click="form.frontend_faqs.splice(i, 1)" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm transition-all flex items-center gap-1"><v-icon size="16">mdi-delete</v-icon> Hapus</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table></div>
-                        <button @click="form.frontend_faqs.push({question: '', answer: ''})" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all">
-                            Tambah Pertanyaan
-                        </button>
+                        <div class="overflow-x-auto border border-slate-200 rounded-lg">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-slate-200">
+                                        <th class="font-semibold text-slate-700 px-4 py-3" style="width: 40%;">Pertanyaan</th>
+                                        <th class="font-semibold text-slate-700 px-4 py-3">Jawaban</th>
+                                        <th class="font-semibold text-slate-700 px-4 py-3 text-center" style="width: 100px;">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    <tr v-for="(faq, i) in form.frontend_faqs" :key="i" class="hover:bg-slate-50/50 transition-colors">
+                                        <td class="p-3">
+                                            <v-text-field v-model="faq.question" variant="underlined" density="compact" hide-details placeholder="Pertanyaan"></v-text-field>
+                                        </td>
+                                        <td class="p-3">
+                                            <v-textarea v-model="faq.answer" rows="2" auto-grow variant="underlined" density="compact" hide-details placeholder="Jawaban lengkap"></v-textarea>
+                                        </td>
+                                        <td class="p-3">
+                                            <div class="flex justify-center">
+                                                <button @click="form.frontend_faqs.splice(i, 1)" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm transition-all flex items-center justify-center gap-1"><v-icon size="16">mdi-delete</v-icon> Hapus</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4">
+                            <button @click="form.frontend_faqs.push({question: '', answer: ''})" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all">
+                                Tambah Pertanyaan
+                            </button>
+                        </div>
                     </div>
                     </v-window-item>
 
