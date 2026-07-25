@@ -12,6 +12,8 @@ const pd = props.registration?.parent_detail || {};
 const s_add = sd.additional_data || {};
 const p_add = pd.additional_data || {};
 const r_add = props.registration?.additional_data || {};
+const prestasiList = computed(() => props.registration?.grade?.additional_data?.prestasiList || []);
+const totalPrestasiScore = computed(() => prestasiList.value.reduce((sum, item) => sum + (Number(item.score) || 0), 0));
 
 const docMap = {
     'kk': 'Kartu Keluarga',
@@ -72,6 +74,7 @@ const allGrades = computed(() => {
             <v-tab value="data_pribadi"><v-icon start>mdi-account-details</v-icon> Data Pribadi</v-tab>
             <v-tab value="keluarga"><v-icon start>mdi-account-group</v-icon> Keluarga</v-tab>
             <v-tab value="akademik"><v-icon start>mdi-school</v-icon> Akademik</v-tab>
+            <v-tab value="prestasi"><v-icon start>mdi-trophy</v-icon> Prestasi</v-tab>
             <v-tab value="tambahan"><v-icon start>mdi-star-shooting</v-icon> Tambahan</v-tab>
             <v-tab value="berkas"><v-icon start>mdi-folder-upload</v-icon> Berkas</v-tab>
         </v-tabs>
@@ -194,26 +197,10 @@ const allGrades = computed(() => {
                         </v-row>
                     </v-col>
                     <v-col cols="12" md="6">
-                        <div class="text-subtitle-2 font-weight-bold text-primary mb-2 border-b pb-1">Data Prestasi</div>
-                        <template v-if="s_add.achievements && s_add.achievements.length > 0">
-                            <div v-for="(ach, idx) in s_add.achievements" :key="idx" class="mb-4 bg-slate-50 p-2 rounded">
-                                <v-row dense>
-                                    <v-col cols="5" class="text-grey-darken-1 font-weight-medium">Kategori</v-col><v-col cols="7" class="text-subtitle-2">: {{ ach.category || '-' }}</v-col>
-                                    <v-col cols="5" class="text-grey-darken-1 font-weight-medium">Jenis</v-col><v-col cols="7" class="text-subtitle-2">: {{ ach.type || '-' }} - {{ ach.level || '-' }}</v-col>
-                                    <v-col cols="5" class="text-grey-darken-1 font-weight-medium">Peringkat / Juara</v-col><v-col cols="7" class="text-subtitle-2">: {{ ach.rank || '-' }}</v-col>
-                                    <v-col cols="5" class="text-grey-darken-1 font-weight-medium">Nama Prestasi</v-col><v-col cols="7" class="font-weight-bold">: {{ ach.name || '-' }}</v-col>
-                                    <v-col cols="5" class="text-grey-darken-1 font-weight-medium">Tahun & Penyelenggara</v-col><v-col cols="7">: {{ ach.year || '-' }} - {{ ach.organizer || '-' }}</v-col>
-                                    <v-col cols="5" class="text-grey-darken-1 font-weight-medium">No. Sertifikat</v-col><v-col cols="7">: {{ ach.certificate_number || '-' }}</v-col>
-                                    <v-col cols="5" class="text-grey-darken-1 font-weight-medium text-orange-darken-2">Skor Poin</v-col><v-col cols="7" class="font-weight-bold text-orange-darken-2">: {{ ach.score || 0 }} Poin</v-col>
-                                    <v-col cols="12" v-if="ach.certificate_path" class="mt-1">
-                                        <v-btn color="primary" size="small" :href="'/storage/' + ach.certificate_path" target="_blank" prepend-icon="mdi-file-certificate" variant="tonal" class="w-100">
-                                            Lihat File Sertifikat
-                                        </v-btn>
-                                    </v-col>
-                                </v-row>
-                            </div>
-                        </template>
-                        <div v-else class="text-caption text-grey">Tidak ada data prestasi.</div>
+                        <div class="text-subtitle-2 font-weight-bold text-primary mb-2 border-b pb-1">Sekolah Sebelumnya</div>
+                        <v-row dense>
+                            <!-- Space filler or other academic info if needed -->
+                        </v-row>
                     </v-col>
                     
                     <v-col cols="12" class="mt-4">
@@ -223,6 +210,10 @@ const allGrades = computed(() => {
                                 <div class="text-caption text-grey">{{ formatSubject(g.key) }}</div>
                                 <div class="text-subtitle-1 font-weight-bold">{{ g.val }}</div>
                             </v-col>
+                            <v-col cols="3" class="mb-4">
+                                <div class="text-caption text-orange-darken-2 font-weight-bold">Total Poin Prestasi</div>
+                                <div class="text-subtitle-1 font-weight-black text-orange-darken-3">+{{ totalPrestasiScore }}</div>
+                            </v-col>
                             <v-col v-if="registration.grade.proof_file_path" cols="12">
                                 <v-btn color="info" size="small" :href="'/storage/' + registration.grade.proof_file_path" target="_blank" prepend-icon="mdi-file-eye" variant="tonal">
                                     Lihat Bukti Scan Rapor
@@ -230,6 +221,49 @@ const allGrades = computed(() => {
                             </v-col>
                         </v-row>
                         <v-alert v-else type="warning" variant="tonal" density="compact">Nilai Rapor belum diisi.</v-alert>
+                    </v-col>
+                </v-row>
+            </v-window-item>
+
+            <!-- Prestasi -->
+            <v-window-item value="prestasi">
+                <v-row dense>
+                    <v-col cols="12">
+                        <div class="text-subtitle-2 font-weight-bold text-primary mb-2 border-b pb-1">Daftar Prestasi Siswa</div>
+                        <v-table v-if="prestasiList.length > 0" density="compact" class="border rounded">
+                            <thead>
+                                <tr>
+                                    <th class="text-left font-weight-bold bg-grey-lighten-4">Nama Prestasi</th>
+                                    <th class="text-left font-weight-bold bg-grey-lighten-4">Penyelenggara / Tahun</th>
+                                    <th class="text-left font-weight-bold bg-grey-lighten-4">Kategori & Tingkat</th>
+                                    <th class="text-left font-weight-bold bg-grey-lighten-4">Peringkat</th>
+                                    <th class="text-right font-weight-bold text-orange-darken-3 bg-orange-lighten-5">Poin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(ach, idx) in prestasiList" :key="idx">
+                                    <td class="py-2">
+                                        <div class="font-weight-bold text-subtitle-2">{{ ach.name || '-' }}</div>
+                                        <div class="text-caption text-grey">Sertifikat: {{ ach.certificate_number || '-' }}</div>
+                                    </td>
+                                    <td class="py-2">
+                                        <div>{{ ach.organizer || '-' }}</div>
+                                        <div class="text-caption text-grey">Tahun {{ ach.year || '-' }}</div>
+                                    </td>
+                                    <td class="py-2">
+                                        <div>{{ ach.category || '-' }} ({{ ach.type || '-' }})</div>
+                                        <div class="text-caption text-grey">{{ ach.level || '-' }}</div>
+                                    </td>
+                                    <td class="py-2">
+                                        <div class="font-weight-medium">{{ ach.rank || '-' }}</div>
+                                    </td>
+                                    <td class="py-2 text-right">
+                                        <v-chip size="small" color="orange-darken-3" variant="elevated" class="font-weight-black">+{{ ach.score || 0 }}</v-chip>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </v-table>
+                        <v-alert v-else type="info" variant="tonal" density="compact" class="mt-2">Peserta belum menambahkan data prestasi.</v-alert>
                     </v-col>
                 </v-row>
             </v-window-item>
