@@ -742,19 +742,19 @@ onMounted(() => {
                                 <input type="text" v-model="form.student_details.origin_school_name" class="field-input" placeholder="Nama lengkap sekolah asal">
                             </div>
                             <div>
-                                <label class="field-label">Jenis Sekolah</label>
+                                <label class="field-label">Jenis Sekolah <span class="req">*wajib di isi</span></label>
                                 <select v-model="form.registration.additional_data.school_type" class="field-input">
                                     <option value="SD">SD</option><option value="MI">MI</option><option value="SDLB">SDLB</option><option value="Paket A">Paket A</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="field-label">Status Sekolah</label>
+                                <label class="field-label">Status Sekolah <span class="req">*wajib di isi</span></label>
                                 <select v-model="form.registration.additional_data.school_status" class="field-input">
                                     <option value="NEGERI">Negeri</option><option value="SWASTA">Swasta</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="field-label">Kabupaten Sekolah</label>
+                                <label class="field-label">Kabupaten Sekolah <span class="req">*wajib di isi</span></label>
                                 <input type="text" v-model="form.registration.additional_data.school_city" class="field-input" placeholder="Kabupaten asal sekolah">
                             </div>
                         </div>
@@ -790,11 +790,11 @@ onMounted(() => {
                                 </select>
                             </div>
                             <div>
-                                <label class="field-label">Jarak (km)</label>
+                                <label class="field-label">Jarak (km) <span class="req">*wajib di isi</span></label>
                                 <input type="number" v-model="form.student_details.additional_data.distance_km" class="field-input" placeholder="Jarak dalam KM">
                             </div>
                             <div>
-                                <label class="field-label">Waktu Tempuh (menit)</label>
+                                <label class="field-label">Waktu Tempuh (menit) <span class="req">*wajib di isi</span></label>
                                 <input type="number" v-model="form.student_details.additional_data.travel_time" class="field-input" placeholder="Estimasi menit">
                             </div>
                             <div>
@@ -843,7 +843,7 @@ onMounted(() => {
                                 </select>
                             </div>
                             <div>
-                                <label class="field-label">Jalur Pendaftaran</label>
+                                <label class="field-label">Jalur Pendaftaran <span class="req">*wajib di isi</span></label>
                                 <select v-model="form.registration.additional_data.registration_type" class="field-input">
                                     <option value="BARU">Peserta Didik Baru</option>
                                     <option value="PINDAH">Pindahan</option>
