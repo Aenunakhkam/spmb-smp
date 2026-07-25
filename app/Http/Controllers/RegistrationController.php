@@ -584,7 +584,8 @@ class RegistrationController extends Controller
                     'Tingkat Nasional' => ['Juara 1' => 75, 'Juara 2' => 60, 'Juara 3' => 45],
                     'Tingkat Internasional' => ['Juara 1' => 100, 'Juara 2' => 80, 'Juara 3' => 60],
                 ]), true),
-            ]
+            ],
+            'contactWhatsapp' => $settings['contact_whatsapp'] ?? null,
         ]);
     }
 

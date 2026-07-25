@@ -14,6 +14,7 @@ const props = defineProps({
     options: { type: Object, default: () => ({}) },
     realtimeRank: [Number, String],
     totalCandidates: Number,
+    contactWhatsapp: String,
 });
 
 const activeTab = ref('dashboard');
@@ -1269,6 +1270,15 @@ onMounted(() => {
 
         </main>
         </div>
+
+        <!-- Floating WhatsApp Button -->
+        <v-tooltip text="Hubungi Tim SPMB jika ada kendala melalui WhatsApp" location="left">
+            <template v-slot:activator="{ props }">
+                <a v-if="contactWhatsapp" v-bind="props" :href="'https://wa.me/' + contactWhatsapp.replace(/[^0-9]/g, '')" target="_blank" class="floating-wa">
+                    <v-icon size="x-large">mdi-whatsapp</v-icon>
+                </a>
+            </template>
+        </v-tooltip>
     </div>
 </template>
 
@@ -1293,5 +1303,27 @@ onMounted(() => {
 }
 .btn-secondary {
     @apply flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-6 rounded-xl transition-all text-sm;
+}
+
+/* Floating WA */
+.floating-wa {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #25d366;
+    color: white !important;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+.floating-wa:hover {
+    transform: scale(1.1);
 }
 </style>
