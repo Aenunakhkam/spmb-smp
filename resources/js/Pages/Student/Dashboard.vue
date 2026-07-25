@@ -451,18 +451,22 @@ onMounted(() => {
                     <div class="relative">
                         <p class="text-blue-200 text-sm font-medium mb-1">Selamat Datang 👋</p>
                         <h1 class="text-3xl font-black tracking-tight mb-2">{{ registration?.student_detail?.full_name || user?.name || 'Peserta PPDB' }}</h1>
-                        <div class="flex flex-wrap gap-4 text-sm mt-4">
+                        <div class="flex flex-wrap items-center gap-4 text-sm mt-4">
                             <div class="bg-white/10 rounded-xl px-4 py-2 backdrop-blur-sm">
                                 <div class="text-blue-200 text-xs">No. Pendaftaran</div>
                                 <div class="font-bold font-mono">{{ registration?.registration_number }}</div>
                             </div>
                             <div class="bg-white/10 rounded-xl px-4 py-2 backdrop-blur-sm">
+                                <div class="text-blue-200 text-xs">Kode Akses</div>
+                                <div class="font-bold font-mono">{{ registration?.access_code }}</div>
+                            </div>
+                            <div class="bg-white/10 rounded-xl px-4 py-2 backdrop-blur-sm">
                                 <div class="text-blue-200 text-xs">Tahun Ajaran</div>
                                 <div class="font-bold">{{ registration?.academic_year }}</div>
                             </div>
-                            <div class="bg-white/10 rounded-xl px-4 py-2 backdrop-blur-sm">
-                                <div class="text-blue-200 text-xs">Status</div>
-                                <div class="font-bold">{{ statusInfo.label }}</div>
+                            <div :class="[statusInfo.bg, statusInfo.text]" class="rounded-xl px-5 py-2 flex items-center gap-2 shadow-lg border border-white/20">
+                                <div :class="statusInfo.dot" class="w-2.5 h-2.5 rounded-full animate-pulse"></div>
+                                <div class="text-base font-black tracking-wide uppercase">{{ statusInfo.label }}</div>
                             </div>
                         </div>
                     </div>
