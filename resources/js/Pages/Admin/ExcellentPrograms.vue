@@ -110,16 +110,16 @@ const deleteProgram = (program) => {
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="d-flex justify-space-between align-center">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Program Unggulan (Excellent)</h2>
-                <v-btn color="primary" prepend-icon="mdi-plus" @click="openModal()">
-                    Tambah Program
-                </v-btn>
-            </div>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Program Unggulan (Excellent)</h2>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="d-flex justify-end mb-4">
+                    <v-btn color="primary" prepend-icon="mdi-plus" @click="openModal()" elevation="2" class="text-none">
+                        Tambah Program
+                    </v-btn>
+                </div>
                 <v-card class="elevation-1 rounded-xl border">
                     <v-table>
                         <thead>
