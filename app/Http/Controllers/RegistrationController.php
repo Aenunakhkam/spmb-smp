@@ -551,8 +551,19 @@ class RegistrationController extends Controller
         $defaultEkstra = json_encode(['Tidak Ada', 'Pramuka', 'PMR', 'Paskibra', 'Olah Raga', 'Seni']);
         $defaultTransportasi = json_encode(['Jalan Kaki', 'Sepeda', 'Sepeda Motor', 'Mobil Pribadi', 'Angkutan Umum', 'Antar Jemput']);
         $defaultPeminatan = json_encode(['IPA', 'IPS', 'Bahasa', 'Agama', 'Umum']);
+        $allStudents = Registration::all()->sortByDesc(function ($reg) {
+            return $reg->final_score;
+        })->values();
+        
+        $realtimeRank = $allStudents->search(function ($reg) use ($registration) {
+            return $reg->id === $registration->id;
+        });
+        $realtimeRank = $realtimeRank !== false ? $realtimeRank + 1 : '-';
+        $totalCandidates = $allStudents->count();
 
         return Inertia::render('Student/Dashboard', [
+            'realtimeRank' => $realtimeRank,
+            'totalCandidates' => $totalCandidates,
             'registration' => $registration,
             'reportSemester' => $settings['report_semester'] ?? 'Kelas 6 Semester 2',
             'subjectsRequired' => array_values($subjectsRequiredDetails),

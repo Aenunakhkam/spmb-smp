@@ -12,6 +12,8 @@ const props = defineProps({
     subjectsRequired: { type: Array, default: () => [] },
     availableSubjects: { type: Array, default: () => [] },
     options: { type: Object, default: () => ({}) },
+    realtimeRank: [Number, String],
+    totalCandidates: Number,
 });
 
 const activeTab = ref('dashboard');
@@ -515,19 +517,31 @@ onMounted(() => {
                 </div>
 
                 <!-- Info Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center justify-between">
                         <div>
-                            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Skor Akhir</div>
+                            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Skor Akhir</div>
                             <div class="text-3xl font-black text-blue-700">{{ registration?.final_score || '-' }}</div>
                         </div>
                         <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
                             <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                         </div>
                     </div>
+                    
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center justify-between">
                         <div>
-                            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Peminatan</div>
+                            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Peringkat Sementara</div>
+                            <div class="text-3xl font-black text-amber-500">
+                                {{ realtimeRank || '-' }}<span class="text-base font-normal text-slate-400"> / {{ totalCandidates || '-' }}</span>
+                            </div>
+                        </div>
+                        <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center justify-between">
+                        <div>
+                            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Peminatan</div>
                             <div class="text-lg font-black text-slate-800">{{ registration?.additional_data?.major || '-' }}</div>
                         </div>
                         <div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center">
@@ -536,7 +550,7 @@ onMounted(() => {
                     </div>
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center justify-between">
                         <div>
-                            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Dokumen</div>
+                            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Dokumen</div>
                             <div class="text-3xl font-black text-emerald-600">{{ registration?.documents?.length || 0 }}<span class="text-base font-normal text-slate-400"> file</span></div>
                         </div>
                         <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center">
