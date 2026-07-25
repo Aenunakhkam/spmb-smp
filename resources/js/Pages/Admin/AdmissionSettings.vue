@@ -280,10 +280,10 @@ const deleteBanner = () => {
                                             <TextInput type="date" v-model="agenda.date" class="w-full" density="compact" />
                                         </td>
                                         <td class="p-3">
-                                            <v-text-field v-model="agenda.title" variant="underlined" density="compact" hide-details placeholder="Nama Agenda"></v-text-field>
+                                            <v-textarea v-model="agenda.title" rows="1" auto-grow variant="underlined" density="compact" hide-details placeholder="Nama Agenda"></v-textarea>
                                         </td>
                                         <td class="p-3">
-                                            <v-text-field v-model="agenda.description" variant="underlined" density="compact" hide-details placeholder="Keterangan singkat"></v-text-field>
+                                            <v-textarea v-model="agenda.description" rows="1" auto-grow variant="underlined" density="compact" hide-details placeholder="Keterangan singkat"></v-textarea>
                                         </td>
                                         <td class="p-3">
                                             <div class="flex justify-center">
