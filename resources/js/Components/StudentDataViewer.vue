@@ -167,15 +167,12 @@ const allGrades = computed(() => {
                     <v-col cols="12" class="mt-4">
                         <div class="text-subtitle-2 font-weight-bold text-primary mb-2 border-b pb-1">Kesejahteraan & Bantuan Sosial</div>
                         <v-row dense>
-                            <v-col cols="12" md="3" class="text-grey-darken-1 font-weight-medium">No. KKS</v-col>
-                            <v-col cols="12" md="3">: {{ s_add.kks_number || '-' }}</v-col>
-                            <v-col cols="12" md="3" class="text-grey-darken-1 font-weight-medium">No. KIP</v-col>
-                            <v-col cols="12" md="3">: {{ s_add.kip_number || '-' }}</v-col>
-                            
-                            <v-col cols="12" md="3" class="text-grey-darken-1 font-weight-medium">No. KSS</v-col>
-                            <v-col cols="12" md="3">: {{ s_add.kps_number || '-' }}</v-col>
-                            <v-col cols="12" md="3" class="text-grey-darken-1 font-weight-medium">No. PKH</v-col>
-                            <v-col cols="12" md="3">: {{ s_add.pkh_number || '-' }}</v-col>
+                            <v-col cols="12" md="4" class="text-grey-darken-1 font-weight-medium">No. KKS</v-col>
+                            <v-col cols="12" md="8">: {{ s_add.kks_number || '-' }}</v-col>
+                            <v-col cols="12" md="4" class="text-grey-darken-1 font-weight-medium">No. KIP</v-col>
+                            <v-col cols="12" md="8">: {{ s_add.kip_number || '-' }}</v-col>
+                            <v-col cols="12" md="4" class="text-grey-darken-1 font-weight-medium">No. PKH</v-col>
+                            <v-col cols="12" md="8">: {{ s_add.pkh_number || '-' }}</v-col>
                         </v-row>
                     </v-col>
                 </v-row>
