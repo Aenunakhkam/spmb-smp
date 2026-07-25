@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 
 const props = defineProps({
     registration: Object
@@ -52,16 +53,19 @@ const allGrades = computed(() => {
     if (!grade) return [];
     
     let list = [];
+    const subjectsRequired = usePage().props.app_settings?.subjects_required || [];
+    const allowedKeys = subjectsRequired.map(s => s.key);
+
     const coreCols = ['mathematics', 'indonesian', 'english', 'religion', 'ipa', 'ips', 'pkn'];
     coreCols.forEach(col => {
-        if (grade[col] !== null && grade[col] !== undefined) {
+        if (allowedKeys.includes(col) && grade[col] !== null && grade[col] !== undefined) {
             list.push({ key: col, val: grade[col] });
         }
     });
 
     if (grade.additional_data) {
         for (const [k, v] of Object.entries(grade.additional_data)) {
-            if (k !== 'prestasiList') {
+            if (k !== 'prestasiList' && allowedKeys.includes(k)) {
                 list.push({ key: k, val: v });
             }
         }

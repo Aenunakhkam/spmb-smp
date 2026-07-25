@@ -31,7 +31,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         // Fetch only necessary settings to share globally to avoid overhead
-        $settings = Setting::whereIn('key', ['app_name', 'school_name', 'school_logo_path'])->pluck('value', 'key')->toArray();
+        $settings = Setting::whereIn('key', ['app_name', 'school_name', 'school_logo_path', 'subjects_required'])->pluck('value', 'key')->toArray();
 
         return [
             ...parent::share($request),
@@ -47,6 +47,7 @@ class HandleInertiaRequests extends Middleware
                 'app_name' => $settings['app_name'] ?? 'SPMB Online',
                 'school_name' => $settings['school_name'] ?? 'Bustanul Ulum',
                 'school_logo_path' => isset($settings['school_logo_path']) ? '/storage/' . $settings['school_logo_path'] : null,
+                'subjects_required' => json_decode($settings['subjects_required'] ?? '[]', true),
             ],
         ];
     }
