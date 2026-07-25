@@ -140,7 +140,7 @@ const deleteProgram = (program) => {
                                     <v-icon :icon="program.icon" size="32" :color="program.color_theme"></v-icon>
                                 </td>
                                 <td class="font-weight-medium">{{ program.title }}</td>
-                                <td class="text-body-2 text-grey-darken-1 max-w-[300px] truncate" :title="program.description">{{ program.description }}</td>
+                                <td class="text-body-2 text-grey-darken-1 max-w-[300px] whitespace-normal py-3" :title="program.description">{{ program.description }}</td>
                                 <td>
                                     <v-chip size="small" :color="program.color_theme" variant="tonal">{{ program.color_theme }}</v-chip>
                                 </td>
