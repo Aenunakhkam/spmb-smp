@@ -423,6 +423,24 @@ class RegistrationController extends Controller
         return back()->with('success', 'Dokumen berhasil dihapus.');
     }
 
+    public function deleteGradeProof($id)
+    {
+        $grade = Grade::findOrFail($id);
+        $registration = Registration::findOrFail($grade->registration_id);
+        if (!in_array($registration->status, ['incomplete', 'revision'])) {
+            return back()->withErrors(['error' => 'Data pendaftaran sudah dikunci dan tidak dapat diubah.']);
+        }
+        
+        // Delete the physical file from storage
+        if ($grade->proof_file_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($grade->proof_file_path)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($grade->proof_file_path);
+        }
+        
+        $grade->update(['proof_file_path' => null]);
+
+        return back()->with('success', 'Bukti rapor berhasil dihapus.');
+    }
+
     public function finalize(Request $request)
     {
         $registration = Registration::with(['studentDetail', 'parentDetail', 'grade'])->findOrFail($request->registration_id);

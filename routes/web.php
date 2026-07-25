@@ -51,6 +51,7 @@ Route::prefix('pendaftaran')->group(function () {
     Route::post('/simpan-bagian', [RegistrationController::class, 'saveSection'])->name('register.saveSection');
     Route::post('/upload-dokumen', [RegistrationController::class, 'uploadDocument'])->name('register.uploadDocument');
     Route::delete('/dokumen/{id}', [RegistrationController::class, 'deleteDocument'])->name('register.deleteDocument');
+    Route::delete('/dokumen/rapor/{id}', [RegistrationController::class, 'deleteGradeProof'])->name('register.deleteGradeProof');
     Route::post('/finalisasi', [RegistrationController::class, 'finalize'])->name('register.finalize');
 });
 
