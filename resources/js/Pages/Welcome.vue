@@ -25,6 +25,7 @@ const props = defineProps({
     socialYoutube: String,
     contactWhatsapp: String,
     contactEmail: String,
+    excellentPrograms: Array,
 });
 
 const chartData = computed(() => {
@@ -335,47 +336,21 @@ const agendas = computed(() => {
                             </div>
 
                             <div class="d-flex flex-column ga-6">
-                                <v-card class="pa-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow bg-white" flat>
+                                <v-card v-for="program in excellentPrograms" :key="program.id" class="pa-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow bg-white" flat>
                                     <div class="d-flex align-start ga-4">
-                                        <div class="pa-3 rounded-lg bg-blue-50 text-blue-700">
-                                            <v-icon icon="mdi-book-open-page-variant" size="28"></v-icon>
+                                        <div :class="`pa-3 rounded-lg bg-${program.color_theme}-50 text-${program.color_theme}-700`">
+                                            <v-icon :icon="program.icon" size="28"></v-icon>
                                         </div>
                                         <div>
-                                            <h4 class="text-h6 font-weight-black text-primary mb-2">Program Tahfidz Al-Qur'an</h4>
-                                            <p class="text-body-2 text-grey-darken-2 leading-relaxed">
-                                                Merupakan program unggulan berkelanjutan (excellent program) yang didesain secara khusus untuk melahirkan generasi penghafal Al-Qur'an (Hafidz/Hafidzah). Pembinaan dilakukan melalui metode setoran (ziyadah) dan pengulangan (muraja'ah) secara intensif dengan target capaian juz yang terukur setiap semesternya, didampingi langsung oleh para asatidz yang bersanad.
-                                            </p>
+                                            <h4 :class="`text-h6 font-weight-black text-${program.color_theme}-700 mb-2`">{{ program.title }}</h4>
+                                            <p class="text-body-2 text-grey-darken-2 leading-relaxed whitespace-pre-line">{{ program.description }}</p>
                                         </div>
                                     </div>
                                 </v-card>
-
-                                <v-card class="pa-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow bg-white" flat>
-                                    <div class="d-flex align-start ga-4">
-                                        <div class="pa-3 rounded-lg bg-amber-50 text-amber-700">
-                                            <v-icon icon="mdi-library" size="28"></v-icon>
-                                        </div>
-                                        <div>
-                                            <h4 class="text-h6 font-weight-black text-secondary-darken-1 mb-2">Kajian Kitab Kuning</h4>
-                                            <p class="text-body-2 text-grey-darken-2 leading-relaxed">
-                                                Mengintegrasikan kurikulum pesantren salaf dengan pendidikan formal. Santri akan dididik untuk memiliki kompetensi unggul dalam membaca, memahami, serta menganalisis turats (kitab kuning) seperti Nahwu, Shorof, Fiqih, dan Akhlaq sebagai fondasi utama dalam merespons tantangan zaman berlandaskan nilai-nilai Ahlussunnah Wal Jamaah.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </v-card>
-
-                                <v-card class="pa-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow bg-white" flat>
-                                    <div class="d-flex align-start ga-4">
-                                        <div class="pa-3 rounded-lg bg-blue-50 text-blue-700">
-                                            <v-icon icon="mdi-flask" size="28"></v-icon>
-                                        </div>
-                                        <div>
-                                            <h4 class="text-h6 font-weight-black text-primary mb-2">Kelas MIPA (Olimpiade & Sains)</h4>
-                                            <p class="text-body-2 text-grey-darken-2 leading-relaxed">
-                                                Program percepatan dan pendalaman materi di bidang Matematika dan Ilmu Pengetahuan Alam. Kelas ini diorientasikan untuk mempersiapkan peserta didik berkompetisi di berbagai ajang kejuaraan sains tingkat nasional maupun internasional (OSN/KSM), dibekali dengan fasilitas laboratorium modern dan bimbingan eksklusif.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </v-card>
+                                
+                                <div v-if="!excellentPrograms || excellentPrograms.length === 0" class="text-center text-grey py-8 border rounded-xl border-dashed">
+                                    Belum ada data program unggulan.
+                                </div>
                             </div>
                         </div>
                     </div>

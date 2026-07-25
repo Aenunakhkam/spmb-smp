@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\AdmissionSettingController;
+use App\Http\Controllers\Admin\AdminLogController;
+use App\Http\Controllers\Admin\AdminExcellentProgramController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
 use Illuminate\Foundation\Application;
@@ -43,6 +46,7 @@ Route::get('/', function () {
         'socialYoutube' => $settings['social_youtube'] ?? null,
         'contactWhatsapp' => $settings['contact_whatsapp'] ?? null,
         'contactEmail' => $settings['contact_email'] ?? null,
+        'excellentPrograms' => \App\Models\ExcellentProgram::orderBy('id')->get(),
     ]);
 })->name('home');
 
@@ -103,6 +107,14 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
 
     Route::get('/logs', [App\Http\Controllers\Admin\AdminLogController::class, 'index'])->name('admin.logs.index');
     Route::delete('/logs/clear', [App\Http\Controllers\Admin\AdminLogController::class, 'clear'])->name('admin.logs.clear');
+
+    // Admin Excellent Programs
+    Route::resource('excellent-programs', AdminExcellentProgramController::class)->except(['create', 'show', 'edit'])->names([
+        'index' => 'admin.excellent-programs.index',
+        'store' => 'admin.excellent-programs.store',
+        'update' => 'admin.excellent-programs.update',
+        'destroy' => 'admin.excellent-programs.destroy',
+    ]);
 
     // Admin Users Management
     Route::resource('users', App\Http\Controllers\Admin\AdminUserController::class)->except(['create', 'show', 'edit'])->names([
