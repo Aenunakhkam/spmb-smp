@@ -1293,7 +1293,7 @@ onMounted(() => {
         <footer class="mt-auto py-6 border-t bg-white">
             <v-container>
                 <div class="text-center text-caption text-grey">
-                    &copy; {{ new Date().getFullYear() }} {{ ($page.props.app_settings?.school_name || 'SMP BUSTANUL ULUM NU JATIROKEH').toUpperCase() }}. All Rights Reserved.
+                    &copy; {{ new Date().getFullYear() }} SMP BUSTANUL ULUM NU JATIROKEH. All Rights Reserved.
                 </div>
             </v-container>
         </footer>

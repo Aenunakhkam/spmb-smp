@@ -140,7 +140,7 @@ const menuItems = [
                 <footer class="mt-auto py-6 border-t bg-white w-full">
                     <div class="max-w-7xl mx-auto px-4">
                         <div class="text-center text-xs text-slate-500">
-                            &copy; {{ new Date().getFullYear() }} {{ ($page.props.app_settings?.school_name || 'SMP BUSTANUL ULUM NU JATIROKEH').toUpperCase() }}. All Rights Reserved.
+                            &copy; {{ new Date().getFullYear() }} SMP BUSTANUL ULUM NU JATIROKEH. All Rights Reserved.
                         </div>
                     </div>
                 </footer>
