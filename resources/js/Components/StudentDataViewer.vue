@@ -61,7 +61,9 @@ const allGrades = computed(() => {
 
     if (grade.additional_data) {
         for (const [k, v] of Object.entries(grade.additional_data)) {
-            list.push({ key: k, val: v });
+            if (k !== 'prestasiList') {
+                list.push({ key: k, val: v });
+            }
         }
     }
     return list;
