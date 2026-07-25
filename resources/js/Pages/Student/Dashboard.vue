@@ -403,6 +403,23 @@ onMounted(() => {
                 </button>
             </nav>
 
+            <!-- Print Buttons -->
+            <div class="px-3 pb-2 border-t border-slate-100 pt-3" v-if="!isSidebarCollapsed">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-2 px-1">Cetak Dokumen</p>
+                <div class="space-y-1.5">
+                    <a :href="`/cetak/kartu/${registration?.id}`" target="_blank"
+                        class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-[12px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg>
+                        Kartu Peserta
+                    </a>
+                    <a :href="`/cetak/formulir/${registration?.id}`" target="_blank"
+                        class="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-[12px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        Formulir Pendaftaran
+                    </a>
+                </div>
+            </div>
+
             <!-- Logout -->
             <div class="p-4 border-t border-slate-100">
                 <button @click="logout" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-bold text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors">

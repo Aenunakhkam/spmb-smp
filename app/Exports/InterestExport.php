@@ -39,6 +39,14 @@ class InterestExport implements FromCollection, WithHeadings, WithMapping, WithS
     public function map($registration): array
     {
         $this->rowNumber++;
+        $statusLabels = [
+            'incomplete' => 'Belum Lengkap',
+            'pending'    => 'Menunggu Verifikasi',
+            'verified'   => 'Terverifikasi',
+            'passed'     => 'Diterima',
+            'failed'     => 'Tidak Diterima',
+        ];
+
         return [
             $this->rowNumber,
             $registration->registration_number,
@@ -46,7 +54,7 @@ class InterestExport implements FromCollection, WithHeadings, WithMapping, WithS
             $registration->studentDetail->gender == 'L' ? 'Laki-laki' : ($registration->studentDetail->gender == 'P' ? 'Perempuan' : '-'),
             $registration->studentDetail->phone ?? '-',
             $registration->additional_data['major'] ?? 'Belum Memilih',
-            strtoupper($registration->status),
+            $statusLabels[$registration->status] ?? strtoupper($registration->status),
         ];
     }
 
