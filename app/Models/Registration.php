@@ -28,6 +28,31 @@ class Registration extends Model
         'finalized_at' => 'datetime',
     ];
 
+    protected $appends = ['final_score'];
+
+    public function getFinalScoreAttribute()
+    {
+        $totalAchievementScore = 0;
+        
+        static $achievementScores = null;
+        if ($achievementScores === null) {
+            $achievementScores = json_decode(\App\Models\Setting::where('key', 'achievement_scores')->first()?->value ?? '{}', true);
+        }
+        
+        $studentDetail = $this->studentDetail;
+        if ($studentDetail && isset($studentDetail->additional_data['achievements'])) {
+            foreach ($studentDetail->additional_data['achievements'] as $ach) {
+                $level = $ach['level'] ?? null;
+                $rank = $ach['rank'] ?? null;
+                if ($level && $rank && isset($achievementScores[$level][$rank])) {
+                    $totalAchievementScore += $achievementScores[$level][$rank];
+                }
+            }
+        }
+        
+        return $this->average_score + $totalAchievementScore;
+    }
+
     public function studentDetail(): HasOne
     {
         return $this->hasOne(StudentDetail::class);

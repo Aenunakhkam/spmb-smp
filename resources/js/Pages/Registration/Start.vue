@@ -1,4 +1,5 @@
 <script setup>
+import TextInput from '@/Components/TextInput.vue';
 import { Head, useForm, router, usePage } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 
@@ -93,53 +94,35 @@ const submit = () => {
                         <v-form @submit.prevent="submit" class="form-modern">
                             <div class="field-group mb-6">
                                 <label class="text-subtitle-2 font-weight-bold color-main mb-2 d-block">Nama Lengkap</label>
-                                <v-text-field
-                                    v-model="form.full_name"
-                                    placeholder="Sesuai ijazah sebelumnya"
-                                    required
-                                    :error-messages="form.errors.full_name"
-                                    variant="outlined"
-                                    color="primary"
-                                    bg-color="white"
-                                    prepend-inner-icon="mdi-account"
-                                    rounded="xl"
-                                    hide-details="auto"
-                                    class="modern-input"
-                                ></v-text-field>
+                                <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <v-icon color="grey-lighten-1" size="small">mdi-account</v-icon>
+        </div>
+        <TextInput v-model="form.full_name" type="text" placeholder="Masukkan nama lengkap siswa" @input="form.full_name = $event.target.value.replace(/[^a-zA-Z\s\.,']/g, '')" class="w-full pl-10" />
+    </div>
+    <div v-if="form.errors.full_name" class="text-error text-caption mt-1">{{ form.errors.full_name }}</div>
                             </div>
 
                             <div class="field-group mb-6">
                                 <label class="text-subtitle-2 font-weight-bold color-main mb-2 d-block">NISN</label>
-                                <v-text-field
-                                    v-model="form.nisn"
-                                    placeholder="10 digit nomor induk siswa"
-                                    required
-                                    :error-messages="form.errors.nisn"
-                                    variant="outlined"
-                                    color="primary"
-                                    bg-color="white"
-                                    prepend-inner-icon="mdi-card-account-details"
-                                    rounded="xl"
-                                    hide-details="auto"
-                                    class="modern-input"
-                                ></v-text-field>
+                                <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <v-icon color="grey-lighten-1" size="small">mdi-card-account-details</v-icon>
+        </div>
+        <TextInput v-model="form.nisn" type="text" placeholder="10 digit nomor induk siswa"  inputmode="numeric" maxlength="10" @input="form.nisn = $event.target.value.replace(/[^0-9]/g, '').slice(0, 10)" class="w-full pl-10" />
+    </div>
+    <div v-if="form.errors.nisn" class="text-error text-caption mt-1">{{ form.errors.nisn }}</div>
                             </div>
 
                             <div class="field-group mb-10">
                                 <label class="text-subtitle-2 font-weight-bold color-main mb-2 d-block">Nomor Telepon / WhatsApp</label>
-                                <v-text-field
-                                    v-model="form.phone"
-                                    placeholder="Contoh: 081234567890"
-                                    required
-                                    :error-messages="form.errors.phone"
-                                    variant="outlined"
-                                    color="primary"
-                                    bg-color="white"
-                                    prepend-inner-icon="mdi-whatsapp"
-                                    rounded="xl"
-                                    hide-details="auto"
-                                    class="modern-input"
-                                ></v-text-field>
+                                <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <v-icon color="grey-lighten-1" size="small">mdi-whatsapp</v-icon>
+        </div>
+        <TextInput v-model="form.phone" type="text" placeholder="Contoh: 081234567890" class="w-full pl-10" />
+    </div>
+    <div v-if="form.errors.phone" class="text-error text-caption mt-1">{{ form.errors.phone }}</div>
                             </div>
 
                             <v-btn
@@ -179,7 +162,7 @@ const submit = () => {
     font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 
-.color-main { color: #0a2a12 !important; }
+.color-main { color: #0f172a !important; }
 .leading-tight { line-height: 1.15; }
 .z-index-2 { z-index: 2; }
 .tracking-wide { letter-spacing: 1px; }

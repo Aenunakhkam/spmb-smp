@@ -22,31 +22,31 @@ const submit = () => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-h5 font-weight-bold">Verifikasi: {{ registration.student_detail.full_name }}</h2>
+            <h2 class="text-xl font-bold text-slate-800">Verifikasi: {{ registration.student_detail.full_name }}</h2>
         </template>
 
-        <v-row>
-            <v-col cols="12" md="8">
-                <v-card class="mb-6 rounded-xl overflow-hidden elevation-2">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-6">
+            <div class="col-span-12 md:col-span-8">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
                     <div class="pa-4 bg-grey-lighten-4 border-b">
-                        <v-row dense>
-                            <v-col cols="12" sm="4" class="text-grey-darken-1 font-weight-medium">Nomor Pendaftaran</v-col>
-                            <v-col cols="12" sm="8" class="font-weight-bold">: <span class="text-primary">{{ registration.registration_number }}</span></v-col>
-                            <v-col cols="12" sm="4" class="text-grey-darken-1 font-weight-medium">Kode Akses</v-col>
-                            <v-col cols="12" sm="8" class="font-weight-bold">: <span class="text-warning-darken-3">{{ registration.access_code }}</span></v-col>
-                        </v-row>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-6">
+                            <div class="col-span-12">Nomor Pendaftaran</div>
+                            <div class="col-span-12">: <span class="text-primary">{{ registration.registration_number }}</span></div>
+                            <div class="col-span-12">Kode Akses</div>
+                            <div class="col-span-12">: <span class="text-warning-darken-3">{{ registration.access_code }}</span></div>
+                        </div>
                     </div>
                     
                     <div class="pa-4 pt-0 mt-4">
                         <StudentDataViewer :registration="registration" />
                     </div>
-                </v-card>
-            </v-col>
+                </div>
+            </div>
 
-            <v-col cols="12" md="4">
+            <div class="col-span-12 md:col-span-4">
                 <!-- Action Card -->
-                <v-card class="pa-4 position-sticky" style="top: 80px">
-                    <h3 class="text-h6 font-weight-bold mb-4">Aksi Verifikasi</h3>
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                    <h3 class="text-lg font-bold text-slate-800">Aksi Verifikasi</h3>
                     <v-form @submit.prevent="submit">
                         <v-select
                             v-model="form.status"
@@ -71,16 +71,16 @@ const submit = () => {
                             placeholder="Tulis alasan jika status perlu perbaikan..."
                         ></v-textarea>
 
-                        <v-btn block color="success" size="large" type="submit" :loading="form.processing">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all">
                             Simpan Verifikasi
-                        </v-btn>
+                        </button>
                         
-                        <v-btn block variant="text" class="mt-2" @click="router.get(route('admin.registrations.index'))">
+                        <button @click="router.get(route('admin.registrations.index'))" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all">
                             Kembali
-                        </v-btn>
+                        </button>
                     </v-form>
-                </v-card>
-            </v-col>
-        </v-row>
+                </div>
+            </div>
+        </div>
     </AuthenticatedLayout>
 </template>

@@ -111,26 +111,26 @@ const formatDate = (dateString) => {
     <AuthenticatedLayout>
         <template #header>
             <div>
-                <h2 class="text-h5 font-weight-bold mb-1 text-grey-darken-4">Kelola Akun Admin</h2>
+                <h2 class="text-xl font-bold text-slate-800">Kelola Akun Admin</h2>
                 <span class="text-caption text-grey-darken-1">Manajemen akses dan daftar admin sistem SPMB</span>
             </div>
         </template>
 
         <!-- Flash Messages -->
-        <v-alert v-if="$page.props.flash.success" type="success" variant="tonal" class="mb-6 rounded-lg border" closable>
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg text-sm text-blue-800">
             {{ $page.props.flash.success }}
-        </v-alert>
-        <v-alert v-if="$page.props.flash.error" type="error" variant="tonal" class="mb-6 rounded-lg border" closable>
+        </div>
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg text-sm text-blue-800">
             {{ $page.props.flash.error }}
-        </v-alert>
-
-        <div class="d-flex justify-end mb-4">
-            <v-btn color="primary" prepend-icon="mdi-account-plus" class="rounded-lg font-weight-bold shadow-none hover-lift" @click="openAddModal">
-                Tambah Admin
-            </v-btn>
         </div>
 
-        <v-card class="pa-6 rounded-xl border-0 soft-shadow glass-card">
+        <div class="d-flex justify-end mb-4">
+            <button @click="openAddModal" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all">
+                Tambah Admin
+            </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
             <div class="d-flex justify-space-between align-center mb-6 wrap-sm">
                 <h3 class="text-subtitle-1 font-weight-bold text-grey-darken-4">Daftar Admin</h3>
                 <div class="w-25 mt-sm-2" style="min-width: 250px;">
@@ -154,11 +154,11 @@ const formatDate = (dateString) => {
             >
                 <template v-slot:item.name="{ item }">
                     <div class="d-flex align-center py-2">
-                        <v-avatar size="36" color="primary-lighten-4" class="mr-3">
+                        <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-700 overflow-hidden">
                             <span class="text-caption font-weight-bold text-primary">{{ item.name.charAt(0).toUpperCase() }}</span>
-                        </v-avatar>
+                        </div>
                         <span class="font-weight-medium text-grey-darken-3">{{ item.name }}</span>
-                        <v-chip v-if="item.id === $page.props.auth.user.id" size="x-small" color="success" class="ml-2 font-weight-bold" variant="flat">Anda</v-chip>
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase border bg-slate-100 text-slate-700 border-slate-200">Anda</span>
                     </div>
                 </template>
                 <template v-slot:item.email="{ item }">
@@ -169,22 +169,22 @@ const formatDate = (dateString) => {
                 </template>
                 <template v-slot:item.actions="{ item }">
                     <div class="d-flex justify-end ga-2">
-                        <v-btn icon="mdi-pencil" size="small" variant="text" color="primary" @click="openEditModal(item)"></v-btn>
-                        <v-btn icon="mdi-delete" size="small" variant="text" color="error" :disabled="item.id === $page.props.auth.user.id" @click="confirmDelete(item.id, item.name)"></v-btn>
+                        <button @click="openEditModal(item)" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all"></button>
+                        <button @click="confirmDelete(item.id, item.name)" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all"></button>
                     </div>
                 </template>
             </v-data-table>
-        </v-card>
+        </div>
 
         <!-- Add/Edit Modal -->
         <v-dialog v-model="dialog" max-width="500">
-            <v-card class="rounded-xl pa-2 soft-shadow border-0 glass-card">
-                <v-card-title class="text-h6 font-weight-bold text-grey-darken-4 pt-4 px-6 d-flex justify-space-between align-center">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
                     <span>{{ isEditing ? 'Edit Akun Admin' : 'Tambah Admin Baru' }}</span>
-                    <v-btn icon="mdi-close" variant="text" density="comfortable" @click="dialog = false"></v-btn>
-                </v-card-title>
+                    <button @click="dialog = false" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all"></button>
+                </div>
                 
-                <v-card-text class="px-6 pt-4">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
                     <v-form @submit.prevent="saveUser">
                         <div class="mb-4">
                             <div class="text-caption font-weight-bold mb-1 text-grey-darken-3">Nama Lengkap <span class="text-error">*</span></div>
@@ -234,14 +234,14 @@ const formatDate = (dateString) => {
                         </div>
 
                         <div class="d-flex justify-end ga-3 pb-2">
-                            <v-btn variant="text" color="grey-darken-1" class="text-none font-weight-bold" @click="dialog = false">Batal</v-btn>
-                            <v-btn type="submit" color="primary" class="rounded-lg text-none font-weight-bold px-6 shadow-none" :loading="form.processing">
+                            <button @click="dialog = false" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all">Batal</button>
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all">
                                 {{ isEditing ? 'Simpan Perubahan' : 'Tambahkan Admin' }}
-                            </v-btn>
+                            </button>
                         </div>
                     </v-form>
-                </v-card-text>
-            </v-card>
+                </div>
+            </div>
         </v-dialog>
     </AuthenticatedLayout>
 </template>

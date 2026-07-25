@@ -3,7 +3,9 @@ import { ref } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 
-const drawer = ref(true);
+const isSidebarOpen = ref(true);
+const isMobileMenuOpen = ref(false);
+const isProfileDropdownOpen = ref(false);
 
 const logout = () => {
     router.post(route('logout'), {}, {
@@ -23,100 +25,132 @@ const logout = () => {
 };
 
 const menuItems = [
-    { title: 'Dashboard', icon: 'mdi-view-dashboard', route: 'admin.dashboard' },
-    { title: 'Data Master', icon: 'mdi-database', route: 'admin.master.index' },
-    { title: 'Daftar Pendaftar', icon: 'mdi-account-group', route: 'admin.registrations.index' },
-    { title: 'Data Peminatan', icon: 'mdi-star-face', route: 'admin.interests' },
-    { title: 'Laporan Pendaftaran', icon: 'mdi-file-document-multiple', route: 'admin.reports.index' },
-    { title: 'Pengaturan PPDB', icon: 'mdi-clipboard-list-outline', route: 'admin.admission-settings.index' },
-    { title: 'Identitas Aplikasi', icon: 'mdi-application-cog', route: 'admin.settings.index' },
+    { title: 'Dashboard', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z', route: 'admin.dashboard' },
+    { title: 'Daftar Pendaftar', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', route: 'admin.registrations.index' },
+    { title: 'Data Peminatan', icon: 'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z', route: 'admin.interests' },
+    { title: 'Laporan', icon: 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', route: 'admin.reports.index' },
+    { title: 'Pengaturan PPDB', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01', route: 'admin.admission-settings.index' },
+    { title: 'Identitas Aplikasi', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z', route: 'admin.settings.index' },
 ];
 </script>
 
 <template>
-    <v-app style="background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);">
-        <v-navigation-drawer v-model="drawer" color="white" elevation="0" style="border-right: 1px solid rgba(0,0,0,0.05);">
-            <v-list class="pa-4">
-                <div class="d-flex align-center px-2 mb-6 mt-2">
-                    <v-avatar color="primary-lighten-1" size="40" class="mr-3 elevation-2 bg-white">
-                        <v-img v-if="$page.props.app_settings?.school_logo_path" :src="$page.props.app_settings.school_logo_path" cover></v-img>
-                        <v-icon v-else color="primary" size="20">mdi-school</v-icon>
-                    </v-avatar>
-                    <div>
-                        <div class="text-subtitle-1 font-weight-black text-grey-darken-4" style="line-height: 1.2;">{{ $page.props.app_settings?.app_name || 'SPMB Admin' }}</div>
-                        <div class="text-caption font-weight-medium text-primary text-truncate" style="max-width: 150px;">{{ $page.props.app_settings?.school_name || 'Bustanul Ulum' }}</div>
+    <div class="min-h-screen bg-slate-50 flex font-sans text-slate-800">
+        
+        <!-- Mobile Sidebar Overlay -->
+        <div v-if="isMobileMenuOpen" @click="isMobileMenuOpen = false" class="fixed inset-0 bg-slate-900/50 z-40 lg:hidden"></div>
+
+        <!-- Sidebar -->
+        <aside :class="[
+            isSidebarOpen ? 'w-64' : 'w-20',
+            isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+            'fixed lg:relative inset-y-0 left-0 z-50 bg-gradient-to-b from-[#1e3a8a] to-[#0f172a] text-white flex flex-col transition-all duration-300 ease-in-out shadow-2xl lg:shadow-none'
+        ]">
+            <!-- Logo Area -->
+            <div class="h-16 flex items-center px-4 border-b border-white/10 shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center shrink-0">
+                    <img v-if="$page.props.app_settings?.school_logo_path" :src="$page.props.app_settings.school_logo_path" class="w-7 h-7 object-contain" />
+                    <svg v-else class="w-6 h-6 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
+                </div>
+                <div v-if="isSidebarOpen" class="ml-3 overflow-hidden whitespace-nowrap">
+                    <div class="font-bold text-sm leading-tight tracking-wide">{{ $page.props.app_settings?.app_name || 'SPMB Admin' }}</div>
+                    <div class="text-[10px] text-blue-200 uppercase tracking-wider">{{ $page.props.app_settings?.school_name || 'Bustanul Ulum' }}</div>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="flex-1 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
+                <div v-if="isSidebarOpen" class="px-3 pb-2 text-[10px] font-bold text-blue-300/50 uppercase tracking-widest mt-2">MENU UTAMA</div>
+                
+                <Link v-for="item in menuItems" :key="item.title" :href="route(item.route)"
+                    :class="[
+                        route().current(item.route) || route().current(item.route + '.*') 
+                            ? 'bg-blue-600/20 text-white border-blue-400' 
+                            : 'text-slate-300 hover:bg-white/5 hover:text-white border-transparent',
+                        'flex items-center px-3 py-2.5 rounded-lg border-l-4 transition-all group relative'
+                    ]"
+                    :title="!isSidebarOpen ? item.title : ''"
+                >
+                    <svg class="w-5 h-5 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="item.icon"/>
+                    </svg>
+                    <span v-if="isSidebarOpen" class="ml-3 text-sm font-medium whitespace-nowrap">{{ item.title }}</span>
+                </Link>
+            </div>
+
+            <!-- Footer / Logout -->
+            <div class="p-3 border-t border-white/10">
+                <button @click="logout" class="w-full flex items-center px-3 py-2.5 rounded-lg text-red-300 hover:bg-red-500/10 hover:text-red-200 transition-all border-l-4 border-transparent group">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    <span v-if="isSidebarOpen" class="ml-3 text-sm font-medium">Keluar Sistem</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-50/50">
+            
+            <!-- Top Navbar -->
+            <header class="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 z-30 sticky top-0">
+                <div class="flex items-center">
+                    <button @click="isMobileMenuOpen = !isMobileMenuOpen" class="lg:hidden p-2 -ml-2 mr-2 text-slate-500 hover:bg-slate-100 rounded-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    </button>
+                    <button @click="isSidebarOpen = !isSidebarOpen" class="hidden lg:block p-2 -ml-2 mr-4 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                    </button>
+                    
+                    <h2 class="text-lg font-bold text-slate-800 tracking-tight hidden sm:block">
+                        <slot name="header" />
+                    </h2>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- Profile Dropdown -->
+                    <div class="relative">
+                        <button @click="isProfileDropdownOpen = !isProfileDropdownOpen" class="flex items-center space-x-2 p-1.5 rounded-full hover:bg-slate-100 transition-colors border border-transparent hover:border-slate-200 focus:outline-none">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm">
+                                {{ $page.props.auth.user.name.charAt(0) }}
+                            </div>
+                            <div class="hidden md:block text-left mr-1">
+                                <div class="text-sm font-bold text-slate-700 leading-tight">{{ $page.props.auth.user.name }}</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">Administrator</div>
+                            </div>
+                            <svg class="w-4 h-4 text-slate-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div v-if="isProfileDropdownOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 py-1 z-50">
+                            <Link :href="route('profile.edit')" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-600 font-medium">Pengaturan Profil</Link>
+                            <div class="border-t border-slate-100 my-1"></div>
+                            <button @click="logout" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium">Keluar</button>
+                        </div>
                     </div>
                 </div>
-                <v-divider class="mb-4 opacity-10"></v-divider>
-                
-                <v-list-item
-                    v-for="item in menuItems"
-                    :key="item.title"
-                    :prepend-icon="item.icon"
-                    :title="item.title"
-                    @click="item.route === 'coming_soon' ? null : router.get(route(item.route))"
-                    :active="route().current(item.route) || route().current(item.route + '.*')"
-                    active-color="primary"
-                    variant="text"
-                    rounded="lg"
-                    class="mb-2 font-weight-medium text-grey-darken-2"
-                    style="cursor:pointer"
-                >
-                    <template v-slot:append v-if="item.route === 'coming_soon'">
-                        <v-chip size="x-small" color="grey-lighten-1" text-color="white" class="font-weight-bold">Segera</v-chip>
-                    </template>
-                </v-list-item>
-            </v-list>
+            </header>
 
-            <template v-slot:append>
-                <v-divider class="opacity-10"></v-divider>
-                <v-list class="pa-4">
-                    <div @click="logout" class="w-100" style="text-decoration:none; color:inherit;">
-                        <v-list-item
-                            prepend-icon="mdi-logout"
-                            title="Keluar"
-                            variant="text"
-                            rounded="lg"
-                            class="text-error font-weight-medium hover-lift"
-                            style="cursor: pointer"
-                        ></v-list-item>
-                    </div>
-                </v-list>
-            </template>
-        </v-navigation-drawer>
-
-        <v-app-bar class="glass-header px-md-4" elevation="0" height="75" app style="background: rgba(255, 255, 255, 0.85);">
-            <v-app-bar-nav-icon @click="drawer = !drawer" color="grey-darken-3"></v-app-bar-nav-icon>
-            <v-toolbar-title class="font-weight-bold text-grey-darken-4">
-                <slot name="header" />
-            </v-toolbar-title>
-            <v-spacer></v-spacer>
-            <div class="px-4">
-                <v-menu>
-                    <template v-slot:activator="{ props }">
-                        <div v-bind="props" class="d-flex align-center pa-1 pr-3 rounded-pill" style="cursor: pointer; background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05);">
-                            <v-avatar size="36" color="primary-lighten-4" class="mr-2">
-                                <v-icon icon="mdi-shield-account" color="primary" size="20"></v-icon>
-                            </v-avatar>
-                            <span class="text-caption font-weight-bold text-grey-darken-3">{{ $page.props.auth.user.name }}</span>
-                            <v-icon size="small" color="grey-darken-1" class="ml-1">mdi-chevron-down</v-icon>
-                        </div>
-                    </template>
-                    <v-list elevation="3" class="mt-2 rounded-lg pa-2 border" min-width="180">
-                        <v-list-item @click="router.get(route('profile.edit'))" prepend-icon="mdi-account-circle-outline" title="Profil Admin" class="rounded-lg mb-1 font-weight-medium"></v-list-item>
-                        <v-divider class="my-1 opacity-20"></v-divider>
-                        <div @click="logout" style="text-decoration:none; color:inherit; cursor: pointer;">
-                            <v-list-item prepend-icon="mdi-logout" title="Keluar Sistem" class="text-error rounded-lg font-weight-medium"></v-list-item>
-                        </div>
-                    </v-list>
-                </v-menu>
-            </div>
-        </v-app-bar>
-
-        <v-main style="position: relative; z-index: 1;">
-            <v-container fluid class="pa-md-8 pa-4" style="max-width: 1400px;">
-                <slot />
-            </v-container>
-        </v-main>
-    </v-app>
+            <!-- Page Content -->
+            <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+                <div class="max-w-7xl mx-auto">
+                    <slot />
+                </div>
+            </main>
+        </div>
+    </div>
 </template>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+</style>

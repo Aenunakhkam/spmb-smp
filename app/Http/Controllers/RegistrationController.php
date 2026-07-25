@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 
 class RegistrationController extends Controller
@@ -61,8 +62,23 @@ class RegistrationController extends Controller
                 'religion' => 'Islam',
             ]);
 
+            try {
+                $waMessage = "Halo {$request->full_name}, pendaftaran awal Anda berhasil!\n\n"
+                           . "Berikut adalah data akses Anda:\n"
+                           . "Nomor Pendaftaran: *{$regNumber}*\n"
+                           . "Kode Akses: *{$accessCode}*\n\n"
+                           . "Gunakan data ini untuk masuk ke Portal Siswa dan melengkapi berkas.";
+                
+                Http::timeout(5)->post('http://localhost:3000/send-message', [
+                    'number' => $request->phone,
+                    'message' => $waMessage
+                ]);
+            } catch (\Exception $e) {
+                // Ignore if WA server is down to not block registration flow
+            }
+
             return redirect()->route('student.dashboard', [$regNumber, $accessCode])
-                ->with('success', 'Registrasi awal berhasil! Silakan simpan Nomor Pendaftaran dan Kode Akses Anda.');
+                ->with('success', 'Registrasi awal berhasil! Nomor Pendaftaran dan Kode Akses Anda juga telah dikirim via WhatsApp.');
         });
     }
 
@@ -109,7 +125,6 @@ class RegistrationController extends Controller
                 'pendidikan' => json_decode($settings['opt_pendidikan'] ?? $defaultPendidikan, true),
                 'pekerjaan' => json_decode($settings['opt_pekerjaan'] ?? $defaultPekerjaan, true),
                 'penghasilan' => json_decode($settings['opt_penghasilan'] ?? $defaultPenghasilan, true),
-                'kebutuhan_khusus' => json_decode($settings['opt_kebutuhan_khusus'] ?? $defaultKebutuhanKhusus, true),
                 'tempat_tinggal' => json_decode($settings['opt_tempat_tinggal'] ?? $defaultTempatTinggal, true),
                 'ekstrakurikuler' => json_decode($settings['opt_ekstrakurikuler'] ?? $defaultEkstra, true),
                 'moda_transportasi' => json_decode($settings['opt_moda_transportasi'] ?? $defaultTransportasi, true),
@@ -192,46 +207,34 @@ class RegistrationController extends Controller
 
     public function saveSection(Request $request)
     {
+        $checkReg = Registration::findOrFail($request->registration_id);
+        if (!in_array($checkReg->status, ['incomplete', 'revision'])) {
+            return back()->withErrors(['error' => 'Data pendaftaran sudah dikunci dan tidak dapat diubah.']);
+        }
         $request->validate([
             'registration_id' => 'required|exists:registrations,id',
-            'student_details.full_name' => 'required|string',
-            'student_details.nisn' => 'required|string',
-            'student_details.nik' => 'required|numeric|digits:16',
-            'student_details.phone' => 'required|string',
-            'student_details.place_of_birth' => 'required|string',
-            'student_details.date_of_birth' => 'required|date',
-            'student_details.religion' => 'required|string',
-            'student_details.address' => 'required|string',
-            'student_details.province' => 'required|string',
-            'student_details.city' => 'required|string',
-            'student_details.district' => 'required|string',
-            'student_details.village' => 'required|string',
-            'student_details.origin_school_name' => 'required|string',
-            'parent_details.father_name' => 'required|string',
-            'parent_details.mother_name' => 'required|string',
-            'parent_details.parent_phone' => 'required|string',
+            'student_details.full_name' => 'nullable|string',
+            'student_details.nisn' => 'nullable|string',
+            'student_details.nik' => 'nullable|numeric|digits:16',
+            'student_details.phone' => 'nullable|string',
+            'student_details.place_of_birth' => 'nullable|string',
+            'student_details.date_of_birth' => 'nullable|date',
+            'student_details.religion' => 'nullable|string',
+            'student_details.address' => 'nullable|string',
+            'student_details.province' => 'nullable|string',
+            'student_details.city' => 'nullable|string',
+            'student_details.district' => 'nullable|string',
+            'student_details.village' => 'nullable|string',
+            'student_details.origin_school_name' => 'nullable|string',
+            'parent_details.father_name' => 'nullable|string',
+            'parent_details.mother_name' => 'nullable|string',
+            'parent_details.parent_phone' => 'nullable|string',
             'student_details.additional_data.kk_number' => 'nullable|numeric|digits:16',
             'parent_details.additional_data.father_nik' => 'nullable|numeric|digits:16',
             'parent_details.additional_data.mother_nik' => 'nullable|numeric|digits:16',
         ], [
-            'student_details.full_name.required' => 'Nama Lengkap wajib diisi.',
-            'student_details.nisn.required' => 'NISN wajib diisi.',
-            'student_details.nik.required' => 'NIK wajib diisi.',
             'student_details.nik.numeric' => 'NIK harus berupa angka.',
             'student_details.nik.digits' => 'NIK harus berjumlah 16 angka.',
-            'student_details.phone.required' => 'Nomor HP wajib diisi.',
-            'student_details.place_of_birth.required' => 'Tempat Lahir wajib diisi.',
-            'student_details.date_of_birth.required' => 'Tanggal Lahir wajib diisi.',
-            'student_details.religion.required' => 'Agama wajib diisi.',
-            'student_details.address.required' => 'Alamat Jalan wajib diisi.',
-            'student_details.province.required' => 'Provinsi wajib diisi.',
-            'student_details.city.required' => 'Kabupaten/Kota wajib diisi.',
-            'student_details.district.required' => 'Kecamatan wajib diisi.',
-            'student_details.village.required' => 'Kelurahan/Desa wajib diisi.',
-            'student_details.origin_school_name.required' => 'Nama Sekolah Asal wajib diisi.',
-            'parent_details.father_name.required' => 'Nama Ayah wajib diisi.',
-            'parent_details.mother_name.required' => 'Nama Ibu wajib diisi.',
-            'parent_details.parent_phone.required' => 'Nomor HP Orang Tua wajib diisi.',
             'student_details.additional_data.kk_number.digits' => 'Nomor Kartu Keluarga harus berjumlah 16 angka.',
             'parent_details.additional_data.father_nik.digits' => 'NIK Ayah harus berjumlah 16 angka.',
             'parent_details.additional_data.mother_nik.digits' => 'NIK Ibu harus berjumlah 16 angka.',
@@ -244,9 +247,24 @@ class RegistrationController extends Controller
         
         if ($request->has('student_details')) {
             $student = StudentDetail::where('registration_id', $regId)->firstOrFail();
-            $studentData = $request->input('student_details');
+            $studentData = $request->all()['student_details'] ?? $request->input('student_details');
+            
             if (isset($studentData['additional_data'])) {
                 $existing = $student->additional_data ?? [];
+                
+                // Handle file uploads for achievements if any
+                if (isset($studentData['additional_data']['achievements']) && is_array($studentData['additional_data']['achievements'])) {
+                    foreach ($studentData['additional_data']['achievements'] as $index => &$achievement) {
+                        $fileKey = "student_details.additional_data.achievements.{$index}.certificate_file";
+                        if ($request->hasFile($fileKey)) {
+                            $path = $request->file($fileKey)->store('certificates', 'public');
+                            $achievement['certificate_path'] = $path;
+                        }
+                        // Remove the File object from being stored in JSON
+                        unset($achievement['certificate_file']);
+                    }
+                }
+
                 $studentData['additional_data'] = array_merge($existing, $studentData['additional_data']);
             }
             $student->update($studentData);
@@ -277,6 +295,10 @@ class RegistrationController extends Controller
 
     public function saveGrades(Request $request)
     {
+        $checkReg = Registration::findOrFail($request->registration_id);
+        if (!in_array($checkReg->status, ['incomplete', 'revision'])) {
+            return back()->withErrors(['error' => 'Data pendaftaran sudah dikunci dan tidak dapat diubah.']);
+        }
         $settings = Setting::all()->pluck('value', 'key')->toArray();
         $defaultSubjects = json_encode(['mathematics', 'indonesian', 'english', 'religion']);
         $subjectsRequiredKeys = json_decode($settings['subjects_required'] ?? $defaultSubjects, true);
@@ -317,6 +339,20 @@ class RegistrationController extends Controller
             $existingAdditional = $grade->additional_data ?? [];
             $grade->additional_data = array_merge($existingAdditional, $additionalGrades);
         }
+
+        // Handle Prestasi List
+        if ($request->has('prestasiList')) {
+            $prestasiList = $request->input('prestasiList', []);
+            foreach ($prestasiList as $key => $prestasi) {
+                if ($request->hasFile("prestasiList.$key.file")) {
+                    $path = $request->file("prestasiList.$key.file")->store('prestasi_proof', 'public');
+                    $prestasiList[$key]['file'] = $path;
+                }
+            }
+            $existingAdditional = $grade->additional_data ?? [];
+            $existingAdditional['prestasiList'] = $prestasiList;
+            $grade->additional_data = $existingAdditional;
+        }
         
         $grade->save();
 
@@ -347,6 +383,10 @@ class RegistrationController extends Controller
 
     public function uploadDocument(Request $request)
     {
+        $checkReg = Registration::findOrFail($request->registration_id);
+        if (!in_array($checkReg->status, ['incomplete', 'revision'])) {
+            return back()->withErrors(['error' => 'Data pendaftaran sudah dikunci dan tidak dapat diubah.']);
+        }
         $request->validate([
             'registration_id' => 'required|exists:registrations,id',
             'type' => 'required|string',
@@ -368,6 +408,10 @@ class RegistrationController extends Controller
     public function deleteDocument($id)
     {
         $document = Document::findOrFail($id);
+        $registration = Registration::findOrFail($document->registration_id);
+        if (!in_array($registration->status, ['incomplete', 'revision'])) {
+            return back()->withErrors(['error' => 'Data pendaftaran sudah dikunci dan tidak dapat diubah.']);
+        }
         
         // Delete the physical file from storage
         if (Storage::disk('public')->exists($document->file_path)) {
@@ -381,7 +425,16 @@ class RegistrationController extends Controller
 
     public function finalize(Request $request)
     {
-        $registration = Registration::findOrFail($request->registration_id);
+        $registration = Registration::with(['studentDetail', 'parentDetail', 'grade'])->findOrFail($request->registration_id);
+        if (!in_array($registration->status, ['incomplete', 'revision'])) {
+            return back()->withErrors(['error' => 'Pendaftaran sudah difinalisasi.']);
+        }
+        
+        // Basic backend check before finalization (frontend has full 100% check)
+        if (!$registration->studentDetail || !$registration->parentDetail || !$registration->studentDetail->nik || !$registration->studentDetail->full_name) {
+            return back()->withErrors(['error' => 'Data pendaftaran belum lengkap, silakan cek kembali sebelum finalisasi.']);
+        }
+
         $registration->update([
             'status' => 'pending',
             'finalized_at' => now(),
@@ -429,9 +482,23 @@ class RegistrationController extends Controller
             return back()->withErrors(['recover_message' => 'Data tidak ditemukan. Silakan periksa kembali NISN dan Nomor HP yang Anda masukkan.']);
         }
 
+        try {
+            $waMessage = "Halo {$student->full_name},\n"
+                       . "Berikut adalah data akses pendaftaran Anda yang terlupa:\n\n"
+                       . "Nomor Pendaftaran: *{$student->registration->registration_number}*\n"
+                       . "Kode Akses: *{$student->registration->access_code}*\n\n"
+                       . "Gunakan data ini untuk masuk ke Portal Siswa. Jangan berikan kode ini kepada siapa pun.";
+            
+            Http::timeout(5)->post('http://localhost:3000/send-message', [
+                'number' => $student->phone,
+                'message' => $waMessage
+            ]);
+        } catch (\Exception $e) {
+            return back()->withErrors(['recover_message' => 'Gagal mengirim pesan WhatsApp. Pastikan layanan pesan aktif.']);
+        }
+
         return back()->with('recover_success', [
             'registration_number' => $student->registration->registration_number,
-            'access_code' => $student->registration->access_code,
             'full_name' => $student->full_name,
         ]);
     }
@@ -443,7 +510,7 @@ class RegistrationController extends Controller
             ->with(['studentDetail', 'parentDetail', 'grade', 'documents'])
             ->firstOrFail();
 
-        $settings = \App\Models\Setting::all()->pluck('value', 'key')->toArray();
+        $settings = Setting::all()->pluck('value', 'key')->toArray();
         
         $defaultAvailableSubjects = json_encode([
             ['key' => 'mathematics', 'label' => 'Matematika'],
@@ -471,6 +538,7 @@ class RegistrationController extends Controller
         $defaultTempatTinggal = json_encode(['Bersama Orang Tua', 'Wali', 'Kos', 'Asrama', 'Panti Asuhan']);
         $defaultEkstra = json_encode(['Tidak Ada', 'Pramuka', 'PMR', 'Paskibra', 'Olah Raga', 'Seni']);
         $defaultTransportasi = json_encode(['Jalan Kaki', 'Sepeda', 'Sepeda Motor', 'Mobil Pribadi', 'Angkutan Umum', 'Antar Jemput']);
+        $defaultPeminatan = json_encode(['IPA', 'IPS', 'Bahasa', 'Agama', 'Umum']);
 
         return Inertia::render('Student/Dashboard', [
             'registration' => $registration,
@@ -481,11 +549,18 @@ class RegistrationController extends Controller
                 'pendidikan' => json_decode($settings['opt_pendidikan'] ?? $defaultPendidikan, true),
                 'pekerjaan' => json_decode($settings['opt_pekerjaan'] ?? $defaultPekerjaan, true),
                 'penghasilan' => json_decode($settings['opt_penghasilan'] ?? $defaultPenghasilan, true),
-                'kebutuhan_khusus' => json_decode($settings['opt_kebutuhan_khusus'] ?? $defaultKebutuhanKhusus, true),
                 'tempat_tinggal' => json_decode($settings['opt_tempat_tinggal'] ?? $defaultTempatTinggal, true),
                 'ekstrakurikuler' => json_decode($settings['opt_ekstrakurikuler'] ?? $defaultEkstra, true),
                 'moda_transportasi' => json_decode($settings['opt_moda_transportasi'] ?? $defaultTransportasi, true),
+                'peminatan' => json_decode($settings['opt_peminatan'] ?? $defaultPeminatan, true),
                 'alasan_kip' => json_decode($settings['opt_alasan_kip'] ?? $defaultAlasanKip, true),
+                'achievement_scores' => json_decode($settings['achievement_scores'] ?? json_encode([
+                    'Tingkat Kecamatan' => ['Juara 1' => 10, 'Juara 2' => 7, 'Juara 3' => 5],
+                    'Tingkat Kabupaten / Kota' => ['Juara 1' => 25, 'Juara 2' => 20, 'Juara 3' => 15],
+                    'Tingkat Provinsi' => ['Juara 1' => 50, 'Juara 2' => 40, 'Juara 3' => 30],
+                    'Tingkat Nasional' => ['Juara 1' => 75, 'Juara 2' => 60, 'Juara 3' => 45],
+                    'Tingkat Internasional' => ['Juara 1' => 100, 'Juara 2' => 80, 'Juara 3' => 60],
+                ]), true),
             ]
         ]);
     }

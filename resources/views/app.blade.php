@@ -27,6 +27,22 @@
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
         @inertiaHead
+
+        <!-- CACHE BUSTER -->
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) {
+                        registration.unregister().then(function(boolean) {
+                            if(boolean && !sessionStorage.getItem('cache_busted_1')) {
+                                sessionStorage.setItem('cache_busted_1', 'true');
+                                window.location.reload(true);
+                            }
+                        });
+                    }
+                });
+            }
+        </script>
     </head>
     <body class="font-sans antialiased">
         @inertia

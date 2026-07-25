@@ -12,6 +12,12 @@ const props = defineProps({
     canRegister: Boolean,
     totalRegistrants: Number,
     byInterest: Array,
+    ppdbAgenda: Array,
+    registrationStartDate: String,
+    registrationEndDate: String,
+    academicYear: String,
+    faqs: Array,
+    popupBanner: String,
 });
 
 const chartData = computed(() => {
@@ -22,7 +28,7 @@ const chartData = computed(() => {
         labels,
         datasets: [
             {
-                backgroundColor: ['#1B5E20', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800'],
+                backgroundColor: ['#1E3A8A', '#1D4ED8', '#2563EB', '#3B82F6', '#60A5FA', '#D4AF37', '#FBBF24'],
                 data
             }
         ]
@@ -57,19 +63,51 @@ onUnmounted(() => {
 });
 
 const infographics = [
-    { title: '100% Online', desc: 'Pendaftaran & pantau hasil dari mana saja.', icon: 'mdi-devices', color: '#1B5E20' },
-    { title: 'Transparan', desc: 'Sistem ranking otomatis yang terbuka.', icon: 'mdi-eye-check-outline', color: '#2E7D32' },
-    { title: 'Paperless', desc: 'Unggah berkas digital tanpa fotokopi.', icon: 'mdi-file-document-outline', color: '#388E3C' },
-    { title: 'Bantuan CS', desc: 'Layanan informasi cepat via WhatsApp.', icon: 'mdi-whatsapp', color: '#43A047' }
+    { title: '100% Online', desc: 'Pendaftaran & pantau hasil dari mana saja.', icon: 'mdi-devices', color: '#1E3A8A' },
+    { title: 'Transparan', desc: 'Sistem ranking otomatis yang terbuka.', icon: 'mdi-eye-check-outline', color: '#1D4ED8' },
+    { title: 'Paperless', desc: 'Unggah berkas digital tanpa fotokopi.', icon: 'mdi-file-document-outline', color: '#D4AF37' },
+    { title: 'Bantuan CS', desc: 'Layanan informasi cepat via WhatsApp.', icon: 'mdi-whatsapp', color: '#B8860B' }
 ];
 
 const steps = [
-    { n: '01', title: 'Registrasi', sub: 'Input NISN & Nama' },
-    { n: '02', title: 'Biodata', sub: 'Data Diri & Ortu' },
-    { n: '03', title: 'Nilai', sub: 'Rapor Kelas 6' },
-    { n: '04', title: 'Berkas', sub: 'Upload Dokumen' },
-    { n: '05', title: 'Hasil', sub: 'Pantau Pengumuman' }
+    { n: '01', title: 'Pendaftaran Akun', sub: 'Calon siswa diwajibkan mendaftar akun portal menggunakan NISN yang valid sebagai identitas utama untuk memulai seluruh tahapan administratif.' },
+    { n: '02', title: 'Pengisian Formulir', sub: 'Melengkapi seluruh instrumen biodata diri, data orang tua/wali, serta riwayat kesehatan secara komprehensif dan dapat dipertanggungjawabkan.' },
+    { n: '03', title: 'Validasi Akademik', sub: 'Mengunggah rekapitulasi nilai rapor pada jenjang sebelumnya sebagai dasar pemetaan akademik dan pembagian program peminatan khusus.' },
+    { n: '04', title: 'Verifikasi Berkas', sub: 'Pengunggahan dokumen legal (Kartu Keluarga, Akta Kelahiran, dan Ijazah/SKL) yang akan diverifikasi keabsahannya oleh panitia.' },
+    { n: '05', title: 'Pengumuman Resmi', sub: 'Hasil seleksi akhir akan dipublikasikan melalui dasbor sistem berdasarkan kuota daya tampung dan standar kelulusan institusi.' }
 ];
+
+// Palet warna & ikon bergilir untuk agenda dari admin
+const agendaColors = ['primary', 'info', 'warning', 'secondary-darken-1', 'success', 'error', 'teal'];
+const agendaIcons = [
+    'mdi-file-document-edit', 'mdi-text-box-check', 'mdi-laptop',
+    'mdi-book-open-page-variant', 'mdi-bullhorn', 'mdi-check-decagram',
+    'mdi-calendar-star', 'mdi-clipboard-list'
+];
+
+const defaultAgendas = [
+    { title: 'Pendaftaran Gelombang 1', date: '01 Mei - 31 Mei 2026', desc: 'Penerimaan berkas administrasi dan pendaftaran jalur prestasi.', color: 'primary', icon: 'mdi-file-document-edit' },
+    { title: 'Seleksi Berkas', date: '01 Juni - 05 Juni 2026', desc: 'Verifikasi faktual dokumen pendukung yang telah diunggah calon siswa.', color: 'info', icon: 'mdi-text-box-check' },
+    { title: 'Tes Potensi Akademik', date: '10 Juni 2026', desc: 'Pelaksanaan ujian tertulis berbasis komputer (CBT) di lab sekolah.', color: 'warning', icon: 'mdi-laptop' },
+    { title: 'Wawancara & Tes Baca Qur\'an', date: '12 - 13 Juni 2026', desc: 'Observasi kepribadian dan uji kelayakan bacaan Al-Qur\'an.', color: 'secondary-darken-1', icon: 'mdi-book-open-page-variant' },
+    { title: 'Pengumuman Hasil', date: '20 Juni 2026', desc: 'Publikasi hasil kelulusan secara online melalui portal resmi SPMB.', color: 'success', icon: 'mdi-bullhorn' },
+    { title: 'Daftar Ulang', date: '21 - 25 Juni 2026', desc: 'Konfirmasi pendaftaran ulang bagi siswa yang dinyatakan LULUS.', color: 'primary', icon: 'mdi-check-decagram' }
+];
+
+// Jadwal diambil dari settings admin, fallback ke data default jika kosong
+const agendas = computed(() => {
+    if (props.ppdbAgenda && props.ppdbAgenda.length > 0) {
+        return props.ppdbAgenda.map((item, i) => ({
+            title: item.title,
+            date: item.date,
+            desc: item.description,
+            color: agendaColors[i % agendaColors.length],
+            icon: agendaIcons[i % agendaIcons.length],
+        }));
+    }
+    return defaultAgendas;
+});
+
 </script>
 
 <template>
@@ -80,7 +118,9 @@ const steps = [
         <v-app-bar 
             :elevation="isScrolled ? 2 : 0" 
             :color="isScrolled ? 'white' : 'transparent'"
-            :class="{ 'nav-transition': true, 'border-b': isScrolled }"
+            
+            
+            :class="{ 'nav-transition': true, 'border-b': isScrolled, 'abstract-header-bg': !isScrolled }"
             height="80"
             app
         >
@@ -103,7 +143,9 @@ const steps = [
                         <a href="#info" class="mx-4 nav-item">Informasi</a>
                         <a href="#statistik" class="mx-4 nav-item">Statistik</a>
                         <a href="#alur" class="mx-4 nav-item">Alur</a>
+                        <a href="#jadwal" class="mx-4 nav-item">Jadwal</a>
                         <a href="#faq" class="mx-4 nav-item">Bantuan</a>
+                        <a href="#" @click.prevent="router.get(route('login'))" class="mx-4 nav-item font-weight-black text-secondary">Login Admin</a>
                     </nav>
                     <v-btn 
                         variant="outlined" 
@@ -144,7 +186,9 @@ const steps = [
                 <v-list-item link href="#info" @click="mobileMenu = false" class="rounded-lg mb-2">Informasi</v-list-item>
                 <v-list-item link href="#statistik" @click="mobileMenu = false" class="rounded-lg mb-2">Statistik</v-list-item>
                 <v-list-item link href="#alur" @click="mobileMenu = false" class="rounded-lg mb-2">Alur</v-list-item>
+                <v-list-item link href="#jadwal" @click="mobileMenu = false" class="rounded-lg mb-2">Jadwal</v-list-item>
                 <v-list-item link href="#faq" @click="mobileMenu = false" class="rounded-lg mb-2">Bantuan</v-list-item>
+                <v-list-item link @click="router.get(route('login')); mobileMenu = false" class="rounded-lg mb-2 text-secondary font-weight-bold">Login Admin</v-list-item>
                 <v-divider class="my-4"></v-divider>
                 <v-btn block color="primary" variant="outlined" class="mb-3 rounded-lg font-weight-bold" @click="router.get(route('check-status'))">Cek Status</v-btn>
                 <v-btn block color="primary" class="rounded-lg font-weight-black" @click="router.get(route('register.start'))">Daftar Sekarang</v-btn>
@@ -212,6 +256,47 @@ const steps = [
                 </v-container>
             </section>
 
+            <!-- Roadmap / Jadwal Kegiatan -->
+            <section id="jadwal" class="py-16 bg-white overflow-hidden border-b">
+                <v-container>
+                    <div class="text-center mb-16">
+                        <h2 class="text-h3 font-weight-black text-primary">Jadwal Kegiatan PPDB</h2>
+                        <p class="text-grey-darken-1 mt-2">Roadmap tahapan pelaksanaan penerimaan murid baru.</p>
+                    </div>
+
+                    <v-row justify="center">
+                        <v-col cols="12" md="10" lg="8">
+                            <v-timeline align="start" side="end">
+                                <v-timeline-item
+                                    v-for="(item, i) in agendas"
+                                    :key="i"
+                                    :dot-color="item.color"
+                                    :icon="item.icon"
+                                    fill-dot
+                                    size="large"
+                                >
+                                    <v-card class="elevation-2 rounded-xl border border-slate-100" flat>
+                                        <v-card-item class="pb-2 bg-grey-lighten-4">
+                                            <v-card-title class="text-h6 font-weight-black text-primary line-height-tight">
+                                                {{ item.title }}
+                                            </v-card-title>
+                                            <v-card-subtitle class="text-body-2 font-weight-bold mt-1 text-secondary-darken-1">
+                                                <v-icon icon="mdi-calendar-clock" size="small" class="mr-1"></v-icon>
+                                                {{ item.date }}
+                                            </v-card-subtitle>
+                                        </v-card-item>
+                                        <v-card-text class="pt-4 text-body-1 text-grey-darken-2">
+                                            {{ item.desc }}
+                                        </v-card-text>
+                                    </v-card>
+                                </v-timeline-item>
+                            </v-timeline>
+                        </v-col>
+                    </v-row>
+                </v-container>
+            </section>
+
+
             <!-- Grid-based Infographics -->
             <section id="info" class="py-16 bg-white border-y">
                 <v-container>
@@ -232,7 +317,60 @@ const steps = [
                 <v-container>
                     <div class="text-center mb-12">
                         <h2 class="text-h3 font-weight-black color-main">Statistik Pendaftar</h2>
-                        <p class="text-grey-darken-1 mt-2">Data real-time pendaftar pada tahun ajaran ini.</p>
+                        <p class="text-grey-darken-1 mt-2 mb-8">Data real-time pendaftar pada tahun ajaran ini.</p>
+                        <div class="text-left mx-auto text-body-1 max-width-800" style="max-width: 800px;">
+                            
+                            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 d-flex align-center ga-3">
+                                <v-icon icon="mdi-information" color="warning"></v-icon>
+                                <div class="text-body-2 text-amber-900 font-weight-medium">
+                                    <strong>Perhatian:</strong> Seluruh program unggulan (Excellent Program) di bawah ini dilaksanakan secara intensif <strong>di luar jam belajar reguler</strong> sekolah.
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column ga-6">
+                                <v-card class="pa-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow bg-white" flat>
+                                    <div class="d-flex align-start ga-4">
+                                        <div class="pa-3 rounded-lg bg-blue-50 text-blue-700">
+                                            <v-icon icon="mdi-book-open-page-variant" size="28"></v-icon>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-h6 font-weight-black text-primary mb-2">Program Tahfidz Al-Qur'an</h4>
+                                            <p class="text-body-2 text-grey-darken-2 leading-relaxed">
+                                                Merupakan program unggulan berkelanjutan (excellent program) yang didesain secara khusus untuk melahirkan generasi penghafal Al-Qur'an (Hafidz/Hafidzah). Pembinaan dilakukan melalui metode setoran (ziyadah) dan pengulangan (muraja'ah) secara intensif dengan target capaian juz yang terukur setiap semesternya, didampingi langsung oleh para asatidz yang bersanad.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </v-card>
+
+                                <v-card class="pa-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow bg-white" flat>
+                                    <div class="d-flex align-start ga-4">
+                                        <div class="pa-3 rounded-lg bg-amber-50 text-amber-700">
+                                            <v-icon icon="mdi-library" size="28"></v-icon>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-h6 font-weight-black text-secondary-darken-1 mb-2">Kajian Kitab Kuning</h4>
+                                            <p class="text-body-2 text-grey-darken-2 leading-relaxed">
+                                                Mengintegrasikan kurikulum pesantren salaf dengan pendidikan formal. Santri akan dididik untuk memiliki kompetensi unggul dalam membaca, memahami, serta menganalisis turats (kitab kuning) seperti Nahwu, Shorof, Fiqih, dan Akhlaq sebagai fondasi utama dalam merespons tantangan zaman berlandaskan nilai-nilai Ahlussunnah Wal Jamaah.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </v-card>
+
+                                <v-card class="pa-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow bg-white" flat>
+                                    <div class="d-flex align-start ga-4">
+                                        <div class="pa-3 rounded-lg bg-blue-50 text-blue-700">
+                                            <v-icon icon="mdi-flask" size="28"></v-icon>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-h6 font-weight-black text-primary mb-2">Kelas MIPA (Olimpiade & Sains)</h4>
+                                            <p class="text-body-2 text-grey-darken-2 leading-relaxed">
+                                                Program percepatan dan pendalaman materi di bidang Matematika dan Ilmu Pengetahuan Alam. Kelas ini diorientasikan untuk mempersiapkan peserta didik berkompetisi di berbagai ajang kejuaraan sains tingkat nasional maupun internasional (OSN/KSM), dibekali dengan fasilitas laboratorium modern dan bimbingan eksklusif.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </v-card>
+                            </div>
+                        </div>
                     </div>
 
                     <v-row justify="center" align="center">
@@ -411,7 +549,7 @@ const steps = [
     background-color: #fcfcfc;
 }
 
-.color-main { color: #0a2a12 !important; }
+.color-main { color: #0f172a !important; }
 .line-height-tight { line-height: 1.2; }
 .text-tiny { font-size: 0.65rem; letter-spacing: 1px; }
 .max-width-600 { max-width: 600px; }
@@ -423,30 +561,50 @@ const steps = [
 
 .logo-circle-bg {
     width: 40px; height: 40px;
-    background: #1B5E20;
+    background: #1E3A8A;
     border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
 }
 
 .nav-item {
     text-decoration: none;
-    color: #0a2a12;
+    color: #0f172a;
     font-weight: 700;
     font-size: 0.95rem;
     transition: 0.3s;
     opacity: 0.8;
 }
 
-.nav-item:hover { color: #1B5E20; opacity: 1; }
+.nav-item:hover { color: #1E3A8A; opacity: 1; }
 
 /* Refined Hero */
 .hero-fluid {
     min-height: 100vh;
-    background-color: #fdfdfd;
-    background-image: radial-gradient(#1B5E20 0.5px, transparent 0.5px);
-    background-size: 40px 40px;
+    background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+    background-image: radial-gradient(rgba(30,58,138,0.1) 1px, transparent 1px), linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+    background-size: 30px 30px, 100% 100%;
     display: flex;
     align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+.hero-fluid::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -20%;
+    width: 80%; height: 80%;
+    background: radial-gradient(circle, rgba(30,58,138,0.05) 0%, rgba(30,58,138,0) 70%);
+    border-radius: 50%;
+    z-index: 0;
+}
+.hero-fluid::after {
+    content: '';
+    position: absolute;
+    bottom: -30%; right: -10%;
+    width: 60%; height: 60%;
+    background: radial-gradient(circle, rgba(212,175,55,0.04) 0%, rgba(212,175,55,0) 70%);
+    border-radius: 50%;
+    z-index: 0;
 }
 
 .min-vh-80 { min-height: 80vh; }
@@ -456,7 +614,7 @@ const steps = [
     line-height: 1;
     font-weight: 900;
     letter-spacing: -3px;
-    color: #0a2a12;
+    color: #0f172a;
 }
 
 .hero-subtext {
@@ -502,7 +660,7 @@ const steps = [
 .student-mini-illust {
     width: 48px;
     height: 48px;
-    background: #f0f7f0;
+    background: #eff6ff;
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -534,14 +692,14 @@ const steps = [
 
 .info-card-refined:hover {
     transform: translateY(-8px);
-    border-color: #1B5E20 !important;
-    background: #f8fcf8 !important;
+    border-color: #1E3A8A !important;
+    background: #f8fafc !important;
 }
 
 /* Steps Refined */
 .step-circle-refined {
     width: 64px; height: 64px;
-    background: #1B5E20;
+    background: #1E3A8A;
     color: white;
     border-radius: 20px;
     display: flex; align-items: center; justify-content: center;
@@ -585,7 +743,7 @@ const steps = [
     font-size: 0.8rem;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #0a2a12;
+    color: #0f172a;
     margin-bottom: 25px;
 }
 
@@ -597,7 +755,7 @@ const steps = [
     font-size: 0.95rem;
 }
 
-.footer-link-refined:hover { color: #1B5E20; transform: translateX(5px); }
+.footer-link-refined:hover { color: #1E3A8A; transform: translateX(5px); }
 
 /* Mobile Specifics */
 @media (max-width: 600px) {
@@ -605,4 +763,17 @@ const steps = [
     .hero-fluid { padding-top: 100px; }
     .hero-subtext { font-size: 1.1rem; }
 }
+
+.abstract-header-bg {
+    background: linear-gradient(90deg, rgba(30,58,138,0.02) 0%, rgba(212,175,55,0.03) 100%) !important;
+    position: relative;
+}
+.abstract-header-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(45deg, rgba(30,58,138,0.02) 0, rgba(30,58,138,0.02) 1px, transparent 1px, transparent 10px);
+    z-index: -1;
+}
+
 </style>

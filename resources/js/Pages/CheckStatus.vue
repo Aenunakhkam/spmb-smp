@@ -1,8 +1,11 @@
 <script setup>
 import { ref } from 'vue';
+import TextInput from '@/Components/TextInput.vue';
+import Captcha from '@/Components/Captcha.vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 
 const isRecoverMode = ref(false);
+const showPassword = ref(false);
 
 const loginForm = useForm({
     registration_number: '',
@@ -14,7 +17,16 @@ const recoverForm = useForm({
     phone: '',
 });
 
+const captchaRef = ref(null);
+const captchaError = ref('');
+
 const submitLogin = () => {
+    if (captchaRef.value && !captchaRef.value.validate()) {
+        captchaError.value = 'Kode keamanan salah. Silakan coba lagi.';
+        captchaRef.value.generateCode();
+        return;
+    }
+    captchaError.value = '';
     loginForm.post(route('check-status.process'));
 };
 
@@ -86,7 +98,10 @@ const resetForms = () => {
                                 <div class="mb-10 text-center text-md-left">
                                     <v-chip color="primary" variant="tonal" class="font-weight-bold mb-4" size="small">PORTAL SISWA</v-chip>
                                     <h2 class="text-h4 font-weight-black color-main mb-2">Selamat Datang</h2>
-                                    <p class="text-body-1 text-grey-darken-1">Silakan masukkan detail akses Anda.</p>
+                                    <p class="text-body-1 text-grey-darken-1 mb-2">Silakan masukkan detail akses Anda.</p>
+                                    <v-alert type="info" variant="tonal" class="rounded-lg text-body-2 font-weight-medium">
+                                        Siswa baru? <a :href="route('register.start')" class="font-weight-bold text-primary text-decoration-underline" @click.prevent="router.get(route('register.start'))">Daftar terlebih dahulu di sini</a>.
+                                    </v-alert>
                                 </div>
 
                                 <v-alert v-if="loginForm.errors.message" type="error" variant="tonal" class="mb-8 rounded-xl font-weight-bold border-s-lg border-error">
@@ -96,17 +111,12 @@ const resetForms = () => {
                                 <v-form @submit.prevent="submitLogin">
                                     <div class="mb-4">
                                         <label class="text-caption font-weight-black color-main text-uppercase letter-spacing-wide mb-2 d-block">Nomor Pendaftaran</label>
-                                        <v-text-field
-                                            v-model="loginForm.registration_number"
-                                            placeholder="Contoh: 20260001"
-                                            required
-                                            variant="outlined"
-                                            color="primary"
-                                            prepend-inner-icon="mdi-badge-account-horizontal-outline"
-                                            class="input-premium"
-                                            bg-color="grey-lighten-4"
-                                            hide-details="auto"
-                                        ></v-text-field>
+                                        <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <v-icon color="grey-lighten-1" size="small">mdi-badge-account-horizontal-outline</v-icon>
+        </div>
+        <TextInput v-model="loginForm.registration_number" type="text" placeholder="Contoh: 20260001" class="w-full pl-10" />
+    </div>
                                     </div>
 
                                     <div class="mb-6">
@@ -116,20 +126,18 @@ const resetForms = () => {
                                                 Lupa Kode?
                                             </a>
                                         </div>
-                                        <v-text-field
-                                            v-model="loginForm.access_code"
-                                            placeholder="Masukkan kode rahasia"
-                                            type="password"
-                                            required
-                                            variant="outlined"
-                                            color="primary"
-                                            prepend-inner-icon="mdi-lock-outline"
-                                            class="input-premium"
-                                            bg-color="grey-lighten-4"
-                                            hide-details="auto"
-                                        ></v-text-field>
+                                        <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <v-icon color="grey-lighten-1" size="small">mdi-lock-outline</v-icon>
+        </div>
+        <TextInput v-model="loginForm.access_code" :type="showPassword ? 'text' : 'password'" placeholder="Masukkan kode rahasia" class="w-full pl-10 pr-10" />
+        <div class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" @click="showPassword = !showPassword">
+            <v-icon color="grey-lighten-1" size="small">{{ showPassword ? 'mdi-eye-off-outline' : 'mdi-eye-outline' }}</v-icon>
+        </div>
+    </div>
                                     </div>
 
+                                    <Captcha ref="captchaRef" :error="captchaError" />
                                     <v-btn
                                         block
                                         size="x-large"
@@ -172,20 +180,21 @@ const resetForms = () => {
                                 <div v-if="$page.props.flash.recover_success" class="recovery-success-card mb-8">
                                     <div class="d-flex align-start mb-4">
                                         <v-avatar color="success-lighten-4" class="mr-4 mt-1" size="48">
-                                            <v-icon color="success-darken-1" size="28">mdi-check-all</v-icon>
+                                            <v-icon color="success-darken-1" size="28">mdi-whatsapp</v-icon>
                                         </v-avatar>
                                         <div>
                                             <div class="text-h6 font-weight-black text-success-darken-2 line-height-tight">Akses Ditemukan!</div>
-                                            <div class="text-caption text-grey-darken-1 mt-1">Halo <strong class="color-main">{{ $page.props.flash.recover_success.full_name }}</strong>, ini data Anda:</div>
+                                            <div class="text-caption text-grey-darken-1 mt-1">Halo <strong class="color-main">{{ $page.props.flash.recover_success.full_name }}</strong>, Kode Akses Anda telah dikirim.</div>
                                         </div>
                                     </div>
                                     
-                                    <div class="bg-white rounded-lg pa-4 border mb-4 shadow-sm">
+                                    <div class="bg-white rounded-lg pa-4 border mb-4 shadow-sm text-center">
                                         <div class="text-caption text-grey-darken-1 font-weight-bold mb-1">No. Pendaftaran</div>
                                         <div class="font-weight-black text-h6 color-main tracking-wide mb-3">{{ $page.props.flash.recover_success.registration_number }}</div>
                                         
-                                        <div class="text-caption text-grey-darken-1 font-weight-bold mb-1">Kode Akses</div>
-                                        <div class="font-weight-black text-h6 text-warning-darken-2 tracking-wide">{{ $page.props.flash.recover_success.access_code }}</div>
+                                        <v-alert type="success" variant="tonal" class="text-caption font-weight-medium mb-0">
+                                            Silakan periksa pesan masuk di nomor WhatsApp Anda untuk melihat Kode Akses rahasia.
+                                        </v-alert>
                                     </div>
 
                                     <v-btn
@@ -195,11 +204,10 @@ const resetForms = () => {
                                         class="rounded-xl font-weight-black text-capitalize btn-premium shadow-success mt-2"
                                         @click="() => {
                                             loginForm.registration_number = $page.props.flash.recover_success.registration_number;
-                                            loginForm.access_code = $page.props.flash.recover_success.access_code;
                                             resetForms();
                                         }"
                                     >
-                                        Gunakan untuk Login
+                                        Kembali ke Login
                                     </v-btn>
                                 </div>
 
@@ -207,35 +215,24 @@ const resetForms = () => {
                                 <v-form v-if="!$page.props.flash.recover_success" @submit.prevent="submitRecover">
                                     <div class="mb-4">
                                         <label class="text-caption font-weight-black color-main text-uppercase letter-spacing-wide mb-2 d-block">NISN Anda</label>
-                                        <v-text-field
-                                            v-model="recoverForm.nisn"
-                                            placeholder="Masukkan 10-digit NISN"
-                                            required
-                                            maxlength="10"
-                                            variant="outlined"
-                                            color="warning"
-                                            prepend-inner-icon="mdi-card-account-details-outline"
-                                            class="input-premium"
-                                            bg-color="grey-lighten-4"
-                                            hide-details="auto"
-                                            :error-messages="recoverForm.errors.nisn"
-                                        ></v-text-field>
+                                        <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <v-icon color="grey-lighten-1" size="small">mdi-card-account-details-outline</v-icon>
+        </div>
+        <TextInput v-model="recoverForm.nisn" type="text" placeholder="Masukkan 10-digit NISN" class="w-full pl-10" />
+    </div>
+    <div v-if="recoverForm.errors.nisn" class="text-error text-caption mt-1">{{ recoverForm.errors.nisn }}</div>
                                     </div>
 
                                     <div class="mb-8">
                                         <label class="text-caption font-weight-black color-main text-uppercase letter-spacing-wide mb-2 d-block">Nomor WhatsApp</label>
-                                        <v-text-field
-                                            v-model="recoverForm.phone"
-                                            placeholder="08xxxxxxxxxx"
-                                            required
-                                            variant="outlined"
-                                            color="warning"
-                                            prepend-inner-icon="mdi-whatsapp"
-                                            class="input-premium"
-                                            bg-color="grey-lighten-4"
-                                            hide-details="auto"
-                                            :error-messages="recoverForm.errors.phone"
-                                        ></v-text-field>
+                                        <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <v-icon color="grey-lighten-1" size="small">mdi-whatsapp</v-icon>
+        </div>
+        <TextInput v-model="recoverForm.phone" type="text" placeholder="08xxxxxxxxxx" class="w-full pl-10" />
+    </div>
+    <div v-if="recoverForm.errors.phone" class="text-error text-caption mt-1">{{ recoverForm.errors.phone }}</div>
                                     </div>
 
                                     <v-btn
@@ -292,7 +289,7 @@ const resetForms = () => {
 
 /* Brand Panel (Left Side) */
 .brand-panel {
-    background: linear-gradient(135deg, #166534 0%, #15803d 100%); /* Green 800 to 700 */
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); /* Slate to Premium Blue */
 }
 
 .brand-overlay {
@@ -313,12 +310,12 @@ const resetForms = () => {
 }
 .shape-1 {
     width: 400px; height: 400px;
-    background: #4ade80; /* Green 400 */
+    background: #38bdf8; /* Sky Blue 400 */
     top: -100px; left: -100px;
 }
 .shape-2 {
     width: 500px; height: 500px;
-    background: #047857; /* Emerald 700 */
+    background: #1d4ed8; /* Blue 700 */
     bottom: -150px; right: -100px;
 }
 
@@ -339,7 +336,7 @@ const resetForms = () => {
 }
 .input-premium :deep(.v-field--focused) {
     background-color: #ffffff !important;
-    box-shadow: 0 4px 20px rgba(22, 101, 52, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(30, 58, 138, 0.08) !important;
 }
 
 /* Buttons */
@@ -354,19 +351,19 @@ const resetForms = () => {
     transform: scale(1.02);
 }
 
-.shadow-primary { box-shadow: 0 10px 25px -5px rgba(22, 101, 52, 0.4) !important; }
+.shadow-primary { box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.4) !important; }
 .shadow-warning { box-shadow: 0 10px 25px -5px rgba(245, 124, 0, 0.4) !important; }
-.shadow-success { box-shadow: 0 10px 25px -5px rgba(46, 125, 50, 0.4) !important; }
+.shadow-success { box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4) !important; }
 .shadow-sm { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important; }
 .drop-shadow-xl { filter: drop-shadow(0 20px 13px rgba(0, 0, 0, 0.3)) drop-shadow(0 8px 5px rgba(0, 0, 0, 0.08)); }
 
 /* Links */
-.hover-primary:hover { color: #166534 !important; text-decoration: underline; }
+.hover-primary:hover { color: #1e3a8a !important; text-decoration: underline; }
 
 /* Recovery Success Layout */
 .recovery-success-card {
-    background: #f0fdf4; /* Green 50 */
-    border: 1px solid #bbf7d0; /* Green 200 */
+    background: #eff6ff; /* Blue 50 */
+    border: 1px solid #bfdbfe; /* Blue 200 */
     border-radius: 20px;
     padding: 24px;
 }

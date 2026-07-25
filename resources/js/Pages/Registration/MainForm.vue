@@ -84,10 +84,74 @@ const saveParent = () => parentForm.post(route('register.saveParent'), {
     onSuccess: () => step.value = 3
 });
 
-const saveGrades = () => gradeForm.post(route('register.saveGrades'), { 
-    preserveScroll: true,
-    onSuccess: () => step.value = 4
+
+// --- PRESTASI STATE ---
+const prestasiList = ref(props.registration.grade?.additional_data?.prestasiList || []);
+const currentPrestasi = useForm({
+    category: 'Non-Akademik',
+    level: 'Tingkat Kabupaten / Kota',
+    type: 'Perorangan / Individu',
+    rank: 'Juara 1',
+    name: '',
+    organizer: '',
+    year: new Date().getFullYear().toString(),
+    certificate_number: '',
+    file: null,
+    score: 0
 });
+
+const calculateScore = (level, rank) => {
+    let base = 0;
+    if (level.includes('Nasional') || level.includes('Internasional')) base = 100;
+    else if (level.includes('Provinsi')) base = 75;
+    else if (level.includes('Kabupaten') || level.includes('Kota')) base = 50;
+    else if (level.includes('Kecamatan')) base = 25;
+    else base = 10;
+    
+    let mult = 1;
+    if (rank.includes('1')) mult = 1;
+    else if (rank.includes('2')) mult = 0.8;
+    else if (rank.includes('3')) mult = 0.6;
+    else mult = 0.4;
+    
+    return Math.round(base * mult);
+};
+
+const addPrestasi = () => {
+    if (!currentPrestasi.name || !currentPrestasi.organizer) {
+        alert('Harap lengkapi Nama Prestasi dan Instansi Penyelenggara terlebih dahulu!');
+        return;
+    }
+    currentPrestasi.score = calculateScore(currentPrestasi.level, currentPrestasi.rank);
+    
+    prestasiList.value.push({
+        ...currentPrestasi.data(),
+        id: Date.now()
+    });
+    
+    currentPrestasi.reset();
+    currentPrestasi.category = 'Non-Akademik';
+    currentPrestasi.level = 'Tingkat Kabupaten / Kota';
+    currentPrestasi.type = 'Perorangan / Individu';
+    currentPrestasi.rank = 'Juara 1';
+    currentPrestasi.year = new Date().getFullYear().toString();
+};
+
+const removePrestasi = (index) => {
+    prestasiList.value.splice(index, 1);
+};
+
+
+const saveGrades = () => {
+    gradeForm.transform((data) => ({
+        ...data,
+        prestasiList: prestasiList.value
+    })).post(route('register.saveGrades'), { 
+        preserveScroll: true,
+        forceFormData: true,
+        onSuccess: () => step.value = 4
+    });
+};
 
 const uploadDoc = (type) => {
     docForm.type = type;
@@ -115,516 +179,618 @@ const docTypes = [
 ];
 
 const getDoc = (type) => props.registration?.documents?.find(d => d.type === type);
+
+const getStepTitle = (s) => {
+    const titles = { 1: 'Biodata', 2: 'Orang Tua', 3: 'Nilai', 4: 'Berkas', 5: 'Selesai' };
+    return titles[s] || '';
+};
 </script>
 
 <template>
-    <Head title="Lengkapi Formulir" />
-    <v-app class="bg-grey-lighten-4">
-        <!-- Floating Header -->
-        <v-app-bar color="primary" elevation="4" height="100">
-            <v-container class="d-flex align-center">
-                <div class="d-flex align-center">
-                    <v-avatar color="secondary" size="48" class="mr-4">
-                        <v-icon icon="mdi-account-edit" color="primary"></v-icon>
-                    </v-avatar>
-                    <div>
-                        <div class="text-h6 font-weight-black line-height-1">Lengkapi Formulir</div>
-                        <div class="text-caption font-weight-bold opacity-70">{{ registration.student_detail.full_name }}</div>
+    <div class="min-h-screen bg-slate-50 font-sans text-slate-800 py-10 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto">
+            
+            <!-- Header -->
+            <div class="mb-10 text-center">
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Formulir Pendaftaran Siswa Baru</h1>
+                <p class="text-slate-500 mt-2">Isi data dengan lengkap dan benar.</p>
+            </div>
+
+            <!-- Modern Stepper -->
+            <div class="mb-12">
+                <div class="flex items-center justify-between relative">
+                    <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-200 rounded-full z-0"></div>
+                    <div class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-blue-600 rounded-full z-0 transition-all duration-500" :style="'width: ' + ((step - 1) / 3 * 100) + '%'"></div>
+                    
+                    <div v-for="s in [1, 2, 3, 4]" :key="s" class="relative z-10 flex flex-col items-center">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-sm transition-all duration-300" 
+                             :class="step >= s ? 'bg-blue-600 text-white ring-4 ring-blue-100' : 'bg-white text-slate-400 border-2 border-slate-200'">
+                            <span v-if="step > s">✓</span>
+                            <span v-else>{{ s }}</span>
+                        </div>
+                        <div class="mt-3 text-xs font-semibold tracking-wide uppercase" :class="step >= s ? 'text-blue-700' : 'text-slate-400'">
+                            {{ getStepTitle(s) }}
+                        </div>
                     </div>
                 </div>
-                <v-spacer></v-spacer>
-                <div class="text-right hidden-sm-and-down">
-                    <div class="text-caption opacity-70">No. Pendaftaran: <strong>{{ registration.registration_number }}</strong></div>
-                    <div class="text-caption opacity-70">Kode Akses: <span class="text-secondary font-weight-black">{{ registration.access_code }}</span></div>
+            </div>
+
+            <!-- Form Cards -->
+            <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                
+                <!-- STEP 1: BIODATA -->
+                <div v-if="step === 1" class="p-8 sm:p-10 transition-all">
+                    <div class="mb-8 border-b border-slate-100 pb-5">
+                        <h2 class="text-xl font-bold text-slate-800">1. Identitas Diri (Biodata)</h2>
+                        <p class="text-sm text-slate-500 mt-1">Masukkan data diri Anda sesuai dengan dokumen resmi.</p>
+                    </div>
+
+                    <form @submit.prevent="saveBio">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
+                            <!-- NIK -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">NIK <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="text" v-model="bioForm.nik" @keypress="$event.key.length === 1 && ($event.key < '0' || $event.key > '9') && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="16 Digit NIK">
+                                <p v-if="bioForm.errors.nik" class="text-red-500 text-xs mt-1">{{ bioForm.errors.nik }}</p>
+                            </div>
+                            
+                            <!-- No KK -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">No. Kartu Keluarga <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="text" v-model="bioForm.no_kk" @keypress="$event.key.length === 1 && ($event.key < '0' || $event.key > '9') && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="16 Digit No. KK">
+                                <p v-if="bioForm.errors.no_kk" class="text-red-500 text-xs mt-1">{{ bioForm.errors.no_kk }}</p>
+                            </div>
+                            
+                            <!-- Nama Lengkap -->
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nama Lengkap <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="text" v-model="bioForm.full_name" @keypress="$event.key.length === 1 && !/^[a-zA-Z\s]*$/.test($event.key) && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="Sesuai Ijazah">
+                                <p v-if="bioForm.errors.full_name" class="text-red-500 text-xs mt-1">{{ bioForm.errors.full_name }}</p>
+                            </div>
+
+                            <!-- NISN -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">NISN <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="text" v-model="bioForm.nisn" @keypress="$event.key.length === 1 && ($event.key < '0' || $event.key > '9') && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="10 Digit NISN">
+                                <p v-if="bioForm.errors.nisn" class="text-red-500 text-xs mt-1">{{ bioForm.errors.nisn }}</p>
+                            </div>
+
+                            <!-- Jenis Kelamin -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Jenis Kelamin <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <select v-model="bioForm.gender" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white appearance-none">
+                                    <option value="L">Laki-laki</option>
+                                    <option value="P">Perempuan</option>
+                                </select>
+                                <p v-if="bioForm.errors.gender" class="text-red-500 text-xs mt-1">{{ bioForm.errors.gender }}</p>
+                            </div>
+
+                            <!-- Tempat Lahir -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Tempat Lahir <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="text" v-model="bioForm.place_of_birth" @keypress="$event.key.length === 1 && !/^[a-zA-Z\s]*$/.test($event.key) && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="Kota/Kabupaten Lahir">
+                                <p v-if="bioForm.errors.place_of_birth" class="text-red-500 text-xs mt-1">{{ bioForm.errors.place_of_birth }}</p>
+                            </div>
+
+                            <!-- Tanggal Lahir -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Tanggal Lahir <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="date" v-model="bioForm.date_of_birth" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white">
+                                <p v-if="bioForm.errors.date_of_birth" class="text-red-500 text-xs mt-1">{{ bioForm.errors.date_of_birth }}</p>
+                            </div>
+
+                            <!-- Agama -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Agama <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <select v-model="bioForm.religion" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white appearance-none">
+                                    <option v-for="r in ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu']" :key="r" :value="r">{{ r }}</option>
+                                </select>
+                                <p v-if="bioForm.errors.religion" class="text-red-500 text-xs mt-1">{{ bioForm.errors.religion }}</p>
+                            </div>
+
+                            <!-- Berkebutuhan Khusus -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Berkebutuhan Khusus</label>
+                                <select v-model="bioForm.special_needs" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white appearance-none">
+                                    <option v-for="r in ['TIDAK ADA', 'Tunanetra', 'Tunarungu', 'Tunagrahita', 'Tunadaksa', 'Lainnya']" :key="r" :value="r">{{ r }}</option>
+                                </select>
+                            </div>
+
+                            <!-- Asal Sekolah -->
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Asal Sekolah <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="text" v-model="bioForm.origin_school_name" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="Nama Sekolah Dasar / MI Asal">
+                                <p v-if="bioForm.errors.origin_school_name" class="text-red-500 text-xs mt-1">{{ bioForm.errors.origin_school_name }}</p>
+                            </div>
+
+                            <div class="md:col-span-2 border-t border-slate-100 my-4"></div>
+
+                            <div class="md:col-span-2 mb-2">
+                                <h3 class="text-lg font-bold text-slate-800">Alamat Lengkap</h3>
+                            </div>
+
+                            <!-- Nama Jalan -->
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nama Jalan <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <textarea v-model="bioForm.address" rows="2" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="Jalan, Gang, Blok, No. Rumah"></textarea>
+                                <p v-if="bioForm.errors.address" class="text-red-500 text-xs mt-1">{{ bioForm.errors.address }}</p>
+                            </div>
+
+                            <!-- RT & RW -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">RT</label>
+                                    <input type="text" v-model="bioForm.rt" @keypress="$event.key.length === 1 && ($event.key < '0' || $event.key > '9') && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="RT">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">RW</label>
+                                    <input type="text" v-model="bioForm.rw" @keypress="$event.key.length === 1 && ($event.key < '0' || $event.key > '9') && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="RW">
+                                </div>
+                            </div>
+                            
+                            <!-- Provinsi -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Provinsi <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <select v-model="bioForm.province" @change="onProvChange" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white appearance-none">
+                                    <option v-for="p in regions.provinces" :key="p.name" :value="p.name">{{ p.name }}</option>
+                                </select>
+                                <p v-if="bioForm.errors.province" class="text-red-500 text-xs mt-1">{{ bioForm.errors.province }}</p>
+                            </div>
+
+                            <!-- Kota/Kab -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Kabupaten / Kota <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <select v-model="bioForm.city" @change="onCityChange" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white appearance-none">
+                                    <option v-for="c in regions.cities" :key="c.name" :value="c.name">{{ c.name }}</option>
+                                </select>
+                                <p v-if="bioForm.errors.city" class="text-red-500 text-xs mt-1">{{ bioForm.errors.city }}</p>
+                            </div>
+
+                            <!-- Kecamatan -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Kecamatan <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <select v-model="bioForm.district" @change="onDistrictChange" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white appearance-none">
+                                    <option v-for="d in regions.districts" :key="d.name" :value="d.name">{{ d.name }}</option>
+                                </select>
+                                <p v-if="bioForm.errors.district" class="text-red-500 text-xs mt-1">{{ bioForm.errors.district }}</p>
+                            </div>
+
+                            <!-- Desa/Kelurahan -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Desa / Kelurahan <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <select v-model="bioForm.village" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white appearance-none">
+                                    <option v-for="v in regions.villages" :key="v.name" :value="v.name">{{ v.name }}</option>
+                                </select>
+                                <p v-if="bioForm.errors.village" class="text-red-500 text-xs mt-1">{{ bioForm.errors.village }}</p>
+                            </div>
+                            
+                            <!-- Kode Pos -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Kode Pos <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="text" v-model="bioForm.postal_code" @keypress="$event.key.length === 1 && ($event.key < '0' || $event.key > '9') && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="Kode Pos">
+                                <p v-if="bioForm.errors.postal_code" class="text-red-500 text-xs mt-1">{{ bioForm.errors.postal_code }}</p>
+                            </div>
+                            
+                            <!-- Tempat Tinggal & Transportasi -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Tempat Tinggal</label>
+                                <select v-model="bioForm.residence" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white appearance-none">
+                                    <option v-for="r in ['Bersama Orang Tua', 'Wali', 'Kos', 'Asrama', 'Panti Asuhan']" :key="r" :value="r">{{ r }}</option>
+                                </select>
+                            </div>
+                            
+                            <!-- No HP -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nomor HP / WA <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="text" v-model="bioForm.phone" @keypress="$event.key.length === 1 && ($event.key < '0' || $event.key > '9') && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="08xxxxxxxxxx">
+                                <p v-if="bioForm.errors.phone" class="text-red-500 text-xs mt-1">{{ bioForm.errors.phone }}</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-10 flex justify-end">
+                            <button type="submit" :disabled="bioForm.processing" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-blue-500/30 transition-all flex items-center">
+                                <span v-if="bioForm.processing">Menyimpan...</span>
+                                <span v-else>Simpan & Lanjutkan <span class="ml-2">→</span></span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </v-container>
-        </v-app-bar>
 
-        <v-main class="pt-12 pb-16">
-            <v-container>
-                <!-- Status Alerts -->
-                <v-alert
-                    v-if="registration.status === 'incomplete'"
-                    type="warning"
-                    variant="tonal"
-                    border="start"
-                    class="mb-8 rounded-xl bg-white"
-                >
-                    <template v-slot:prepend>
-                        <v-icon icon="mdi-alert-circle" size="28"></v-icon>
-                    </template>
-                    Data pendaftaran Anda belum lengkap. Silakan lengkapi setiap langkah di bawah ini untuk dapat diverifikasi oleh panitia.
-                </v-alert>
+                <!-- STEP 2: ORANG TUA -->
+                <div v-if="step === 2" class="p-8 sm:p-10 transition-all">
+                    <div class="mb-8 border-b border-slate-100 pb-5">
+                        <h2 class="text-xl font-bold text-slate-800">2. Data Orang Tua / Wali</h2>
+                        <p class="text-sm text-slate-500 mt-1">Lengkapi informasi data orang tua Anda.</p>
+                    </div>
 
-                <v-alert
-                    v-if="registration.status === 'pending'"
-                    type="success"
-                    variant="tonal"
-                    border="start"
-                    class="mb-8 rounded-xl bg-white"
-                >
-                    <template v-slot:prepend>
-                        <v-icon icon="mdi-check-circle" size="28"></v-icon>
-                    </template>
-                    Pendaftaran Anda telah difinalisasi. Mohon tunggu proses verifikasi berkas oleh panitia.
-                </v-alert>
+                    <form @submit.prevent="saveParent">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
+                            <div class="md:col-span-2">
+                                <h3 class="font-bold text-slate-800 bg-blue-50 p-3 rounded-lg border border-blue-100 text-sm">DATA AYAH KANDUNG</h3>
+                            </div>
 
-                <v-row>
-                    <v-col cols="12" lg="8">
-                        <v-stepper v-model="step" class="rounded-xl elevation-4 border-0">
-                            <v-stepper-header class="elevation-0 border-b">
-                                <v-stepper-item :value="1" :complete="step > 1" color="primary">
-                                    <template v-slot:title>Biodata</template>
-                                </v-stepper-item>
-                                <v-divider></v-divider>
-                                <v-stepper-item :value="2" :complete="step > 2" color="primary">
-                                    <template v-slot:title>Orang Tua</template>
-                                </v-stepper-item>
-                                <v-divider></v-divider>
-                                <v-stepper-item :value="3" :complete="step > 3" color="primary">
-                                    <template v-slot:title>Nilai</template>
-                                </v-stepper-item>
-                                <v-divider></v-divider>
-                                <v-stepper-item :value="4" :complete="step > 4" color="primary">
-                                    <template v-slot:title>Berkas</template>
-                                </v-stepper-item>
-                                <v-divider></v-divider>
-                                <v-stepper-item :value="5" :complete="registration.status !== 'incomplete'" color="primary">
-                                    <template v-slot:title>Selesai</template>
-                                </v-stepper-item>
-                            </v-stepper-header>
+                            <!-- NIK Ayah -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">NIK Ayah <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="text" v-model="parentForm.father_nik" @keypress="$event.key.length === 1 && ($event.key < '0' || $event.key > '9') && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="16 Digit NIK">
+                            </div>
+                            
+                            <!-- Nama Ayah -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nama Ayah <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="text" v-model="parentForm.father_name" @keypress="$event.key.length === 1 && !/^[a-zA-Z\s]*$/.test($event.key) && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="Nama Sesuai KTP">
+                            </div>
+                            
+                            <!-- Tahun Lahir Ayah -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Tahun Lahir Ayah</label>
+                                <input type="text" v-model="parentForm.father_birth_year" @keypress="$event.key.length === 1 && ($event.key < '0' || $event.key > '9') && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="YYYY">
+                            </div>
 
-                            <v-stepper-window class="pa-6 pa-md-10">
-                                <!-- Step 1: Biodata -->
-                                <v-stepper-window-item :value="1">
-                                    <h3 class="text-h5 font-weight-black mb-6 color-main">Informasi Pribadi</h3>
-                                    <v-form @submit.prevent="saveBio">
-                                        <v-row>
-                                            <!-- NIK -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">NIK (16 Digit Angka) <span class="text-error">*</span></div>
-                                                    <v-text-field v-model="bioForm.nik" type="number" placeholder="Masukkan 16 Digit NIK" prepend-inner-icon="mdi-card-account-details-outline" variant="outlined" bg-color="grey-lighten-5" :error-messages="bioForm.errors.nik" rounded="lg" hide-details="auto"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                            <!-- NO KK -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">No. KK (16 Digit Angka) <span class="text-error">*</span></div>
-                                                    <v-text-field v-model="bioForm.no_kk" type="number" placeholder="Masukkan 16 Digit No KK" prepend-inner-icon="mdi-card-account-details-outline" variant="outlined" bg-color="grey-lighten-5" :error-messages="bioForm.errors.no_kk" rounded="lg" hide-details="auto"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                            <!-- Jenis Kelamin -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Jenis Kelamin <span class="text-error">*</span></div>
-                                                    <v-select v-model="bioForm.gender" :items="[{title:'Laki-laki', value:'L'}, {title:'Perempuan', value:'P'}]" placeholder="Pilih Jenis Kelamin" prepend-inner-icon="mdi-gender-male-female" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-select>
-                                                </div>
-                                            </v-col>
-                                            <!-- Tempat Lahir -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Tempat Lahir <span class="text-error">*</span></div>
-                                                    <v-text-field v-model="bioForm.place_of_birth" placeholder="Kota/Kabupaten Tempat Lahir" prepend-inner-icon="mdi-map-marker-outline" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                            <!-- Tanggal Lahir -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Tanggal Lahir <span class="text-error">*</span></div>
-                                                    <v-text-field v-model="bioForm.date_of_birth" type="date" prepend-inner-icon="mdi-calendar-outline" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                            <!-- Agama -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Agama <span class="text-error">*</span></div>
-                                                    <v-text-field v-model="bioForm.religion" placeholder="Masukkan Agama" prepend-inner-icon="mdi-hands-pray" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                            <!-- Sekolah Asal -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Nama Sekolah Asal (SD/MI) <span class="text-error">*</span></div>
-                                                    <v-text-field v-model="bioForm.origin_school_name" placeholder="Asal Sekolah" prepend-inner-icon="mdi-school-outline" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                            <!-- Berkebutuhan Khusus -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Berkebutuhan Khusus</div>
-                                                    <v-select v-model="bioForm.special_needs" :items="options.kebutuhan_khusus" placeholder="Pilih Jika Ada" prepend-inner-icon="mdi-wheelchair-accessibility" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-select>
-                                                </div>
-                                            </v-col>
-                                            <!-- Tempat Tinggal -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Tempat Tinggal</div>
-                                                    <v-select v-model="bioForm.residence" :items="options.tempat_tinggal" placeholder="Pilih Tempat Tinggal" prepend-inner-icon="mdi-home-outline" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-select>
-                                                </div>
-                                            </v-col>
-                                            <!-- Moda Transportasi -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Moda Transportasi</div>
-                                                    <v-select v-model="bioForm.transportation" :items="options.moda_transportasi" placeholder="Pilih Kendaraan" prepend-inner-icon="mdi-car-outline" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-select>
-                                                </div>
-                                            </v-col>
-                                            <!-- Ekstrakurikuler -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Pilihan Ekstrakurikuler</div>
-                                                    <v-select v-model="bioForm.extracurricular" :items="options.ekstrakurikuler" placeholder="Pilih Ekstrakurikuler" prepend-inner-icon="mdi-basketball" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-select>
-                                                </div>
-                                            </v-col>
-                                            <!-- Alamat -->
-                                            <v-col cols="12">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Alamat Lengkap <span class="text-error">*</span></div>
-                                                    <v-textarea v-model="bioForm.address" placeholder="Jalan, RT/RW, Dusun" prepend-inner-icon="mdi-map-outline" variant="outlined" bg-color="grey-lighten-5" rows="2" rounded="lg" hide-details="auto"></v-textarea>
-                                                </div>
-                                            </v-col>
-                                            <!-- Desa -->
-                                            <v-col cols="12" md="4">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Desa / Kelurahan <span class="text-error">*</span></div>
-                                                    <v-text-field v-model="bioForm.village" placeholder="Nama Desa" prepend-inner-icon="mdi-home-city-outline" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                            <!-- Kecamatan -->
-                                            <v-col cols="12" md="4">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Kecamatan <span class="text-error">*</span></div>
-                                                    <v-text-field v-model="bioForm.district" placeholder="Nama Kecamatan" prepend-inner-icon="mdi-city-variant-outline" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                            <!-- Kabupaten -->
-                                            <v-col cols="12" md="4">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Kabupaten / Kota <span class="text-error">*</span></div>
-                                                    <v-text-field v-model="bioForm.city" placeholder="Nama Kabupaten" prepend-inner-icon="mdi-city" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                        </v-row>
-                                        <div class="d-flex justify-end mt-8">
-                                            <v-btn color="primary" size="large" type="submit" :loading="bioForm.processing" class="rounded-xl px-10 font-weight-black">
-                                                Simpan & Lanjut
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-stepper-window-item>
+                            <!-- Pendidikan Ayah -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Pendidikan Ayah</label>
+                                <select v-model="parentForm.father_education" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white appearance-none">
+                                    <option v-for="e in ['Tidak Sekolah', 'SD Sederajat', 'SMP Sederajat', 'SMA Sederajat', 'D1-D3', 'D4/S1', 'S2', 'S3']" :key="e" :value="e">{{ e }}</option>
+                                </select>
+                            </div>
 
-                                <!-- Step 2: Orang Tua -->
-                                <v-stepper-window-item :value="2">
-                                    <h3 class="text-h5 font-weight-black mb-6 color-main">Data Orang Tua / Wali</h3>
-                                    <v-form @submit.prevent="saveParent">
-                                        <v-row>
-                                            <!-- Ayah -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Nama Lengkap Ayah <span class="text-error">*</span></div>
-                                                    <v-text-field v-model="parentForm.father_name" placeholder="Sesuai KK" prepend-inner-icon="mdi-human-male" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                            <!-- Ibu -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Nama Lengkap Ibu <span class="text-error">*</span></div>
-                                                    <v-text-field v-model="parentForm.mother_name" placeholder="Sesuai KK" prepend-inner-icon="mdi-human-female" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                            <!-- Pendidikan Ayah -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Pendidikan Terakhir Ayah</div>
-                                                    <v-select v-model="parentForm.father_education" :items="options.pendidikan" placeholder="Pilih Pendidikan" prepend-inner-icon="mdi-school-outline" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-select>
-                                                </div>
-                                            </v-col>
-                                            <!-- Pendidikan Ibu -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Pendidikan Terakhir Ibu</div>
-                                                    <v-select v-model="parentForm.mother_education" :items="options.pendidikan" placeholder="Pilih Pendidikan" prepend-inner-icon="mdi-school-outline" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-select>
-                                                </div>
-                                            </v-col>
-                                            <!-- Pekerjaan Ayah -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Pekerjaan Ayah</div>
-                                                    <v-select v-model="parentForm.father_occupation" :items="options.pekerjaan" placeholder="Pilih Pekerjaan" prepend-inner-icon="mdi-briefcase-outline" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-select>
-                                                </div>
-                                            </v-col>
-                                            <!-- Pekerjaan Ibu -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Pekerjaan Ibu</div>
-                                                    <v-select v-model="parentForm.mother_occupation" :items="options.pekerjaan" placeholder="Pilih Pekerjaan" prepend-inner-icon="mdi-briefcase-outline" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-select>
-                                                </div>
-                                            </v-col>
-                                            <!-- Penghasilan -->
-                                            <v-col cols="12">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Penghasilan Rata-rata Orang Tua</div>
-                                                    <v-select v-model="parentForm.parent_income" :items="options.penghasilan" placeholder="Pilih Rentang Penghasilan" prepend-inner-icon="mdi-cash-multiple" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-select>
-                                                </div>
-                                            </v-col>
-                                            <!-- No WA -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">No. WhatsApp Aktif <span class="text-error">*</span></div>
-                                                    <v-text-field v-model="parentForm.parent_phone" placeholder="08xxxxxxxxxx" prepend-inner-icon="mdi-whatsapp" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                            <!-- KIP/PKH -->
-                                            <v-col cols="12" md="6">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">Nomor KIP/PKH (Jika Ada)</div>
-                                                    <v-text-field v-model="parentForm.aid_card_number" placeholder="Kosongkan jika tidak ada" prepend-inner-icon="mdi-card-text-outline" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                        </v-row>
-                                        <div class="d-flex justify-space-between mt-8">
-                                            <v-btn variant="text" @click="step = 1" class="rounded-xl font-weight-bold">Kembali</v-btn>
-                                            <v-btn color="primary" size="large" type="submit" :loading="parentForm.processing" class="rounded-xl px-10 font-weight-black">
-                                                Simpan & Lanjut
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-stepper-window-item>
+                            <!-- Pekerjaan Ayah -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Pekerjaan Ayah</label>
+                                <input type="text" v-model="parentForm.father_occupation" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="Pekerjaan">
+                            </div>
 
-                                <!-- Step 3: Nilai Rapor -->
-                                <v-stepper-window-item :value="3">
-                                    <h3 class="text-h5 font-weight-black mb-6 color-main">{{ options.report_semester || 'Nilai Rapor' }}</h3>
-                                    <v-form @submit.prevent="saveGrades">
-                                        <v-row>
-                                            <v-col v-for="subj in options.subjects_required" :key="subj.key" cols="6" md="3">
-                                                <div class="mb-2">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-1 text-grey-darken-3">{{ subj.label }} <span class="text-error">*</span></div>
-                                                    <v-text-field v-model="gradeForm[subj.key]" type="number" variant="outlined" bg-color="grey-lighten-5" rounded="lg" hide-details="auto"></v-text-field>
-                                                </div>
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <div class="bg-grey-lighten-5 pa-6 rounded-xl border-dashed border-2 mt-4">
-                                                    <div class="text-subtitle-2 font-weight-bold mb-2 text-grey-darken-3">Upload Scan Rapor / Bukti Nilai (JPG/PDF) <span class="text-error">*</span></div>
-                                                    <v-file-input 
-                                                        variant="underlined"
-                                                        prepend-icon="mdi-camera"
-                                                        @change="e => gradeForm.proof_file = e.target.files[0]"
-                                                        hide-details
-                                                    ></v-file-input>
-                                                    <div v-if="registration.grade?.proof_file_path" class="mt-4">
-                                                        <v-chip color="success" size="small" prepend-icon="mdi-check-circle">File sudah terunggah</v-chip>
-                                                    </div>
-                                                </div>
-                                            </v-col>
-                                        </v-row>
-                                        <div class="d-flex justify-space-between mt-8">
-                                            <v-btn variant="text" @click="step = 2" class="rounded-xl font-weight-bold">Kembali</v-btn>
-                                            <v-btn color="primary" size="large" type="submit" :loading="gradeForm.processing" class="rounded-xl px-10 font-weight-black">
-                                                Simpan & Lanjut
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-stepper-window-item>
+                            <!-- Penghasilan Ayah -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Penghasilan Ayah</label>
+                                <select v-model="parentForm.father_income" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white appearance-none">
+                                    <option v-for="i in ['Kurang dari Rp 1.000.000', 'Rp 1.000.000 - Rp 2.000.000', 'Rp 2.000.000 - Rp 5.000.000', 'Lebih dari Rp 5.000.000']" :key="i" :value="i">{{ i }}</option>
+                                </select>
+                            </div>
 
-                                <!-- Step 4: Dokumen -->
-                                <v-stepper-window-item :value="4">
-                                    <h3 class="text-h5 font-weight-black mb-2 color-main">Upload Berkas Pendukung</h3>
-                                    <p class="text-body-2 text-grey mb-8">Pastikan hasil scan jelas dan dapat terbaca dengan baik.</p>
-                                    
-                                    <v-row>
-                                        <v-col v-for="doc in docTypes" :key="doc.key" cols="12" sm="6" md="4">
-                                            <v-card variant="outlined" class="pa-5 rounded-xl text-center h-100 d-flex flex-column justify-center border-dashed border-2 position-relative">
-                                                <v-icon v-if="getDoc(doc.key)" color="success" class="position-absolute top-0 right-0 ma-2">mdi-check-circle</v-icon>
-                                                <div class="text-subtitle-2 font-weight-black mb-4">{{ doc.label }}</div>
-                                                <v-btn color="primary" variant="tonal" size="small" class="rounded-lg mb-2 overflow-hidden">
-                                                    {{ getDoc(doc.key) ? 'Ganti File' : 'Pilih File' }}
-                                                    <input type="file" class="position-absolute opacity-0" style="left:0; top:0; width:100%; height:100%; cursor:pointer" @change="e => { docForm.file = e.target.files[0]; uploadDoc(doc.key); }">
-                                                </v-btn>
-                                                <div class="text-tiny opacity-50" v-if="!getDoc(doc.key)">Format: JPG, PNG, PDF</div>
-                                                <div class="text-tiny text-success font-weight-bold" v-else>Terunggah</div>
-                                            </v-card>
-                                        </v-col>
-                                    </v-row>
-                                    <div class="d-flex justify-space-between mt-12">
-                                        <v-btn variant="text" @click="step = 3" class="rounded-xl font-weight-bold">Kembali</v-btn>
-                                        <v-btn color="primary" size="large" @click="step = 5" class="rounded-xl px-10 font-weight-black">
-                                            Lanjut ke Finalisasi
-                                        </v-btn>
+                            <div class="md:col-span-2 mt-4">
+                                <h3 class="font-bold text-slate-800 bg-pink-50 p-3 rounded-lg border border-pink-100 text-sm">DATA IBU KANDUNG</h3>
+                            </div>
+
+                            <!-- NIK Ibu -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">NIK Ibu <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="text" v-model="parentForm.mother_nik" @keypress="$event.key.length === 1 && ($event.key < '0' || $event.key > '9') && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="16 Digit NIK">
+                            </div>
+
+                            <!-- Nama Ibu -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nama Ibu <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="text" v-model="parentForm.mother_name" @keypress="$event.key.length === 1 && !/^[a-zA-Z\s]*$/.test($event.key) && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="Nama Sesuai KTP">
+                            </div>
+                            
+                            <!-- Tahun Lahir Ibu -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Tahun Lahir Ibu</label>
+                                <input type="text" v-model="parentForm.mother_birth_year" @keypress="$event.key.length === 1 && ($event.key < '0' || $event.key > '9') && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="YYYY">
+                            </div>
+
+                            <!-- Pendidikan Ibu -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Pendidikan Ibu</label>
+                                <select v-model="parentForm.mother_education" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white appearance-none">
+                                    <option v-for="e in ['Tidak Sekolah', 'SD Sederajat', 'SMP Sederajat', 'SMA Sederajat', 'D1-D3', 'D4/S1', 'S2', 'S3']" :key="e" :value="e">{{ e }}</option>
+                                </select>
+                            </div>
+
+                            <!-- Pekerjaan Ibu -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Pekerjaan Ibu</label>
+                                <input type="text" v-model="parentForm.mother_occupation" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="Pekerjaan">
+                            </div>
+
+                            <!-- Penghasilan Ibu -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Penghasilan Ibu</label>
+                                <select v-model="parentForm.mother_income" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white appearance-none">
+                                    <option v-for="i in ['Kurang dari Rp 1.000.000', 'Rp 1.000.000 - Rp 2.000.000', 'Rp 2.000.000 - Rp 5.000.000', 'Lebih dari Rp 5.000.000']" :key="i" :value="i">{{ i }}</option>
+                                </select>
+                            </div>
+
+                            <div class="md:col-span-2 mt-4 border-t border-slate-100 pt-6"></div>
+
+                            <!-- No HP Ortu -->
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nomor HP / WA Orang Tua <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="text" v-model="parentForm.parent_phone" @keypress="$event.key.length === 1 && ($event.key < '0' || $event.key > '9') && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="08xxxxxxxxxx">
+                                <p v-if="parentForm.errors.parent_phone" class="text-red-500 text-xs mt-1">{{ parentForm.errors.parent_phone }}</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-10 flex justify-between">
+                            <button type="button" @click="step = 1" class="border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold py-3 px-8 rounded-xl transition-all">
+                                <span class="mr-2">←</span> Kembali
+                            </button>
+                            <button type="submit" :disabled="parentForm.processing" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-blue-500/30 transition-all">
+                                <span v-if="parentForm.processing">Menyimpan...</span>
+                                <span v-else>Simpan & Lanjutkan <span class="ml-2">→</span></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- STEP 3: NILAI & PRESTASI -->
+                <div v-if="step === 3" class="p-8 sm:p-10 transition-all">
+                    <div class="mb-8 border-b border-slate-100 pb-5">
+                        <h2 class="text-xl font-bold text-slate-800">3. Nilai Rapor & Prestasi</h2>
+                        <p class="text-sm text-slate-500 mt-1">Masukkan nilai rapor dan tambahkan prestasi jika ada.</p>
+                    </div>
+
+                    <form @submit.prevent="saveGrades">
+                        
+                        <!-- Nilai -->
+                        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100">Nilai Rapor Terakhir</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                            <div v-for="s in subjectsRequired" :key="s.key">
+                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">{{ s.label }} <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
+                                <input type="number" v-model="gradeForm[s.key]" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="0 - 100">
+                                <p v-if="gradeForm.errors[s.key]" class="text-red-500 text-xs mt-1">{{ gradeForm.errors[s.key] }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Prestasi UI Rebuilt in Tailwind -->
+                        <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm mb-10">
+                            <!-- Alert PANDUAN -->
+                            <div class="bg-blue-50 p-4 border-b border-blue-100 flex items-start m-4 rounded-lg">
+                                <div class="text-blue-500 mr-3 mt-1">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-slate-700 mb-1">PANDUAN PENGISIAN :</div>
+                                    <div class="text-xs text-slate-600 leading-tight">
+                                        * Anda dapat memasukkan maksimal 3 prestasi terbaik.<br>
+                                        * Sistem akan menghitung bobot nilai secara otomatis.
                                     </div>
-                                </v-stepper-window-item>
+                                </div>
+                            </div>
 
-                                <!-- Step 5: Finalisasi -->
-                                <v-stepper-window-item :value="5">
-                                    <div class="text-center py-10">
-                                        <v-icon size="100" color="warning" class="mb-6 animate-pulse">mdi-shield-check-outline</v-icon>
-                                        <h3 class="text-h4 font-weight-black mb-4 color-main">Konfirmasi Akhir</h3>
-                                        <p class="text-body-1 text-grey mb-10 max-width-600 mx-auto">
-                                            Silakan periksa kembali seluruh data Anda. Setelah melakukan finalisasi, data akan dikunci dan dikirim ke sistem untuk proses verifikasi panitia.
-                                        </p>
-                                        
-                                        <v-card variant="tonal" color="primary" class="pa-6 rounded-xl mx-auto mb-10" style="max-width: 500px">
-                                            <v-table bg-color="transparent" class="text-left">
-                                                <tbody>
-                                                    <tr><td class="font-weight-black py-2">Nama</td><td>: {{ registration.student_detail.full_name }}</td></tr>
-                                                    <tr><td class="font-weight-black py-2">NISN</td><td>: {{ registration.student_detail.nisn }}</td></tr>
-                                                    <tr><td class="font-weight-black py-2">Asal Sekolah</td><td>: {{ registration.student_detail.origin_school_name }}</td></tr>
-                                                </tbody>
-                                            </v-table>
-                                        </v-card>
-
-                                        <div class="d-flex justify-center ga-4">
-                                            <v-btn variant="outlined" color="primary" size="large" @click="step = 4" class="rounded-xl px-10 font-weight-black border-2">
-                                                Cek Ulang Berkas
-                                            </v-btn>
-                                            <v-btn 
-                                                color="success" 
-                                                size="large" 
-                                                class="rounded-xl px-10 font-weight-black elevation-12"
-                                                :disabled="registration.status !== 'incomplete'"
-                                                @click="finalize"
-                                                :loading="finalizeForm.processing"
-                                            >
-                                                FINALISASI DATA
-                                            </v-btn>
+                            <div class="p-6">
+                                <div class="flex items-center mb-6">
+                                    <svg class="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    <h4 class="text-sm font-bold text-slate-800 uppercase tracking-tight">TAMBAH DATA PRESTASI</h4>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <div class="text-[11px] font-black uppercase tracking-wider text-slate-700 mb-2">KATEGORI & TINGKAT PRESTASI</div>
+                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                        <!-- Kategori -->
+                                        <div>
+                                            <label class="block text-[11px] font-medium text-slate-700 mb-1">Kategori Prestasi <span class="text-red-500">*</span></label>
+                                            <select v-model="currentPrestasi.category" class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-xs bg-white">
+                                                <option v-for="i in ['Akademik', 'Non-Akademik', 'Keagamaan']" :key="i" :value="i">{{ i }}</option>
+                                            </select>
+                                        </div>
+                                        <!-- Tingkat -->
+                                        <div>
+                                            <label class="block text-[11px] font-medium text-slate-700 mb-1">Tingkat Kejuaraan <span class="text-red-500">*</span></label>
+                                            <select v-model="currentPrestasi.level" class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-xs bg-white">
+                                                <option v-for="i in ['Tingkat Kecamatan', 'Tingkat Kabupaten / Kota', 'Tingkat Provinsi', 'Tingkat Nasional', 'Tingkat Internasional']" :key="i" :value="i">{{ i }}</option>
+                                            </select>
+                                        </div>
+                                        <!-- Jenis -->
+                                        <div>
+                                            <label class="block text-[11px] font-medium text-slate-700 mb-1">Jenis Kejuaraan <span class="text-red-500">*</span></label>
+                                            <div class="border rounded-lg px-3 py-2 flex items-center bg-white space-x-4">
+                                                <label class="flex items-center text-xs"><input type="radio" v-model="currentPrestasi.type" value="Perorangan / Individu" class="mr-1 text-blue-600"> Perorangan</label>
+                                                <label class="flex items-center text-xs"><input type="radio" v-model="currentPrestasi.type" value="Beregu / Kelompok" class="mr-1 text-blue-600"> Beregu</label>
+                                            </div>
+                                        </div>
+                                        <!-- Juara -->
+                                        <div>
+                                            <label class="block text-[11px] font-medium text-slate-700 mb-1">Peringkat / Juara <span class="text-red-500">*</span></label>
+                                            <select v-model="currentPrestasi.rank" class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-xs bg-white">
+                                                <option v-for="i in ['Juara 1', 'Juara 2', 'Juara 3', 'Harapan 1', 'Lainnya']" :key="i" :value="i">{{ i }}</option>
+                                            </select>
                                         </div>
                                     </div>
-                                </v-stepper-window-item>
-                            </v-stepper-window>
-                        </v-stepper>
-                    </v-col>
+                                </div>
 
-                    <!-- Sidebar Info -->
-                    <v-col cols="12" lg="4">
-                        <v-card class="rounded-xl pa-6 bg-primary text-white mb-6 elevation-4">
-                            <h4 class="text-subtitle-1 font-weight-black mb-4">Butuh Bantuan?</h4>
-                            <p class="text-body-2 opacity-80 mb-6">Jika Anda mengalami kendala saat mengisi formulir, silakan hubungi tim IT kami.</p>
-                            <v-btn block color="secondary" class="rounded-lg font-weight-black py-4 h-auto" prepend-icon="mdi-whatsapp">
-                                Hubungi WhatsApp
-                            </v-btn>
-                        </v-card>
+                                <div class="mb-4">
+                                    <div class="text-[11px] font-black uppercase tracking-wider text-slate-700 mb-2 mt-4">INFORMASI DETAIL</div>
+                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                        <div>
+                                            <label class="block text-[11px] font-medium text-slate-700 mb-1">Nama Perlombaan / Kejuaraan <span class="text-red-500">*</span></label>
+                                            <input type="text" v-model="currentPrestasi.name" class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-xs bg-white" placeholder="Contoh: FLS2N Tari">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-medium text-slate-700 mb-1">Instansi Penyelenggara <span class="text-red-500">*</span></label>
+                                            <input type="text" v-model="currentPrestasi.organizer" class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-xs bg-white" placeholder="Contoh: Dinas Pendidikan">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-medium text-slate-700 mb-1">Tahun Perolehan <span class="text-red-500">*</span></label>
+                                            <select v-model="currentPrestasi.year" class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-xs bg-white">
+                                                <option v-for="i in ['2021', '2022', '2023', '2024', '2025']" :key="i" :value="i">{{ i }}</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-medium text-slate-700 mb-1">No Sertifikat (Optional)</label>
+                                            <input type="text" v-model="currentPrestasi.certificate_number" class="w-full px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none text-xs bg-white" placeholder="(optional)">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4 flex justify-end items-center">
+                                    <div class="mr-4 text-sm font-bold text-slate-800">
+                                        PREDIKSI SKOR: [ <span class="text-blue-600">{{ calculateScore(currentPrestasi.level, currentPrestasi.rank) }}</span> Poin ]
+                                    </div>
+                                    <button type="button" @click="addPrestasi" class="bg-blue-100 text-blue-700 hover:bg-blue-200 font-bold py-2 px-6 rounded-lg transition-all text-sm border border-blue-200">
+                                        + Tambah ke Daftar
+                                    </button>
+                                </div>
+                            </div>
 
-                        <v-card class="rounded-xl pa-6 border elevation-0 bg-white">
-                            <h4 class="text-subtitle-1 font-weight-black mb-4 color-main">Informasi Keamanan</h4>
-                            <div class="d-flex ga-4 mb-4">
-                                <v-icon icon="mdi-shield-lock" color="primary"></v-icon>
-                                <span class="text-caption opacity-70">Data Anda dilindungi oleh enkripsi sistem terbaru.</span>
+                            <!-- DAFTAR PRESTASI -->
+                            <div class="m-4 border rounded-lg overflow-hidden bg-white shadow-sm">
+                                <div class="bg-slate-100 p-3 border-b border-slate-200">
+                                    <span class="font-bold text-xs text-slate-700 uppercase tracking-wider">DAFTAR PRESTASI TERSIMPAN</span>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left text-xs">
+                                        <thead class="bg-slate-50 text-slate-600 border-b">
+                                            <tr>
+                                                <th class="p-3 font-bold">NO</th>
+                                                <th class="p-3 font-bold">KATEGORI</th>
+                                                <th class="p-3 font-bold">NAMA PRESTASI</th>
+                                                <th class="p-3 font-bold">TINGKAT</th>
+                                                <th class="p-3 font-bold">JUARA</th>
+                                                <th class="p-3 font-bold">SKOR</th>
+                                                <th class="p-3 font-bold">AKSI</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-if="prestasiList.length === 0">
+                                                <td colspan="7" class="p-6 text-center text-slate-400">Belum ada data prestasi.</td>
+                                            </tr>
+                                            <tr v-for="(p, idx) in prestasiList" :key="p.id || idx" class="border-b hover:bg-slate-50">
+                                                <td class="p-3">{{ idx + 1 }}</td>
+                                                <td class="p-3">{{ p.category }}</td>
+                                                <td class="p-3 font-medium">{{ p.name }}</td>
+                                                <td class="p-3">{{ p.level }}</td>
+                                                <td class="p-3">{{ p.rank }}</td>
+                                                <td class="p-3 font-bold text-blue-600">{{ p.score }}</td>
+                                                <td class="p-3">
+                                                    <button type="button" @click="removePrestasi(idx)" class="text-red-500 hover:bg-red-50 p-1 rounded transition-colors">
+                                                        Hapus
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="bg-slate-50 p-3 text-right border-t font-black text-xs text-slate-800">
+                                    TOTAL TAMBAHAN POIN | {{ prestasiList.reduce((acc, curr) => acc + (curr.score || 0), 0) }} Poin
+                                </div>
                             </div>
-                            <div class="d-flex ga-4">
-                                <v-icon icon="mdi-cloud-check" color="primary"></v-icon>
-                                <span class="text-caption opacity-70">Sistem melakukan backup data secara otomatis setiap 24 jam.</span>
+                        </div>
+
+                        <div class="mt-10 flex justify-between">
+                            <button type="button" @click="step = 2" class="border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold py-3 px-8 rounded-xl transition-all">
+                                <span class="mr-2">←</span> Kembali
+                            </button>
+                            <button type="submit" :disabled="gradeForm.processing" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-blue-500/30 transition-all">
+                                <span v-if="gradeForm.processing">Menyimpan...</span>
+                                <span v-else>Simpan & Lanjutkan <span class="ml-2">→</span></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- STEP 4: BERKAS -->
+                <div v-if="step === 4" class="p-8 sm:p-10 transition-all">
+                    <div class="mb-8 border-b border-slate-100 pb-5">
+                        <h2 class="text-xl font-bold text-slate-800">4. Unggah Berkas Persyaratan</h2>
+                        <p class="text-sm text-slate-500 mt-1">Unggah dokumen yang diminta dalam format gambar (JPG/PNG) atau PDF (Maks 2MB).</p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div v-for="dt in docTypes" :key="dt.key" class="border border-slate-200 rounded-xl p-5 flex flex-col md:flex-row md:items-center justify-between bg-white hover:border-blue-200 transition-colors">
+                            <div class="mb-4 md:mb-0">
+                                <h4 class="font-bold text-slate-800 text-sm uppercase tracking-wide">{{ dt.label }}</h4>
+                                <p v-if="getDoc(dt.key)" class="text-xs text-green-600 font-bold mt-1 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    Sudah diunggah
+                                </p>
+                                <p v-else class="text-xs text-red-500 mt-1">Belum diunggah</p>
                             </div>
-                        </v-card>
-                    </v-col>
-                </v-row>
-            </v-container>
-        </v-main>
-    </v-app>
+                            <form @submit.prevent="uploadDoc(dt.key)" class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-3">
+                                <input type="file" @change="e => docForm.file = e.target.files[0]" accept="image/*,.pdf" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 outline-none">
+                                <button type="submit" :disabled="docForm.processing && docForm.type === dt.key" class="w-full md:w-auto bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold py-2.5 px-6 rounded-lg transition-colors whitespace-nowrap">
+                                    {{ docForm.processing && docForm.type === dt.key ? 'Mengunggah...' : 'Unggah File' }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="mt-10 flex justify-between">
+                        <button type="button" @click="step = 3" class="border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold py-3 px-8 rounded-xl transition-all">
+                            <span class="mr-2">←</span> Kembali
+                        </button>
+                        <button type="button" @click="step = 5" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-blue-500/30 transition-all">
+                            Lanjut ke Finalisasi <span class="ml-2">→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 5: SELESAI -->
+                <div v-if="step === 5" class="p-8 sm:p-10 transition-all text-center py-16">
+                    
+                    <div class="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+
+                    <h2 class="text-3xl font-extrabold text-slate-900 mb-4">Hampir Selesai!</h2>
+                    <p class="text-slate-600 max-w-md mx-auto mb-8">Pastikan semua data dan berkas yang Anda masukkan sudah benar. Setelah difinalisasi, data tidak dapat diubah kembali.</p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                        <button type="button" @click="step = 4" class="w-full sm:w-auto border-2 border-slate-200 text-slate-600 hover:bg-slate-50 font-bold py-3 px-8 rounded-xl transition-all">
+                            Cek Ulang Data
+                        </button>
+                        <button type="button" @click="finalize" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-green-500/30 transition-all">
+                            Finalisasi Pendaftaran
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 </template>
 
+
 <style scoped>
-.line-height-1 { line-height: 1.1; }
-.opacity-70 { opacity: 0.7; }
-.color-main { color: #0a2a12 !important; }
-
-:deep(.v-stepper-header) {
-    box-shadow: none !important;
-    background: #ffffff;
-}
-
-:deep(.border-dashed) {
-    border-style: dashed !important;
-}
-
-:deep(.border-2) {
-    border-width: 2px !important;
-}
-
-.animate-pulse {
-    animation: pulse-icon 2s infinite;
-}
-
-@keyframes pulse-icon {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.1); opacity: 0.8; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-:deep(.v-stepper-item--active .v-stepper-item__avatar) {
-    background: #1B5E20 !important;
-    box-shadow: 0 0 15px rgba(27, 94, 32, 0.4);
-}
-
-:deep(.v-stepper-window) {
-    transition: all 0.5s ease;
-}
-
-/* Modern Input Group Aesthetics */
+/* Modern Pill-Shaped Input Overrides */
 :deep(.v-field--variant-outlined) {
-    border-radius: 8px !important;
-    transition: all 0.3s ease;
-    background: #ffffff !important;
-    padding-inline-start: 0 !important;
-    overflow: hidden;
+    border-radius: 9999px !important;
+    background-color: #f8fafc !important; 
+}
+:deep(.v-field__outline) {
     --v-field-border-opacity: 1 !important;
 }
-
-:deep(.v-field--variant-outlined:not(.v-field--focused) .v-field__outline) {
-    color: #e2e8f0 !important;
+:deep(.v-field__outline__start) { 
+    border-color: #e2e8f0 !important; 
+    border-radius: 9999px 0 0 9999px !important; 
+}
+:deep(.v-field__outline__end) { 
+    border-color: #e2e8f0 !important; 
+    border-radius: 0 9999px 9999px 0 !important; 
+}
+:deep(.v-field__outline__notch) { 
+    border-color: #e2e8f0 !important; 
 }
 
-:deep(.v-field--variant-outlined:hover) {
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+:deep(.v-field--focused .v-field__outline__start),
+:deep(.v-field--focused .v-field__outline__end),
+:deep(.v-field--focused .v-field__outline__notch) { 
+    border-color: #cbd5e1 !important; 
 }
 
-:deep(.v-field--variant-outlined.v-field--focused) {
-    box-shadow: 0 4px 20px rgba(27, 94, 32, 0.08);
+:deep(.v-field--focused) {
+    box-shadow: 0 0 15px rgba(226, 232, 240, 0.5) !important;
+    background-color: #ffffff !important;
 }
 
-:deep(.v-field--variant-outlined .v-field__prepend-inner) {
-    background-color: #f8fafc !important;
-    border-right: 1px solid #e2e8f0 !important;
-    padding: 0 16px !important;
-    align-self: stretch !important;
-    display: flex;
-    align-items: center;
-    margin-inline-end: 12px !important;
+:deep(.v-text-field input) {
+    font-size: 0.875rem !important; 
+    color: #475569 !important;
+    padding-left: 0.5rem !important;
 }
 
-:deep(.v-field--variant-outlined .v-field__prepend-inner .v-icon) {
-    opacity: 1 !important;
-    color: #64748b !important;
+:deep(.v-text-field .v-icon) {
+    color: #94a3b8 !important; 
 }
 
-:deep(.v-field--variant-outlined .v-field__input) {
-    padding-top: 14px !important;
-    padding-bottom: 14px !important;
-    color: #334155 !important;
-}
-
-:deep(.v-field--variant-outlined .v-field__input::placeholder) {
-    color: #94a3b8 !important;
-    opacity: 1 !important;
-}
-
-/* Smooth Buttons */
 :deep(.v-btn) {
-    text-transform: none;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-}
-
-:deep(.v-btn[type="submit"]:hover), :deep(.v-btn.bg-success:hover) {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(27, 94, 32, 0.2) !important;
-}
-
-:deep(.v-stepper-window-item) {
-    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    text-transform: none !important;
+    letter-spacing: normal !important;
 }
 </style>
+

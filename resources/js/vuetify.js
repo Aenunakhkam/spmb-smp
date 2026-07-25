@@ -9,14 +9,14 @@ const nuTheme = {
   colors: {
     background: '#FFFFFF',
     surface: '#FFFFFF',
-    primary: '#1B5E20', // Hijau NU
-    'primary-darken-1': '#1B5E20',
-    secondary: '#FFD600', // Kuning NU
-    'secondary-darken-1': '#FBC02D',
+    primary: '#1E3A8A', // Biru Premium
+    'primary-darken-1': '#172554',
+    secondary: '#D4AF37', // Kuning Emas
+    'secondary-darken-1': '#B8860B',
     error: '#B00020',
-    info: '#2196F3',
-    success: '#4CAF50',
-    warning: '#FB8C00',
+    info: '#3B82F6',
+    success: '#10B981',
+    warning: '#F59E0B',
   },
 }
 

@@ -3,6 +3,7 @@ import { ref, watch } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import StudentDataViewer from '@/Components/StudentDataViewer.vue';
+import TextInput from '@/Components/TextInput.vue';
 
 const props = defineProps({
     registrations: Object,
@@ -37,26 +38,28 @@ const openDetail = (reg) => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-h5 font-weight-bold text-grey-darken-3">Data Master Siswa & Orang Tua</h2>
+            <h2 class="text-xl font-bold text-slate-800">Data Master Siswa & Orang Tua</h2>
         </template>
 
-        <v-card class="pa-4 rounded-xl elevation-2">
-            <v-row class="mb-4">
-                <v-col cols="12" md="4">
-                    <v-text-field
-                        v-model="search"
-                        label="Cari Nama / NISN / No. Reg"
-                        prepend-inner-icon="mdi-magnify"
-                        variant="outlined"
-                        density="compact"
-                        hide-details
-                    ></v-text-field>
-                </v-col>
-            </v-row>
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-6">
+                <div class="col-span-12 md:col-span-4">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <v-icon color="grey-lighten-1">mdi-magnify</v-icon>
+                        </div>
+                        <TextInput
+                            v-model="search"
+                            placeholder="Cari Nama / NISN / No. Reg"
+                            class="w-full pl-10"
+                        />
+                    </div>
+                </div>
+            </div>
 
-            <v-table class="border">
+            <div class="overflow-x-auto"><table class="w-full text-left border-collapse text-sm">
                 <thead>
-                    <tr class="bg-grey-lighten-4">
+                    <tr>
                         <th class="font-weight-bold">No. Pendaftaran</th>
                         <th class="font-weight-bold">NISN</th>
                         <th class="font-weight-bold">Nama Lengkap</th>
@@ -73,22 +76,16 @@ const openDetail = (reg) => {
                         <td>{{ reg.student_detail?.gender === 'L' ? 'Laki-laki' : (reg.student_detail?.gender === 'P' ? 'Perempuan' : '-') }}</td>
                         <td>{{ reg.student_detail?.origin_school_name || '-' }}</td>
                         <td class="text-center">
-                            <v-btn
-                                color="info"
-                                variant="tonal"
-                                size="small"
-                                prepend-icon="mdi-eye"
-                                @click="openDetail(reg)"
-                            >
+                            <button @click="openDetail(reg)" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all">
                                 Lihat Detail
-                            </v-btn>
+                            </button>
                         </td>
                     </tr>
                     <tr v-if="registrations.data.length === 0">
                         <td colspan="6" class="text-center py-4 text-grey">Tidak ada data ditemukan.</td>
                     </tr>
                 </tbody>
-            </v-table>
+            </table></div>
 
             <div class="mt-4 d-flex justify-center">
                 <v-pagination
@@ -98,37 +95,37 @@ const openDetail = (reg) => {
                     active-color="primary"
                 ></v-pagination>
             </div>
-        </v-card>
+        </div>
 
         <!-- Dialog Detail Siswa -->
         <v-dialog v-model="dialog" max-width="800" scrollable>
-            <v-card v-if="selectedReg" class="rounded-xl">
-                <v-card-title class="bg-primary text-white d-flex justify-space-between align-center pa-4">
-                    <span class="text-h6 font-weight-bold">Detail Siswa: {{ selectedReg.student_detail?.full_name }}</span>
-                    <v-btn icon="mdi-close" variant="text" @click="dialog = false" color="white"></v-btn>
-                </v-card-title>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                    <span class="text-lg font-bold text-slate-800">Detail Siswa: {{ selectedReg.student_detail?.full_name }}</span>
+                    <button @click="dialog = false" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all"></button>
+                </div>
 
-                <v-card-text class="pa-0" style="max-height: 70vh;">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
                     <div class="pa-4 bg-grey-lighten-4 border-b">
-                        <v-row dense>
-                            <v-col cols="4" class="text-grey-darken-1 font-weight-medium">Nomor Pendaftaran</v-col>
-                            <v-col cols="8" class="font-weight-bold">: <span class="text-primary">{{ selectedReg.registration_number }}</span></v-col>
-                            <v-col cols="4" class="text-grey-darken-1 font-weight-medium">Status Verifikasi</v-col>
-                            <v-col cols="8" class="font-weight-bold text-capitalize">: {{ selectedReg.status }}</v-col>
-                            <v-col cols="4" class="text-grey-darken-1 font-weight-medium">Tanggal Daftar</v-col>
-                            <v-col cols="8">: {{ formatDate(selectedReg.created_at) }}</v-col>
-                        </v-row>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-6">
+                            <div class="col-span-12">Nomor Pendaftaran</div>
+                            <div class="col-span-12">: <span class="text-primary">{{ selectedReg.registration_number }}</span></div>
+                            <div class="col-span-12">Status Verifikasi</div>
+                            <div class="col-span-12">: {{ selectedReg.status }}</div>
+                            <div class="col-span-12">Tanggal Daftar</div>
+                            <div class="col-span-12">: {{ formatDate(selectedReg.created_at) }}</div>
+                        </div>
                     </div>
 
                     <div class="pa-4 pt-0 mt-4">
                         <StudentDataViewer :registration="selectedReg" />
                     </div>
-                </v-card-text>
+                </div>
 
-                <v-card-actions class="pa-4 bg-grey-lighten-4 justify-end">
-                    <v-btn color="grey-darken-2" variant="text" @click="dialog = false">Tutup</v-btn>
-                </v-card-actions>
-            </v-card>
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                    <button @click="dialog = false" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all">Tutup</button>
+                </div>
+            </div>
         </v-dialog>
 
     </AuthenticatedLayout>

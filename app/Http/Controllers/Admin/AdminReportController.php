@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use App\Exports\ReportExport;
+use App\Exports\MasterDataExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -75,5 +76,11 @@ class AdminReportController extends Controller
     public function exportExcel()
     {
         return Excel::download(new ReportExport(), 'Laporan_Statistik_PPDB.xlsx');
+    }
+
+    public function exportMaster()
+    {
+        $filename = 'Master_Data_Siswa_' . date('Ymd_His') . '.xlsx';
+        return Excel::download(new MasterDataExport(), $filename);
     }
 }

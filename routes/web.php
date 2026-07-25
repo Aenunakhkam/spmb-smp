@@ -7,7 +7,16 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    $academicYear = \App\Models\Setting::where('key', 'academic_year')->first()?->value ?? date('Y');
+    $settings = \App\Models\Setting::whereIn('key', ['academic_year', 'registration_start_date', 'registration_end_date', 'ppdb_agenda', 'frontend_faqs', 'popup_banner'])->pluck('value', 'key');
+    $academicYear = $settings['academic_year'] ?? date('Y');
+    
+    $defaultFaqs = [
+        ['question' => 'Bagaimana cara konfirmasi pembayaran?', 'answer' => 'Sistem pendaftaran ini gratis untuk tahap awal. Untuk biaya administrasi lainnya akan diinfokan setelah verifikasi data awal selesai.'],
+        ['question' => 'Apakah berkas harus diantar ke sekolah?', 'answer' => 'Tidak perlu. Cukup unggah scan dokumen asli (format JPG/PDF) ke sistem ini. Fisik dokumen dibawa saat tes wawancara.'],
+        ['question' => 'Apa yang harus dilakukan setelah mendaftar?', 'answer' => 'Silakan simpan Nomor Pendaftaran dan Kode Akses Anda untuk memantau status verifikasi berkas oleh admin secara berkala.'],
+    ];
+    $faqs = isset($settings['frontend_faqs']) ? json_decode($settings['frontend_faqs'], true) : $defaultFaqs;
+    
     $totalRegistrants = \App\Models\Registration::where('academic_year', $academicYear)->count();
     $byInterest = \App\Models\Registration::selectRaw('JSON_UNQUOTE(JSON_EXTRACT(additional_data, "$.major")) as major, count(*) as count')
         ->where('academic_year', $academicYear)
@@ -21,6 +30,12 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
         'totalRegistrants' => $totalRegistrants,
         'byInterest' => $byInterest,
+        'registrationStartDate' => $settings['registration_start_date'] ?? null,
+        'registrationEndDate' => $settings['registration_end_date'] ?? null,
+        'ppdbAgenda' => json_decode($settings['ppdb_agenda'] ?? '[]', true),
+        'academicYear' => $academicYear,
+        'faqs' => $faqs,
+        'popupBanner' => $settings['popup_banner'] ?? null,
     ]);
 })->name('home');
 
@@ -56,6 +71,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::get('/reports', [App\Http\Controllers\Admin\AdminReportController::class, 'index'])->name('admin.reports.index');
     Route::get('/reports/export/pdf', [App\Http\Controllers\Admin\AdminReportController::class, 'exportPdf'])->name('admin.reports.exportPdf');
     Route::get('/reports/export/excel', [App\Http\Controllers\Admin\AdminReportController::class, 'exportExcel'])->name('admin.reports.exportExcel');
+    Route::get('/reports/export/master', [App\Http\Controllers\Admin\AdminReportController::class, 'exportMaster'])->name('admin.reports.exportMaster');
 
     Route::get('/registrations/export/pdf', [App\Http\Controllers\Admin\AdminRegistrationController::class, 'exportPdf'])->name('admin.registrations.exportPdf');
     Route::get('/registrations/export/excel', [App\Http\Controllers\Admin\AdminRegistrationController::class, 'exportExcel'])->name('admin.registrations.exportExcel');
@@ -74,6 +90,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
 
     Route::get('/admission-settings', [App\Http\Controllers\Admin\AdmissionSettingController::class, 'index'])->name('admin.admission-settings.index');
     Route::post('/admission-settings', [App\Http\Controllers\Admin\AdmissionSettingController::class, 'update'])->name('admin.admission-settings.update');
+    Route::delete('/admission-settings/banner', [App\Http\Controllers\Admin\AdmissionSettingController::class, 'deleteBanner'])->name('admin.admission-settings.deleteBanner');
 
     Route::get('/logs', [App\Http\Controllers\Admin\AdminLogController::class, 'index'])->name('admin.logs.index');
     Route::delete('/logs/clear', [App\Http\Controllers\Admin\AdminLogController::class, 'clear'])->name('admin.logs.clear');

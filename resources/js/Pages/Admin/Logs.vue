@@ -77,23 +77,17 @@ const clearLogs = () => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-h5 font-weight-bold text-grey-darken-3">Log Aktivitas Sistem</h2>
+            <h2 class="text-xl font-bold text-slate-800">Log Aktivitas Sistem</h2>
         </template>
 
         <div class="d-flex justify-end mb-4">
-            <v-btn 
-                color="error" 
-                prepend-icon="mdi-delete-sweep" 
-                @click="clearLogs" 
-                :disabled="logs.data.length === 0"
-                variant="flat"
-            >
+            <button @click="clearLogs" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-all">
                 Hapus Semua Log
-            </v-btn>
+            </button>
         </div>
 
-        <v-card class="pa-4 rounded-xl elevation-2">
-            <v-table>
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+            <div class="overflow-x-auto"><table class="w-full text-left border-collapse text-sm">
                 <thead>
                     <tr>
                         <th class="text-left font-weight-bold text-grey-darken-2">Waktu</th>
@@ -108,9 +102,9 @@ const clearLogs = () => {
                         <td class="text-caption text-no-wrap">{{ formatDate(log.created_at) }}</td>
                         <td class="font-weight-medium">{{ log.user ? log.user.name : 'System' }}</td>
                         <td>
-                            <v-chip size="small" :color="actionColorMap[log.action] || 'grey'" class="font-weight-bold">
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase border bg-slate-100 text-slate-700 border-slate-200">
                                 {{ actionLabelMap[log.action] || log.action }}
-                            </v-chip>
+                            </span>
                         </td>
                         <td><span class="text-caption font-weight-bold text-grey">{{ log.module }}</span></td>
                         <td class="text-caption text-grey-darken-2">
@@ -122,7 +116,7 @@ const clearLogs = () => {
                         <td colspan="5" class="text-center py-4 text-grey">Belum ada log aktivitas tercatat.</td>
                     </tr>
                 </tbody>
-            </v-table>
+            </table></div>
 
             <div class="mt-4 d-flex justify-center">
                 <v-pagination
@@ -131,6 +125,6 @@ const clearLogs = () => {
                     @update:model-value="v => router.get(route('admin.logs.index'), { page: v })"
                 ></v-pagination>
             </div>
-        </v-card>
+        </div>
     </AuthenticatedLayout>
 </template>

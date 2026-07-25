@@ -101,10 +101,15 @@ class AdminRegistrationController extends Controller
     {
         $quota = Setting::where('key', 'quota')->first()?->value ?? 200;
         
-        $registrations = Registration::where('status', 'verified')
-            ->orderBy('average_score', 'desc')
-            ->orderBy('created_at', 'asc')
-            ->get();
+        $registrations = Registration::where('status', 'verified')->with('studentDetail')->get();
+
+        // Urutkan berdasarkan skor akhir (Rapor + Prestasi) tertinggi, lalu pendaftar tercepat jika seri
+        $registrations = $registrations->sort(function ($a, $b) {
+            if ($a->final_score == $b->final_score) {
+                return $a->created_at <=> $b->created_at;
+            }
+            return $b->final_score <=> $a->final_score;
+        })->values();
 
         foreach ($registrations as $index => $registration) {
             $rank = $index + 1;
