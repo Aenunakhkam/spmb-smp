@@ -293,95 +293,35 @@ const schoolsChartOptions = {
             </div>
         </div>
 
-        <!-- Charts and Logs Row -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- Charts Column -->
-            <div class="lg:col-span-2 space-y-8">
+        <!-- Charts Row -->
+        <div class="w-full space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Status Chart -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 mr-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+                        </div>
+                        <h3 class="font-bold text-slate-800">Distribusi Status Pendaftar</h3>
+                    </div>
+                    <div style="height: 250px" class="relative">
+                        <Doughnut :data="statusChartData" :options="statusChartOptions" />
+                    </div>
+                </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Status Chart -->
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                        <div class="flex items-center mb-4">
-                            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 mr-3">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
-                            </div>
-                            <h3 class="font-bold text-slate-800">Distribusi Status Pendaftar</h3>
+                <!-- Gender Chart -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center text-pink-600 mr-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                         </div>
-                        <div style="height: 250px" class="relative">
-                            <Doughnut :data="statusChartData" :options="statusChartOptions" />
-                        </div>
+                        <h3 class="font-bold text-slate-800">Komposisi Gender</h3>
                     </div>
-                    
-                    <!-- Gender Chart -->
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                        <div class="flex items-center mb-4">
-                            <div class="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center text-pink-600 mr-3">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                            </div>
-                            <h3 class="font-bold text-slate-800">Komposisi Gender</h3>
-                        </div>
-                        <div style="height: 250px" class="relative">
-                            <Doughnut :data="genderChartData" :options="genderChartOptions" />
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Activity Logs Column -->
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-0 overflow-hidden h-full flex flex-col">
-                    <div class="p-6 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center text-slate-600 mr-3">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            </div>
-                            <h3 class="font-bold text-slate-800">Aktivitas Terbaru</h3>
-                        </div>
-                        <span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-1 rounded-full uppercase">Live</span>
-                    </div>
-                    
-                    <div class="flex-1 overflow-y-auto p-2 max-h-[600px] custom-scrollbar">
-                        <div v-if="recentLogs && recentLogs.length > 0" class="space-y-1">
-                            <div v-for="(log, idx) in recentLogs" :key="idx" class="p-4 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 relative group">
-                                <div class="flex items-start">
-                                    <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5 border border-blue-100 font-bold text-xs uppercase shadow-sm">
-                                        {{ log.causer?.name ? log.causer.name.substring(0,2) : 'SY' }}
-                                    </div>
-                                    <div class="ml-3 flex-1 min-w-0">
-                                        <div class="text-sm font-semibold text-slate-800 group-hover:text-blue-700 transition-colors">
-                                            {{ log.causer?.name || 'Sistem' }}
-                                        </div>
-                                        <div class="text-xs font-medium text-slate-600 mt-0.5">
-                                            {{ actionLabelMap[log.description] || log.description }}
-                                        </div>
-                                        <div v-if="log.properties?.registration_number" class="text-[11px] text-slate-400 mt-1 font-mono bg-slate-100 inline-block px-1.5 py-0.5 rounded border border-slate-200">
-                                            {{ log.properties.registration_number }}
-                                        </div>
-                                    </div>
-                                    <div class="text-[10px] text-slate-400 whitespace-nowrap ml-2 font-medium bg-slate-50 px-2 py-1 rounded-md border border-slate-100 shadow-sm">
-                                        {{ new Date(log.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div v-else class="h-full flex flex-col items-center justify-center text-slate-400 p-8 text-center">
-                            <svg class="w-16 h-16 mb-4 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <p class="text-sm font-medium">Belum ada aktivitas tercatat pada hari ini.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="p-4 border-t border-slate-100 bg-slate-50 text-center">
-                        <Link :href="route('admin.reports.index')" class="text-sm font-bold text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center">
-                            Lihat Semua Log Aktivitas
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </Link>
+                    <div style="height: 250px" class="relative">
+                        <Doughnut :data="genderChartData" :options="genderChartOptions" />
                     </div>
                 </div>
             </div>
-
         </div>
     </AuthenticatedLayout>
 </template>
