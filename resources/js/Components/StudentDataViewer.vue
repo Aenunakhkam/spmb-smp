@@ -54,7 +54,7 @@ const allGrades = computed(() => {
     
     let list = [];
     const subjectsRequired = usePage().props.app_settings?.subjects_required || [];
-    const allowedKeys = subjectsRequired.map(s => s.key);
+    const allowedKeys = subjectsRequired.map(s => typeof s === 'object' ? s.key : s);
 
     const coreCols = ['mathematics', 'indonesian', 'english', 'religion', 'ipa', 'ips', 'pkn'];
     coreCols.forEach(col => {
