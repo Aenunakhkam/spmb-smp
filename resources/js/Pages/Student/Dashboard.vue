@@ -15,6 +15,12 @@ const props = defineProps({
     realtimeRank: [Number, String],
     totalCandidates: Number,
     contactWhatsapp: String,
+    contactEmail: String,
+    socialTiktok: String,
+    socialInstagram: String,
+    socialFacebook: String,
+    socialX: String,
+    socialYoutube: String,
 });
 
 const activeTab = ref('dashboard');
@@ -1269,6 +1275,65 @@ onMounted(() => {
             </div>
 
         </main>
+        
+        <!-- Structured Professional Footer -->
+        <footer class="footer-refined bg-white border-t mt-auto">
+            <v-container class="py-16">
+                <v-row>
+                    <v-col cols="12" md="5" class="mb-12">
+                        <div class="text-h5 font-weight-black color-main mb-6">SMP <span class="text-primary">BUSTANUL ULUM</span></div>
+                        <p class="text-body-1 text-grey-darken-1 max-width-400 mb-8">Lembaga pendidikan yang berkomitmen mencetak generasi Qur'ani yang cerdas di era digital.</p>
+                        <div class="d-flex ga-4">
+                            <v-btn v-if="socialFacebook" :href="socialFacebook" target="_blank" icon="mdi-facebook" variant="tonal" size="small" color="primary"></v-btn>
+                            <v-btn v-if="socialInstagram" :href="socialInstagram" target="_blank" icon="mdi-instagram" variant="tonal" size="small" color="primary"></v-btn>
+                            <v-btn v-if="socialTiktok" :href="socialTiktok" target="_blank" icon="mdi-music-note" variant="tonal" size="small" color="primary"></v-btn>
+                            <v-btn v-if="socialX" :href="socialX" target="_blank" icon="mdi-twitter" variant="tonal" size="small" color="primary"></v-btn>
+                            <v-btn v-if="socialYoutube" :href="socialYoutube" target="_blank" icon="mdi-youtube" variant="tonal" size="small" color="primary"></v-btn>
+                        </div>
+                    </v-col>
+                    
+                    <v-col cols="6" sm="4" md="2" class="mb-12">
+                        <div class="footer-title-refined">Akses Cepat</div>
+                        <div class="d-flex flex-column ga-4">
+                            <a href="#" @click.prevent="router.get(route('register.start'))" class="footer-link-refined">Formulir Baru</a>
+                            <a href="#" @click.prevent="router.get(route('check-status'))" class="footer-link-refined">Cek Status</a>
+                            <a href="#" @click.prevent="router.get(route('login'))" class="footer-link-refined">Login Panitia</a>
+                        </div>
+                    </v-col>
+
+                    <v-col cols="6" sm="4" md="2" class="mb-12">
+                        <div class="footer-title-refined">Informasi</div>
+                        <div class="d-flex flex-column ga-4">
+                            <a href="#" class="footer-link-refined">Profil Sekolah</a>
+                            <a href="#" class="footer-link-refined">Fasilitas</a>
+                            <a href="#" class="footer-link-refined">Kontak</a>
+                        </div>
+                    </v-col>
+                    
+                    <v-col cols="12" sm="4" md="3" class="mb-12">
+                        <div class="footer-title-refined">Sekretariat</div>
+                        <p class="text-body-2 text-grey-darken-1 leading-relaxed">
+                            Jatirokeh, Kec. Songgom, <br/>
+                            Kabupaten Brebes, <br/>
+                            Jawa Tengah 52266
+                        </p>
+                        <p v-if="contactEmail" class="text-body-2 text-primary font-weight-bold mt-2">
+                            <v-icon size="small" start>mdi-email</v-icon> {{ contactEmail }}
+                        </p>
+                    </v-col>
+                </v-row>
+                
+                <v-divider class="my-8"></v-divider>
+                
+                <div class="d-flex flex-wrap justify-space-between align-center text-caption font-weight-bold text-grey">
+                    <div>c 2026 SMP BUSTANUL ULUM NU JATIROKEH. All Rights Reserved.</div>
+                    <div class="d-flex ga-6 mt-4 mt-sm-0">
+                        <a href="#" class="text-grey text-decoration-none hover-primary">PRIVACY</a>
+                        <a href="#" class="text-grey text-decoration-none hover-primary">TERMS</a>
+                    </div>
+                </div>
+            </v-container>
+        </footer>
         </div>
 
         <!-- Floating WhatsApp Button -->
@@ -1326,4 +1391,26 @@ onMounted(() => {
 .floating-wa:hover {
     transform: scale(1.1);
 }
+
+/* Footer Refined */
+.footer-title-refined {
+    font-weight: 900;
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #0f172a;
+    margin-bottom: 25px;
+}
+
+.footer-link-refined {
+    text-decoration: none;
+    color: #666;
+    font-weight: 700;
+    transition: 0.3s;
+    font-size: 0.95rem;
+}
+
+.footer-link-refined:hover { color: #1E3A8A; transform: translateX(5px); }
+
+.hover-primary:hover { color: #1E3A8A !important; }
 </style>

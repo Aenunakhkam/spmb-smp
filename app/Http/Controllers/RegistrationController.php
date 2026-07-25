@@ -586,6 +586,12 @@ class RegistrationController extends Controller
                 ]), true),
             ],
             'contactWhatsapp' => $settings['contact_whatsapp'] ?? null,
+            'contactEmail' => $settings['contact_email'] ?? null,
+            'socialTiktok' => $settings['social_tiktok'] ?? null,
+            'socialInstagram' => $settings['social_instagram'] ?? null,
+            'socialFacebook' => $settings['social_facebook'] ?? null,
+            'socialX' => $settings['social_x'] ?? null,
+            'socialYoutube' => $settings['social_youtube'] ?? null,
         ]);
     }
 
