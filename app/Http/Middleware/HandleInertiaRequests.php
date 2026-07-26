@@ -42,6 +42,7 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
                 'recover_success' => fn () => $request->session()->get('recover_success'),
+                'registration_success' => fn () => $request->session()->get('registration_success'),
             ],
             'app_settings' => [
                 'app_name' => $settings['app_name'] ?? 'SPMB Online',

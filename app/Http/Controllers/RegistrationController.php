@@ -77,9 +77,12 @@ class RegistrationController extends Controller
                 // Ignore if WA server is down to not block registration flow
             }
 
-            session(['student_registration_id' => $registration->id]);
-            return redirect()->route('student.dashboard')
-                ->with('success', 'Registrasi awal berhasil! Nomor Pendaftaran dan Kode Akses Anda juga telah dikirim via WhatsApp.');
+            return redirect()->route('check-status')
+                ->with('registration_success', [
+                    'registration_number' => $regNumber,
+                    'access_code' => $accessCode,
+                    'full_name' => $request->full_name,
+                ]);
         });
     }
 

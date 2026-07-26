@@ -2,9 +2,17 @@
 import { ref } from 'vue';
 import TextInput from '@/Components/TextInput.vue';
 import Captcha from '@/Components/Captcha.vue';
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { Head, useForm, router, usePage } from '@inertiajs/vue3';
 
+const page = usePage();
 const isRecoverMode = ref(false);
+const showSuccess = ref(!!page.props.flash?.registration_success);
+
+const handleContinueLogin = () => {
+    loginForm.registration_number = page.props.flash.registration_success.registration_number;
+    loginForm.access_code = page.props.flash.registration_success.access_code;
+    showSuccess.value = false;
+};
 const showPassword = ref(false);
 
 const loginForm = useForm({
@@ -93,8 +101,42 @@ const resetForms = () => {
                     <div class="auth-form-container w-100 max-w-sm">
                         
                         <transition name="fade-slide" mode="out-in">
+                            <!-- FORM SUCCESS REGISTRATION -->
+                            <div v-if="showSuccess" key="success">
+                                <div class="mb-10 text-center">
+                                    <v-icon icon="mdi-check-circle" color="success" size="64" class="mb-4"></v-icon>
+                                    <h2 class="text-h4 font-weight-black color-main mb-2">Pendaftaran Berhasil!</h2>
+                                    <p class="text-body-1 text-grey-darken-1 mb-2">Halo <strong>{{ $page.props.flash.registration_success.full_name }}</strong>, ini adalah data akses Anda:</p>
+                                </div>
+                                
+                                <v-card variant="outlined" color="primary" class="rounded-xl border-dashed mb-8 bg-blue-50">
+                                    <v-card-text class="text-center pa-6">
+                                        <div class="text-caption font-weight-bold text-primary mb-1 text-uppercase">Nomor Pendaftaran</div>
+                                        <div class="text-h5 font-weight-black text-blue-900 mb-4">{{ $page.props.flash.registration_success.registration_number }}</div>
+                                        
+                                        <div class="text-caption font-weight-bold text-primary mb-1 text-uppercase">Kode Akses</div>
+                                        <div class="text-h5 font-weight-black text-blue-900">{{ $page.props.flash.registration_success.access_code }}</div>
+                                    </v-card-text>
+                                </v-card>
+
+                                <v-alert type="warning" variant="tonal" class="mb-8 rounded-xl font-weight-medium text-body-2">
+                                    Harap simpan atau catat <strong>Nomor Pendaftaran</strong> dan <strong>Kode Akses</strong> di atas. Anda akan membutuhkannya untuk masuk ke Portal Siswa dan memantau kelulusan.
+                                </v-alert>
+
+                                <v-btn
+                                    block
+                                    size="x-large"
+                                    color="primary"
+                                    @click="handleContinueLogin"
+                                    class="rounded-xl font-weight-black text-capitalize btn-premium shadow-primary"
+                                    elevation="4"
+                                >
+                                    Lanjut Login
+                                </v-btn>
+                            </div>
+
                             <!-- FORM LOGIN -->
-                            <div v-if="!isRecoverMode" key="login">
+                            <div v-else-if="!isRecoverMode" key="login">
                                 <div class="mb-10 text-center text-md-left">
                                     <v-chip color="primary" variant="tonal" class="font-weight-bold mb-4" size="small">PORTAL SISWA</v-chip>
                                     <h2 class="text-h4 font-weight-black color-main mb-2">Selamat Datang</h2>
