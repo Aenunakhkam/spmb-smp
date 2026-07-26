@@ -58,6 +58,24 @@ const chartOptions = {
 const isScrolled = ref(false);
 const mobileMenu = ref(false);
 
+const adminLoginClicks = ref(0);
+let adminLoginTimeout = null;
+
+const handleSecretLogin = () => {
+    adminLoginClicks.value++;
+    
+    // Jika diklik 5 kali atau lebih
+    if (adminLoginClicks.value >= 5) {
+        router.get(route('login'));
+    }
+
+    // Reset hitungan jika jeda lebih dari 1 detik
+    clearTimeout(adminLoginTimeout);
+    adminLoginTimeout = setTimeout(() => {
+        adminLoginClicks.value = 0;
+    }, 1000);
+};
+
 const handleScroll = () => {
     isScrolled.value = window.scrollY > 20;
 };
@@ -133,7 +151,7 @@ const agendas = computed(() => {
             app
         >
             <v-container class="d-flex align-center h-100 pa-2 pa-sm-4">
-                <div class="brand-container d-flex align-center">
+                <div class="brand-container d-flex align-center" @click="handleSecretLogin" style="cursor: pointer; user-select: none;" title="Logo SPMB">
                     <div class="logo-circle-bg mr-3">
                         <v-icon icon="mdi-school" color="white" size="24"></v-icon>
                     </div>
@@ -153,7 +171,6 @@ const agendas = computed(() => {
                         <a href="#alur" class="mx-4 nav-item">Alur</a>
                         <a href="#jadwal" class="mx-4 nav-item">Jadwal</a>
                         <a href="#faq" class="mx-4 nav-item">Bantuan</a>
-                        <a href="#" @click.prevent="router.get(route('login'))" class="mx-4 nav-item font-weight-black text-secondary">Login Admin</a>
                     </nav>
                     <v-btn 
                         variant="outlined" 
@@ -196,7 +213,6 @@ const agendas = computed(() => {
                 <v-list-item link href="#alur" @click="mobileMenu = false" class="rounded-lg mb-2">Alur</v-list-item>
                 <v-list-item link href="#jadwal" @click="mobileMenu = false" class="rounded-lg mb-2">Jadwal</v-list-item>
                 <v-list-item link href="#faq" @click="mobileMenu = false" class="rounded-lg mb-2">Bantuan</v-list-item>
-                <v-list-item link @click="router.get(route('login')); mobileMenu = false" class="rounded-lg mb-2 text-secondary font-weight-bold">Login Admin</v-list-item>
                 <v-divider class="my-4"></v-divider>
                 <v-btn block color="primary" variant="outlined" class="mb-3 rounded-lg font-weight-bold" @click="router.get(route('check-status'))">Cek Status</v-btn>
                 <v-btn block color="primary" class="rounded-lg font-weight-black" @click="router.get(route('register.start'))">Daftar Sekarang</v-btn>
@@ -487,7 +503,6 @@ const agendas = computed(() => {
                             <div class="d-flex flex-column ga-4">
                                 <a href="#" @click.prevent="router.get(route('register.start'))" class="footer-link-refined">Formulir Baru</a>
                                 <a href="#" @click.prevent="router.get(route('check-status'))" class="footer-link-refined">Cek Status</a>
-                                <a href="#" @click.prevent="router.get(route('login'))" class="footer-link-refined">Login Panitia</a>
                             </div>
                         </v-col>
 
