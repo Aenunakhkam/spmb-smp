@@ -77,17 +77,17 @@ class RegistrationController extends Controller
                 // Ignore if WA server is down to not block registration flow
             }
 
-            return redirect()->route('student.dashboard', [$regNumber, $accessCode])
+            session(['student_registration_id' => $registration->id]);
+            return redirect()->route('student.dashboard')
                 ->with('success', 'Registrasi awal berhasil! Nomor Pendaftaran dan Kode Akses Anda juga telah dikirim via WhatsApp.');
         });
     }
 
-    public function showForm($number, $code)
+    public function showForm()
     {
-        $registration = Registration::where('registration_number', $number)
-            ->where('access_code', $code)
-            ->with(['studentDetail', 'parentDetail', 'grade', 'documents'])
-            ->firstOrFail();
+        $registrationId = session('student_registration_id');
+        $registration = Registration::with(['studentDetail', 'parentDetail', 'grade', 'documents'])
+            ->findOrFail($registrationId);
 
         $settings = Setting::all()->pluck('value', 'key')->toArray();
 
@@ -475,7 +475,8 @@ class RegistrationController extends Controller
             return back()->withErrors(['message' => 'Nomor Pendaftaran atau Kode Akses salah.']);
         }
 
-        return redirect()->route('student.dashboard', [$registration->registration_number, $registration->access_code]);
+        session(['student_registration_id' => $registration->id]);
+        return redirect()->route('student.dashboard');
     }
 
     public function recoverAccess(Request $request)
@@ -515,12 +516,11 @@ class RegistrationController extends Controller
         ]);
     }
 
-    public function dashboard($number, $code)
+    public function dashboard()
     {
-        $registration = Registration::where('registration_number', $number)
-            ->where('access_code', $code)
-            ->with(['studentDetail', 'parentDetail', 'grade', 'documents'])
-            ->firstOrFail();
+        $registrationId = session('student_registration_id');
+        $registration = Registration::with(['studentDetail', 'parentDetail', 'grade', 'documents'])
+            ->findOrFail($registrationId);
 
         $settings = Setting::all()->pluck('value', 'key')->toArray();
         
@@ -596,15 +596,20 @@ class RegistrationController extends Controller
         ]);
     }
 
-    public function announcement($number, $code)
+    public function announcement()
     {
-        $registration = Registration::where('registration_number', $number)
-            ->where('access_code', $code)
-            ->with(['studentDetail', 'grade'])
-            ->firstOrFail();
+        $registrationId = session('student_registration_id');
+        $registration = Registration::with(['studentDetail', 'grade'])
+            ->findOrFail($registrationId);
 
         return Inertia::render('Announcement', [
             'registration' => $registration,
         ]);
+    }
+
+    public function logoutSiswa(Request $request)
+    {
+        $request->session()->forget('student_registration_id');
+        return redirect()->route('home')->with('success', 'Anda berhasil keluar dari Dashboard Siswa.');
     }
 }

@@ -55,7 +55,8 @@ Route::prefix('pendaftaran')->group(function () {
     Route::get('/', [RegistrationController::class, 'start'])->name('register.start');
     Route::post('/registrasi-awal', [RegistrationController::class, 'storeInitial'])->name('register.storeInitial');
     
-    Route::get('/formulir/{number}/{code}', [RegistrationController::class, 'showForm'])->name('register.form');
+    // We will keep other API routes for saving data unprotected (or protect them later). 
+    // They use registration_id in payload, but dashboard is protected.
     Route::post('/simpan-biodata', [RegistrationController::class, 'saveBiodata'])->name('register.saveBiodata');
     Route::post('/simpan-ortu', [RegistrationController::class, 'saveParent'])->name('register.saveParent');
     Route::post('/simpan-nilai', [RegistrationController::class, 'saveGrades'])->name('register.saveGrades');
@@ -69,8 +70,13 @@ Route::prefix('pendaftaran')->group(function () {
 Route::get('/cek-status', [RegistrationController::class, 'checkStatus'])->name('check-status');
 Route::post('/cek-status', [RegistrationController::class, 'processCheckStatus'])->name('check-status.process');
 Route::post('/lupa-akses', [RegistrationController::class, 'recoverAccess'])->name('recover-access');
-Route::get('/dashboard-siswa/{number}/{code}', [RegistrationController::class, 'dashboard'])->name('student.dashboard');
-Route::get('/pengumuman/{number}/{code}', [RegistrationController::class, 'announcement'])->name('announcement');
+
+Route::middleware(['student.auth'])->group(function () {
+    Route::get('/pendaftaran/formulir', [RegistrationController::class, 'showForm'])->name('register.form');
+    Route::get('/dashboard-siswa', [RegistrationController::class, 'dashboard'])->name('student.dashboard');
+    Route::get('/pengumuman', [RegistrationController::class, 'announcement'])->name('announcement');
+    Route::post('/logout-siswa', [RegistrationController::class, 'logoutSiswa'])->name('student.logout');
+});
 
 // Print Routes (Preview HTML)
 Route::get('/cetak/kartu/{id}', [\App\Http\Controllers\PrintController::class, 'kartu'])->name('print.kartu');

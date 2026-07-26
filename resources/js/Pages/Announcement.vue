@@ -137,7 +137,7 @@ const getStatus = (status) => statusMap[status] || { text: status, color: 'grey'
                                         </v-alert>
                                     </template>
                                     <template v-else-if="registration.status === 'incomplete' || registration.status === 'revision'">
-                                        <v-btn color="primary" size="x-large" variant="elevated" class="rounded-pill px-10 font-weight-bold elevation-4 text-button" prepend-icon="mdi-pencil-circle" @click="router.get(route('student.dashboard', [registration.registration_number, registration.access_code]))">
+                                        <v-btn color="primary" size="x-large" variant="elevated" class="rounded-pill px-10 font-weight-bold elevation-4 text-button" prepend-icon="mdi-pencil-circle" @click="router.get(route('student.dashboard'))">
                                             Lengkapi / Perbaiki Data
                                         </v-btn>
                                     </template>

@@ -4,7 +4,7 @@ import { Head, useForm, router, usePage } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
 
 const user = usePage().props.auth?.user || {};
-const logout = () => router.post(route('logout'));
+const logout = () => router.post(route('student.logout'));
 
 const props = defineProps({
     registration: Object,
