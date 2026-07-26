@@ -307,9 +307,8 @@ const completionPercentage = computed(() => {
     chk(form.student_details.full_name); chk(form.student_details.nisn); chk(form.student_details.nik);
     chk(form.student_details.place_of_birth); chk(form.student_details.date_of_birth);
     chk(form.student_details.province); chk(form.student_details.city); chk(form.student_details.address);
-    chk(form.student_details.phone); chk(form.student_details.origin_school_name);
+    chk(form.student_details.origin_school_name);
     chk(form.parent_details.father_name); chk(form.parent_details.mother_name); chk(form.parent_details.parent_phone);
-    chk(form.student_details.additional_data.height); chk(form.student_details.additional_data.weight); chk(form.student_details.additional_data.transportation);
     props.subjectsRequired.forEach(s => chk(gradeForm[s.key]));
     total += 3; if (getDoc('kk')) filled++; if (getDoc('akta')) filled++; if (getDoc('foto')) filled++;
     return Math.round((filled / total) * 100);
@@ -628,7 +627,7 @@ onMounted(() => {
                                 <input type="text" v-model="form.student_details.additional_data.kk_number" @input="form.student_details.additional_data.kk_number = $event.target.value.replace(/\D/g, '')" maxlength="16" minlength="16" class="field-input" placeholder="16 digit No. KK">
                             </div>
                             <div>
-                                <label class="field-label">No. Akta Kelahiran <span class="req">*wajib di isi</span></label>
+                                <label class="field-label">No. Akta Kelahiran <span class="text-emerald-500 font-normal normal-case ml-1 not-italic">(Opsional)</span></label>
                                 <input type="text" v-model="form.student_details.additional_data.akta_number" class="field-input" placeholder="Nomor Akta Kelahiran">
                             </div>
                             <div>
@@ -653,16 +652,12 @@ onMounted(() => {
                                 <input type="date" v-model="form.student_details.date_of_birth" class="field-input">
                             </div>
                             <div>
-                                <label class="field-label">Anak ke- <span class="req">*wajib di isi</span></label>
+                                <label class="field-label">Anak ke- <span class="text-emerald-500 font-normal normal-case ml-1 not-italic">(Opsional)</span></label>
                                 <input type="number" v-model="form.student_details.additional_data.child_order" class="field-input" placeholder="Anak ke berapa" min="1">
                             </div>
                             <div>
-                                <label class="field-label">Jumlah Saudara Kandung <span class="req">*wajib di isi</span></label>
+                                <label class="field-label">Jumlah Saudara Kandung <span class="text-emerald-500 font-normal normal-case ml-1 not-italic">(Opsional)</span></label>
                                 <input type="number" v-model="form.student_details.additional_data.siblings_count" class="field-input" placeholder="Jumlah saudara kandung" min="0">
-                            </div>
-                            <div>
-                                <label class="field-label">No. HP / WhatsApp <span class="req">*wajib</span></label>
-                                <input type="tel" v-model="form.student_details.phone" @input="form.student_details.phone = $event.target.value.replace(/\D/g, '')" class="field-input" placeholder="Nomor aktif yang bisa dihubungi">
                             </div>
 
                         </div>
@@ -755,7 +750,7 @@ onMounted(() => {
                             <div>
                                 <label class="field-label">Jenis Sekolah <span class="req">*wajib di isi</span></label>
                                 <select v-model="form.registration.additional_data.school_type" class="field-input">
-                                    <option value="SD">SD</option><option value="MI">MI</option><option value="SDLB">SDLB</option><option value="Paket A">Paket A</option>
+                                    <option value="SD">SD</option><option value="MI">MI</option>
                                 </select>
                             </div>
                             <div>
@@ -785,49 +780,49 @@ onMounted(() => {
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                                <label class="field-label">Tinggi Badan (cm) <span class="req">*wajib</span></label>
+                                <label class="field-label">Tinggi Badan (cm) <span class="text-emerald-500 font-normal normal-case ml-1 not-italic">(Opsional)</span></label>
                                 <input type="number" v-model="form.student_details.additional_data.height" class="field-input" placeholder="Misal: 155">
                             </div>
                             <div>
-                                <label class="field-label">Berat Badan (kg) <span class="req">*wajib</span></label>
+                                <label class="field-label">Berat Badan (kg) <span class="text-emerald-500 font-normal normal-case ml-1 not-italic">(Opsional)</span></label>
                                 <input type="number" v-model="form.student_details.additional_data.weight" class="field-input" placeholder="Misal: 45">
                             </div>
 
                             <div>
-                                <label class="field-label">Jarak ke Sekolah <span class="req">*wajib</span></label>
+                                <label class="field-label">Jarak ke Sekolah <span class="text-emerald-500 font-normal normal-case ml-1 not-italic">(Opsional)</span></label>
                                 <select v-model="form.student_details.additional_data.distance_to_school" class="field-input">
                                     <option value="">-- Pilih Jarak --</option>
                                     <option v-for="j in ['Kurang dari 1 km','1 - 3 km','3 - 5 km','5 - 10 km','Lebih dari 10 km']" :key="j" :value="j">{{ j }}</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="field-label">Jarak (km) <span class="req">*wajib di isi</span></label>
+                                <label class="field-label">Jarak (km) <span class="text-emerald-500 font-normal normal-case ml-1 not-italic">(Opsional)</span></label>
                                 <input type="number" v-model="form.student_details.additional_data.distance_km" class="field-input" placeholder="Jarak dalam KM">
                             </div>
                             <div>
-                                <label class="field-label">Waktu Tempuh (menit) <span class="req">*wajib di isi</span></label>
+                                <label class="field-label">Waktu Tempuh (menit) <span class="text-emerald-500 font-normal normal-case ml-1 not-italic">(Opsional)</span></label>
                                 <input type="number" v-model="form.student_details.additional_data.travel_time" class="field-input" placeholder="Estimasi menit">
                             </div>
                             <div>
-                                <label class="field-label">Moda Transportasi <span class="req">*wajib</span></label>
+                                <label class="field-label">Moda Transportasi <span class="text-emerald-500 font-normal normal-case ml-1 not-italic">(Opsional)</span></label>
                                 <select v-model="form.student_details.additional_data.transportation" class="field-input">
                                     <option value="">-- Pilih Transportasi --</option>
                                     <option v-for="t in optTransportasi" :key="t" :value="t">{{ t }}</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="field-label">Minat Ekstrakurikuler <span class="req">*wajib</span></label>
+                                <label class="field-label">Minat Ekstrakurikuler <span class="text-emerald-500 font-normal normal-case ml-1 not-italic">(Opsional)</span></label>
                                 <select v-model="form.student_details.additional_data.extracurricular_interest" class="field-input">
                                     <option value="">-- Pilih --</option>
                                     <option v-for="e in optEkstra" :key="e" :value="e">{{ e }}</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="field-label">Hobi <span class="req">*wajib</span></label>
+                                <label class="field-label">Hobi <span class="text-emerald-500 font-normal normal-case ml-1 not-italic">(Opsional)</span></label>
                                 <input type="text" v-model="form.student_details.additional_data.hobby" class="field-input" placeholder="Misal: Membaca, Olahraga">
                             </div>
                             <div>
-                                <label class="field-label">Cita-cita <span class="req">*wajib</span></label>
+                                <label class="field-label">Cita-cita <span class="text-emerald-500 font-normal normal-case ml-1 not-italic">(Opsional)</span></label>
                                 <input type="text" v-model="form.student_details.additional_data.ambition" class="field-input" placeholder="Misal: Dokter, Insinyur">
                             </div>
                         </div>
@@ -858,7 +853,6 @@ onMounted(() => {
                                 <select v-model="form.registration.additional_data.registration_type" class="field-input">
                                     <option value="BARU">Peserta Didik Baru</option>
                                     <option value="PINDAH">Pindahan</option>
-                                    <option value="NAIK">Naik Kelas</option>
                                     <option value="MUTASI">Mutasi</option>
                                 </select>
                             </div>
@@ -989,10 +983,6 @@ onMounted(() => {
                                     <option value="">-- Pilih Pekerjaan --</option>
                                     <option v-for="p in optPekerjaan" :key="p" :value="p">{{ p }}</option>
                                 </select>
-                            </div>
-                            <div>
-                                <label class="field-label">No. HP Ibu <span class="req">*wajib di isi</span></label>
-                                <input type="tel" v-model="form.parent_details.additional_data.mother_phone" @input="form.parent_details.additional_data.mother_phone = $event.target.value.replace(/\D/g, '')" class="field-input" placeholder="Nomor WA aktif ibu">
                             </div>
                             <div>
                                 <label class="field-label">No. HP Orang Tua (utama) <span class="req">*wajib</span></label>

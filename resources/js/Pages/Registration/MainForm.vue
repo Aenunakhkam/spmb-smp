@@ -379,13 +379,6 @@ const getStepTitle = (s) => {
                                     <option v-for="r in ['Bersama Orang Tua', 'Wali', 'Kos', 'Asrama', 'Panti Asuhan']" :key="r" :value="r">{{ r }}</option>
                                 </select>
                             </div>
-                            
-                            <!-- No HP -->
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nomor HP / WA <span class="text-red-500 text-[10px] lowercase font-normal italic ml-1">(*wajib diisi)</span></label>
-                                <input type="text" v-model="bioForm.phone" @keypress="$event.key.length === 1 && ($event.key < '0' || $event.key > '9') && $event.preventDefault()" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white focus:bg-white" placeholder="08xxxxxxxxxx">
-                                <p v-if="bioForm.errors.phone" class="text-red-500 text-xs mt-1">{{ bioForm.errors.phone }}</p>
-                            </div>
                         </div>
 
                         <div class="mt-10 flex justify-end">
