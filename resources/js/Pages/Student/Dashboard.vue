@@ -301,17 +301,59 @@ const finalize = () => {
 };
 
 // ---- COMPLETION ----
+const isFilled = (v) => v !== null && v !== undefined && v !== '' && v !== 0 && v !== '0';
+
+const validationChecklist = computed(() => {
+    return [
+        {
+            category: 'Identitas Diri',
+            items: [
+                { name: 'Nama Lengkap', valid: isFilled(form.student_details.full_name) },
+                { name: 'NISN', valid: isFilled(form.student_details.nisn) },
+                { name: 'NIK', valid: isFilled(form.student_details.nik) },
+                { name: 'Tempat Lahir', valid: isFilled(form.student_details.place_of_birth) },
+                { name: 'Tanggal Lahir', valid: isFilled(form.student_details.date_of_birth) },
+                { name: 'Provinsi', valid: isFilled(form.student_details.province) },
+                { name: 'Kabupaten/Kota', valid: isFilled(form.student_details.city) },
+                { name: 'Alamat Lengkap', valid: isFilled(form.student_details.address) },
+                { name: 'Asal Sekolah', valid: isFilled(form.student_details.origin_school_name) },
+            ]
+        },
+        {
+            category: 'Data Orang Tua',
+            items: [
+                { name: 'Nama Ayah', valid: isFilled(form.parent_details.father_name) },
+                { name: 'Nama Ibu', valid: isFilled(form.parent_details.mother_name) },
+                { name: 'No. HP Orang Tua', valid: isFilled(form.parent_details.parent_phone) },
+            ]
+        },
+        {
+            category: 'Akademik (Nilai Rapor)',
+            items: props.subjectsRequired.map(s => ({
+                name: `Nilai ${s.label || s.key}`,
+                valid: isFilled(gradeForm[s.key])
+            }))
+        },
+        {
+            category: 'Berkas Wajib',
+            items: [
+                { name: 'Kartu Keluarga (KK)', valid: !!getDoc('kk') },
+                { name: 'Akta Kelahiran', valid: !!getDoc('akta') },
+                { name: 'Pas Foto Terbaru', valid: !!getDoc('foto') },
+            ]
+        }
+    ];
+});
+
 const completionPercentage = computed(() => {
     let total = 0, filled = 0;
-    const chk = (v) => { total++; if (v !== null && v !== undefined && v !== '' && v !== 0 && v !== '0') filled++; };
-    chk(form.student_details.full_name); chk(form.student_details.nisn); chk(form.student_details.nik);
-    chk(form.student_details.place_of_birth); chk(form.student_details.date_of_birth);
-    chk(form.student_details.province); chk(form.student_details.city); chk(form.student_details.address);
-    chk(form.student_details.origin_school_name);
-    chk(form.parent_details.father_name); chk(form.parent_details.mother_name); chk(form.parent_details.parent_phone);
-    props.subjectsRequired.forEach(s => chk(gradeForm[s.key]));
-    total += 3; if (getDoc('kk')) filled++; if (getDoc('akta')) filled++; if (getDoc('foto')) filled++;
-    return Math.round((filled / total) * 100);
+    validationChecklist.value.forEach(cat => {
+        cat.items.forEach(item => {
+            total++;
+            if (item.valid) filled++;
+        });
+    });
+    return total === 0 ? 0 : Math.round((filled / total) * 100);
 });
 
 // ---- OPTIONS (from admin) ----
@@ -1256,15 +1298,32 @@ onMounted(() => {
                         </div>
 
                         <!-- Checklist -->
-                        <div class="bg-slate-50 rounded-xl p-4">
-                            <h4 class="font-bold text-slate-700 text-sm mb-3">Kelengkapan Berkas</h4>
-                            <div class="space-y-2">
-                                <div v-for="dt in docTypes.slice(0,6)" :key="dt.key" class="flex items-center gap-2">
-                                    <span :class="getDoc(dt.key) ? 'text-emerald-500' : 'text-slate-300'">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="getDoc(dt.key) ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' : 'M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z'"/></svg>
-                                    </span>
-                                    <span class="text-xs" :class="getDoc(dt.key) ? 'text-slate-700 font-medium' : 'text-slate-400'">{{ dt.label }}</span>
-                                </div>
+                        <div class="bg-slate-50 rounded-xl overflow-hidden border border-slate-200">
+                            <div class="p-4 bg-white border-b border-slate-200">
+                                <h4 class="font-bold text-slate-700 text-sm">Status Kelengkapan Data Wajib</h4>
+                                <p class="text-xs text-slate-500 mt-1">Hanya data yang wajib diisi yang ditampilkan di bawah ini. Anda harus melengkapinya sebelum dapat melakukan finalisasi. Data opsional (seperti sertifikat prestasi, KIP, dll) tidak wajib dan tidak menghalangi finalisasi.</p>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <template v-for="(cat, idx) in validationChecklist" :key="idx">
+                                        <tr class="bg-slate-100/70 border-b border-slate-200">
+                                            <th colspan="2" class="px-5 py-2.5 font-black text-slate-700 text-[11px] uppercase tracking-wider">{{ cat.category }}</th>
+                                        </tr>
+                                        <tr v-for="(item, i) in cat.items" :key="i" class="border-b border-slate-100 last:border-0 bg-white hover:bg-slate-50/50 transition-colors">
+                                            <td class="px-5 py-3 text-slate-600 font-medium text-[13px]">{{ item.name }}</td>
+                                            <td class="px-5 py-3 text-right w-36">
+                                                <span v-if="item.valid" class="inline-flex items-center justify-center w-full gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-[11px] font-bold border border-emerald-100/50 shadow-sm">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                                    Sudah Lengkap
+                                                </span>
+                                                <span v-else class="inline-flex items-center justify-center w-full gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 text-red-700 text-[11px] font-bold border border-red-100/50 shadow-sm">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                    Belum Lengkap
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </table>
                             </div>
                         </div>
 
