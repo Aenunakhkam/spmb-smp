@@ -1223,8 +1223,15 @@ onMounted(() => {
                     </div>
                 </div>
                 </fieldset>
-                <div class="flex items-center justify-between">
-                    <button @click="activeTab = 'akademik'" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-xl transition-all">← Kembali</button>
+                <div class="flex items-center justify-between mt-6">
+                    <button type="button" @click="activeTab = 'akademik'" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold px-5 py-2.5 rounded-xl transition-all">← Kembali</button>
+                    <button type="button" @click="activeTab = 'finalisasi'" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-all">Lanjut Finalisasi →</button>
+                </div>
+            </div>
+
+            <!-- ── TAB: FINALISASI ── -->
+            <div v-if="activeTab === 'finalisasi'" class="pb-10 max-w-4xl mx-auto">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                     <!-- Status banner -->
                     <div class="p-6 md:p-8 text-center border-b border-slate-100" :class="statusInfo.bg">
                         <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl" :class="statusInfo.bg">
