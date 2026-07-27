@@ -86,3 +86,55 @@
     transition: background-color 0.2s ease;
   }
 }
+/* Dark Mode Overrides */
+html.dark {
+  color-scheme: dark;
+}
+html.dark body {
+  @apply bg-slate-900 text-slate-200;
+}
+html.dark .bg-white, html.dark .glass-card {
+  @apply !bg-slate-800 !border-slate-700;
+}
+html.dark .bg-slate-50, html.dark .bg-slate-100 {
+  @apply !bg-slate-900/50;
+}
+html.dark .text-slate-800, html.dark .text-slate-700, html.dark .text-slate-900 {
+  @apply !text-slate-100;
+}
+html.dark .text-slate-600, html.dark .text-slate-500 {
+  @apply !text-slate-300;
+}
+html.dark .border-slate-100, html.dark .border-slate-200, html.dark .border-slate-300 {
+  @apply !border-slate-700;
+}
+html.dark .bg-blue-50, html.dark .bg-emerald-50, html.dark .bg-amber-50, html.dark .bg-red-50 {
+  @apply !bg-slate-800 !border-slate-700;
+}
+html.dark .text-blue-700, html.dark .text-blue-800, html.dark .text-blue-600 {
+  @apply !text-blue-300;
+}
+html.dark .shadow-sm, html.dark .shadow-md, html.dark .shadow-lg, html.dark .soft-shadow {
+  box-shadow: none !important;
+  border: 1px solid #334155 !important;
+}
+html.dark .v-card, html.dark .neo-card {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #f1f5f9 !important;
+}
+html.dark .modern-table th {
+  background-color: #1e293b !important;
+  border-bottom: 2px solid #334155 !important;
+  color: #e2e8f0 !important;
+}
+html.dark .modern-table td {
+  border-bottom: 1px solid #334155 !important;
+}
+html.dark .modern-table tr:hover {
+  background-color: #334155 !important;
+}
+/* Fix inputs */
+html.dark input, html.dark select, html.dark textarea {
+  @apply !bg-slate-800 !text-white !border-slate-700;
+}
