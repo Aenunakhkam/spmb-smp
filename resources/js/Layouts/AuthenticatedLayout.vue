@@ -115,7 +115,7 @@ const menuItems = [
                             </div>
                             <div class="hidden md:block text-left mr-1">
                                 <div class="text-sm font-bold text-slate-700 leading-tight">{{ $page.props.auth.user.name }}</div>
-                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">Administrator</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">Panitia SPMB</div>
                             </div>
                             <svg class="w-4 h-4 text-slate-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </button>

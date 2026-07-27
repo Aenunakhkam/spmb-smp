@@ -151,7 +151,7 @@ const agendas = computed(() => {
             app
         >
             <v-container class="d-flex align-center h-100 pa-2 pa-sm-4">
-                <div class="brand-container d-flex align-center" @click="handleSecretLogin" style="cursor: pointer; user-select: none;" title="Logo SPMB">
+                <div class="brand-container d-flex align-center" style="user-select: none;" title="Logo SPMB">
                     <div class="logo-circle-bg mr-3">
                         <v-icon icon="mdi-school" color="white" size="24"></v-icon>
                     </div>
@@ -503,6 +503,7 @@ const agendas = computed(() => {
                             <div class="d-flex flex-column ga-4">
                                 <a href="#" @click.prevent="router.get(route('register.start'))" class="footer-link-refined">Formulir Baru</a>
                                 <a href="#" @click.prevent="router.get(route('check-status'))" class="footer-link-refined">Cek Status</a>
+                                <a href="#" @click.prevent="router.get(route('login'))" class="footer-link-refined">Login Panitia</a>
                             </div>
                         </v-col>
 

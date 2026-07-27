@@ -526,7 +526,7 @@ onMounted(() => {
 
                 <!-- Info Cards -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center justify-between">
+                    <div v-if="showRanking" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center justify-between">
                         <div>
                             <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Skor Akhir</div>
                             <div class="text-3xl font-black text-blue-700">{{ registration?.final_score || '-' }}</div>
