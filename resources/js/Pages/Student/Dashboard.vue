@@ -339,6 +339,7 @@ const validationChecklist = computed(() => {
             items: [
                 { name: 'Kartu Keluarga (KK)', valid: !!getDoc('kk') },
                 { name: 'Akta Kelahiran', valid: !!getDoc('akta') },
+                { name: 'Ijazah / SKL SD/MI', valid: !!getDoc('ijazah') },
                 { name: 'Pas Foto Terbaru', valid: !!getDoc('foto') },
             ]
         }
